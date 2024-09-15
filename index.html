@@ -2,9 +2,78 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerar QR Code para Trajeto</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Estilos CSS */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+        select, button {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        #proprietarioInfo {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+            color: #555;
+        }
+        #linkContainer {
+            text-align: center;
+            margin-top: 15px;
+        }
+        #linkContainer a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        #linkContainer a:hover {
+            text-decoration: underline;
+        }
+    </style>
     <!-- Biblioteca para geração de QR Codes -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
@@ -30,7 +99,2691 @@
         <div id="linkContainer"></div>
     </div>
 
-    <!-- Script principal -->
-    <script src="script.js"></script>
+    <script>
+        const portariaCoords = "-7.152305801908893, -34.80933687465736";
+        const searchTypeSelect = document.getElementById('searchType');
+        const searchValueSelect = document.getElementById('searchValue');
+        const qrForm = document.getElementById('qrForm');
+        const proprietarioInfoDiv = document.getElementById('proprietarioInfo');
+        const linkContainer = document.getElementById('linkContainer');
+
+        // Dados das casas
+        const houseData = [
+            // Seus dados das casas
+                  {
+        "WKT": "POINT (-34.80944116911525 -7.152811565247221)",
+        "Nº da Casa": "2135",
+        "Proprietario": "VALMIR VITORIANO PEREIRA – 242-0018",
+        "Quadra": "242",
+        "Lote": "18"
+    },
+    {
+        "WKT": "POINT (-34.809592731932554 -7.152818700674265)",
+        "Nº da Casa": "2133",
+        "Proprietario": "VALMIR VITORIANO PEREIRA",
+        "Quadra": "242",
+        "Lote": "33"
+    },
+    {
+        "WKT": "POINT (-34.80972527097546 -7.152819562665905)",
+        "Nº da Casa": "2131",
+        "Proprietario": "ERNANI ALEIXO A FILHO",
+        "Quadra": "242",
+        "Lote": "48"
+    },
+    {
+        "WKT": "POINT (-34.80986732607889 -7.152830396677109)",
+        "Nº da Casa": "2129",
+        "Proprietario": "RODRIGO MARQUES DA NÓBREGA",
+        "Quadra": "242",
+        "Lote": "63"
+    },
+    {
+        "WKT": "POINT (-34.809999949771104 -7.1528305928740235)",
+        "Nº da Casa": "2127",
+        "Proprietario": "CARLO GABRIEL PORTO BELLINI",
+        "Quadra": "242",
+        "Lote": "78"
+    },
+    {
+        "WKT": "POINT (-34.810142789220116 -7.152834440555056)",
+        "Nº da Casa": "2125",
+        "Proprietario": "FÁBIO RIVELINO DE M COSTA",
+        "Quadra": "242",
+        "Lote": "93"
+    },
+    {
+        "WKT": "POINT (-34.81027281814977 -7.152841046180186)",
+        "Nº da Casa": "2123",
+        "Proprietario": "ELIEZER CORDEIRO NASCIMENTO",
+        "Quadra": "242",
+        "Lote": "108"
+    },
+    {
+        "WKT": "POINT (-34.8104095043626 -7.15284366504517)",
+        "Nº da Casa": "2121",
+        "Proprietario": "ADILSON DE ALBUQUERQUE VIANA",
+        "Quadra": "242",
+        "Lote": "123"
+    },
+    {
+        "WKT": "POINT (-34.81054685170642 -7.152848742375392)",
+        "Nº da Casa": "2119",
+        "Proprietario": "JOSÉ ALBERTO DE AMARAL LINS",
+        "Quadra": "242",
+        "Lote": "138"
+    },
+    {
+        "WKT": "POINT (-34.81068662821135 -7.152851916303118)",
+        "Nº da Casa": "2117",
+        "Proprietario": "CLAUDIA E. GOMES S. PERAZIO",
+        "Quadra": "242",
+        "Lote": "153"
+    },
+    {
+        "WKT": "POINT (-34.810819499999994 -7.152859)",
+        "Nº da Casa": "2115",
+        "Proprietario": "BRENO DE SOUZA CAVALCANTE",
+        "Quadra": "242",
+        "Lote": "168"
+    },
+    {
+        "WKT": "POINT (-34.810951554694235 -7.152863719724376)",
+        "Nº da Casa": "2113",
+        "Proprietario": "LEOPOLDO COSTA B. CAHU",
+        "Quadra": "242",
+        "Lote": "183"
+    },
+    {
+        "WKT": "POINT (-34.811089707588216 -7.152867899418999)",
+        "Nº da Casa": "2111",
+        "Proprietario": "MARCOS ANTÔNIO LEITE RAMALHO",
+        "Quadra": "242",
+        "Lote": "198"
+    },
+    {
+        "WKT": "POINT (-34.81122163160649 -7.15287141936159)",
+        "Nº da Casa": "2109",
+        "Proprietario": "FRANCISCO DE A. C. ARAUJO -242-0213",
+        "Quadra": "242",
+        "Lote": "213"
+    },
+    {
+        "WKT": "POINT (-34.81135970328463 -7.152876079766219)",
+        "Nº da Casa": "2107",
+        "Proprietario": "ELIAS MADRUGA DE OLIVEIRA LIMA",
+        "Quadra": "242",
+        "Lote": "228"
+    },
+    {
+        "WKT": "POINT (-34.81149714730759 -7.152881520045938)",
+        "Nº da Casa": "2105",
+        "Proprietario": "ELIAS MADRUGA DE OLIVEIRA LIMA",
+        "Quadra": "242",
+        "Lote": "243"
+    },
+    {
+        "WKT": "POINT (-34.811638149005944 -7.15288639196967)",
+        "Nº da Casa": "2103",
+        "Proprietario": "CARLOS ANTÔNIO CLAUDINO DE PONTES",
+        "Quadra": "242",
+        "Lote": "258"
+    },
+    {
+        "WKT": "POINT (-34.811805414949944 -7.1528885011552585)",
+        "Nº da Casa": "2101",
+        "Proprietario": "GUSTAVO SOARES FERNANDO",
+        "Quadra": "242",
+        "Lote": "280"
+    },
+    {
+        "WKT": "POINT (-34.81182132243786 -7.1525968165928955)",
+        "Nº da Casa": "1102",
+        "Proprietario": "LOURIVAL BATISTA CABRAL- 242-0362",
+        "Quadra": "242",
+        "Lote": "362"
+    },
+    {
+        "WKT": "POINT (-34.811649381605484 -7.152593510824259)",
+        "Nº da Casa": "1104",
+        "Proprietario": "HELTON MORAIS DE CARVAHO L-242-0377",
+        "Quadra": "242",
+        "Lote": "377"
+    },
+    {
+        "WKT": "POINT (-34.811508466495816 -7.1525881101210596)",
+        "Nº da Casa": "1106",
+        "Proprietario": "ROSSANA CAIAFFO CAVALCANTE GARCIA",
+        "Quadra": "242",
+        "Lote": "392"
+    },
+    {
+        "WKT": "POINT (-34.81136805246905 -7.152581903202885)",
+        "Nº da Casa": "1108",
+        "Proprietario": "BRUNA MARCELA NOBREGA B. LIMA",
+        "Quadra": "242",
+        "Lote": "407"
+    },
+    {
+        "WKT": "POINT (-34.811233859327224 -7.152578948012231)",
+        "Nº da Casa": "1110",
+        "Proprietario": "ALESSANDRA RODRIGUES RIBEIRO",
+        "Quadra": "242",
+        "Lote": "422"
+    },
+    {
+        "WKT": "POINT (-34.8111022418274 -7.152575674974185)",
+        "Nº da Casa": "1112",
+        "Proprietario": "ROBERTO NEY SANTOS BATISTA JÚNIOR",
+        "Quadra": "242",
+        "Lote": "437"
+    },
+    {
+        "WKT": "POINT (-34.81097112419931 -7.1525687475333175)",
+        "Nº da Casa": "1114",
+        "Proprietario": "WARWICK CAVALCANTE CARTAXO",
+        "Quadra": "242",
+        "Lote": "452"
+    },
+    {
+        "WKT": "POINT (-34.81083873934838 -7.152566187969925)",
+        "Nº da Casa": "1116",
+        "Proprietario": "JAKCYARA PONTES MESQUITA NUNES",
+        "Quadra": "242",
+        "Lote": "467"
+    },
+    {
+        "WKT": "POINT (-34.81069558148708 -7.152562799535517)",
+        "Nº da Casa": "1118",
+        "Proprietario": "VALBERTO GOMES DE L. JUNIOR",
+        "Quadra": "242",
+        "Lote": "482"
+    },
+    {
+        "WKT": "POINT (-34.810552464446204 -7.152556867948719)",
+        "Nº da Casa": "1120",
+        "Proprietario": "FABIO DE OLIVEIRA",
+        "Quadra": "242",
+        "Lote": "497"
+    },
+    {
+        "WKT": "POINT (-34.81040948465461 -7.152552336022253)",
+        "Nº da Casa": "1122",
+        "Proprietario": "DERLY PEREIRA BRASILEIRO",
+        "Quadra": "242",
+        "Lote": "512"
+    },
+    {
+        "WKT": "POINT (-34.81027834179618 -7.152548760113891)",
+        "Nº da Casa": "1124",
+        "Proprietario": "GILBERTO MAGALHÃES DA SILVA",
+        "Quadra": "242",
+        "Lote": "527"
+    },
+    {
+        "WKT": "POINT (-34.81013761272785 -7.1525442705468505)",
+        "Nº da Casa": "1126",
+        "Proprietario": "JOSE CARLOS FERREIRA",
+        "Quadra": "242",
+        "Lote": "542"
+    },
+    {
+        "WKT": "POINT (-34.81000850192123 -7.1525386126320845)",
+        "Nº da Casa": "1128",
+        "Proprietario": "WILLA PROCÓPIO R. ORTEGA 242-0557",
+        "Quadra": "242",
+        "Lote": "557"
+    },
+    {
+        "WKT": "POINT (-34.80988023351708 -7.152538919243826)",
+        "Nº da Casa": "1130",
+        "Proprietario": "STL CONSTRUTORA LTD 242-0572",
+        "Quadra": "242",
+        "Lote": "572"
+    },
+    {
+        "WKT": "POINT (-34.80974228754904 -7.152531085303524)",
+        "Nº da Casa": "1132",
+        "Proprietario": "DIEGO COSTA GALINDO",
+        "Quadra": "242",
+        "Lote": "587"
+    },
+    {
+        "WKT": "POINT (-34.809603957290776 -7.152528559922036)",
+        "Nº da Casa": "1134",
+        "Proprietario": "NEIDE PESSOA DE ARAÚJO",
+        "Quadra": "242",
+        "Lote": "602"
+    },
+    {
+        "WKT": "POINT (-34.80945272908915 -7.152521615130218)",
+        "Nº da Casa": "1136",
+        "Proprietario": "MÁRIO PEREIRA DA S NETO",
+        "Quadra": "242",
+        "Lote": "620"
+    },
+    {
+        "WKT": "POINT (-34.809576383641506 -7.15345924970365)",
+        "Nº da Casa": "3133",
+        "Proprietario": "CONCEIÇÃO DE MARIA Q F A",
+        "Quadra": "243",
+        "Lote": "19"
+    },
+    {
+        "WKT": "POINT (-34.809713575279005 -7.15346251400295)",
+        "Nº da Casa": "3131",
+        "Proprietario": "ELIVALDO FIRMINO DE LIMA",
+        "Quadra": "243",
+        "Lote": "34"
+    },
+    {
+        "WKT": "POINT (-34.809841135860815 -7.153464992823636)",
+        "Nº da Casa": "3129",
+        "Proprietario": "RENATO DA SILVA MENDONÇA",
+        "Quadra": "243",
+        "Lote": "49"
+    },
+    {
+        "WKT": "POINT (-34.80997855996465 -7.153470145184204)",
+        "Nº da Casa": "3127",
+        "Proprietario": "ESTEFÂNIA S BRAIA COELHO",
+        "Quadra": "243",
+        "Lote": "64"
+    },
+    {
+        "WKT": "POINT (-34.81011731512903 -7.153476200194859)",
+        "Nº da Casa": "3125",
+        "Proprietario": "SÔNIA MARIA DE PAULA MAIA",
+        "Quadra": "243",
+        "Lote": "79"
+    },
+    {
+        "WKT": "POINT (-34.810253782056755 -7.153480428513394)",
+        "Nº da Casa": "3123",
+        "Proprietario": "CLÉIA LUCIA SAMPAIO NUNES",
+        "Quadra": "243",
+        "Lote": "94"
+    },
+    {
+        "WKT": "POINT (-34.81038809250163 -7.15348515190481)",
+        "Nº da Casa": "3121",
+        "Proprietario": "JOSÉ BERNARDO CAMPELO",
+        "Quadra": "243",
+        "Lote": "109"
+    },
+    {
+        "WKT": "POINT (-34.81051948938398 -7.15348880624527)",
+        "Nº da Casa": "3119",
+        "Proprietario": "RENATO SÉRGIO S MELO",
+        "Quadra": "243",
+        "Lote": "124"
+    },
+    {
+        "WKT": "POINT (-34.81065601701348 -7.153493155449651)",
+        "Nº da Casa": "3117",
+        "Proprietario": "RENATO SÉRGIO S MELO-243-139/243124",
+        "Quadra": "243",
+        "Lote": "139"
+    },
+    {
+        "WKT": "POINT (-34.81079246746061 -7.153497911824854)",
+        "Nº da Casa": "3115",
+        "Proprietario": "ROBERTO NERY DANTAS",
+        "Quadra": "243",
+        "Lote": "154"
+    },
+    {
+        "WKT": "POINT (-34.810933516041125 -7.1535021528551965)",
+        "Nº da Casa": "3113",
+        "Proprietario": "ROBERTO N. DANTAS-243-169/ 243-154",
+        "Quadra": "243",
+        "Lote": "169"
+    },
+    {
+        "WKT": "POINT (-34.81106587202176 -7.153507083108461)",
+        "Nº da Casa": "3111",
+        "Proprietario": "ROBSON NERY DANTAS",
+        "Quadra": "243",
+        "Lote": "184"
+    },
+    {
+        "WKT": "POINT (-34.81119976001185 -7.153509821846972)",
+        "Nº da Casa": "3109",
+        "Proprietario": "ROBSON NERY DANTAS",
+        "Quadra": "243",
+        "Lote": "199"
+    },
+    {
+        "WKT": "POINT (-34.8113331895017 -7.153516846917895)",
+        "Nº da Casa": "3107",
+        "Proprietario": "GUTEMBERG DINIZ DE SOUZA",
+        "Quadra": "243",
+        "Lote": "214"
+    },
+    {
+        "WKT": "POINT (-34.811472461053675 -7.153520242141949)",
+        "Nº da Casa": "3105",
+        "Proprietario": "LUIS GOMES FRADE",
+        "Quadra": "243",
+        "Lote": "229"
+    },
+    {
+        "WKT": "POINT (-34.811613379593304 -7.1535256051691505)",
+        "Nº da Casa": "3103",
+        "Proprietario": "CARLOS MARXIMILIANO ALVES OLIVEIRA",
+        "Quadra": "243",
+        "Lote": "244"
+    },
+    {
+        "WKT": "POINT (-34.811789744686195 -7.153531110910116)",
+        "Nº da Casa": "3101",
+        "Proprietario": "FABIANO BARROS CABRAL- 243-0267",
+        "Quadra": "243",
+        "Lote": "267"
+    },
+    {
+        "WKT": "POINT (-34.8117985 -7.153246000000001)",
+        "Nº da Casa": "2102",
+        "Proprietario": "H. G. A. CONST E INCORPORAÇÕES LTDA",
+        "Quadra": "243",
+        "Lote": "349"
+    },
+    {
+        "WKT": "POINT (-34.811623683301626 -7.15324108473584)",
+        "Nº da Casa": "2104",
+        "Proprietario": "MICHAEL PRANTE 243-364",
+        "Quadra": "243",
+        "Lote": "364"
+    },
+    {
+        "WKT": "POINT (-34.81148958929619 -7.153235653010198)",
+        "Nº da Casa": "2106",
+        "Proprietario": "ALISSON VASCONCELOS DE BRITO",
+        "Quadra": "243",
+        "Lote": "379"
+    },
+    {
+        "WKT": "POINT (-34.811348502237514 -7.153230896197668)",
+        "Nº da Casa": "2108",
+        "Proprietario": "FERNANDO ROBERTO DE PAULA",
+        "Quadra": "243",
+        "Lote": "394"
+    },
+    {
+        "WKT": "POINT (-34.811211500000006 -7.153225999999999)",
+        "Nº da Casa": "2110",
+        "Proprietario": "THOMPSON LOPES DE OLIVEIRA",
+        "Quadra": "243",
+        "Lote": "409"
+    },
+    {
+        "WKT": "POINT (-34.81107742360625 -7.153219673379468)",
+        "Nº da Casa": "2112",
+        "Proprietario": "ALEX ALVES PEQUENO e/ou MARIA ANITA F. BATISTA PEQUENO",
+        "Quadra": "243",
+        "Lote": "424"
+    },
+    {
+        "WKT": "POINT (-34.81093742339254 -7.153217757556872)",
+        "Nº da Casa": "2114",
+        "Proprietario": "APSP - PARTICIPAÇÕES SOCIETARIAS EI",
+        "Quadra": "243",
+        "Lote": "439"
+    },
+    {
+        "WKT": "POINT (-34.81080342271287 -7.153210989575673)",
+        "Nº da Casa": "2116",
+        "Proprietario": "ANA MARIA CALIXTO MACÊDO",
+        "Quadra": "243",
+        "Lote": "454"
+    },
+    {
+        "WKT": "POINT (-34.81066653623851 -7.153208405480032)",
+        "Nº da Casa": "2118",
+        "Proprietario": "ERONALDO DE V MAIA -Q243 L469",
+        "Quadra": "243",
+        "Lote": "469"
+    },
+    {
+        "WKT": "POINT (-34.810532218687584 -7.153200572693394)",
+        "Nº da Casa": "2120",
+        "Proprietario": "JOSÉ CRISTIAN DA COSTA NEWTON",
+        "Quadra": "243",
+        "Lote": "484"
+    },
+    {
+        "WKT": "POINT (-34.8103969375282 -7.1531961264215225)",
+        "Nº da Casa": "2122",
+        "Proprietario": "CÉLIA CRISTINA ZAGO",
+        "Quadra": "243",
+        "Lote": "499"
+    },
+    {
+        "WKT": "POINT (-34.81025929625896 -7.153191141594853)",
+        "Nº da Casa": "2124",
+        "Proprietario": "FERNANDA B BESSA GRANJA",
+        "Quadra": "243",
+        "Lote": "514"
+    },
+    {
+        "WKT": "POINT (-34.8101235999949 -7.15318596844033)",
+        "Nº da Casa": "2126",
+        "Proprietario": "HÉLCIO GOMES BITTENCOURT",
+        "Quadra": "243",
+        "Lote": "529"
+    },
+    {
+        "WKT": "POINT (-34.809989369684466 -7.153181931227589)",
+        "Nº da Casa": "2128",
+        "Proprietario": "CLÁUDIO E S DE OLIVEIRA",
+        "Quadra": "243",
+        "Lote": "544"
+    },
+    {
+        "WKT": "POINT (-34.809853147540984 -7.1531757049180325)",
+        "Nº da Casa": "2130",
+        "Proprietario": "O MUNDO DAS ANTENAS LTDA -243-0559",
+        "Quadra": "243",
+        "Lote": "559"
+    },
+    {
+        "WKT": "POINT (-34.8097181750233 -7.153173126054061)",
+        "Nº da Casa": "2132",
+        "Proprietario": "IZABEL CRISTINA DA SILVA MOURA",
+        "Quadra": "243",
+        "Lote": "574"
+    },
+    {
+        "WKT": "POINT (-34.80958216622023 -7.153168123601411)",
+        "Nº da Casa": "2134",
+        "Proprietario": "MARIA JACKELINE VIEIRA",
+        "Quadra": "243",
+        "Lote": "589"
+    },
+    {
+        "WKT": "POINT (-34.80942638830029 -7.153293575701426)",
+        "Nº da Casa": "3135",
+        "Proprietario": "MARCEL JOSÉ GUIRELI",
+        "Quadra": "243",
+        "Lote": "607"
+    },
+    {
+        "WKT": "POINT (-34.809390563257274 -7.154045251421986)",
+        "Nº da Casa": "3136",
+        "Proprietario": "JOSÉ JÚLIO DE M COELHO",
+        "Quadra": "244",
+        "Lote": "19"
+    },
+    {
+        "WKT": "POINT (-34.80954700000001 -7.154192)",
+        "Nº da Casa": "4133",
+        "Proprietario": "JOSÉ CÂNDIDO MONTEIRO",
+        "Quadra": "244",
+        "Lote": "33"
+    },
+    {
+        "WKT": "POINT (-34.809692656343316 -7.154192664009737)",
+        "Nº da Casa": "4131",
+        "Proprietario": "ERETUZA M GOUVEIA SANTOS",
+        "Quadra": "244",
+        "Lote": "48"
+    },
+    {
+        "WKT": "POINT (-34.80983628413962 -7.154199499203919)",
+        "Nº da Casa": "4129",
+        "Proprietario": "MARIA DE FÁTIMA DELGADO LEAL",
+        "Quadra": "244",
+        "Lote": "63"
+    },
+    {
+        "WKT": "POINT (-34.80997264052806 -7.154206027313891)",
+        "Nº da Casa": "4127",
+        "Proprietario": "FABIANA SANTOS REZENDE",
+        "Quadra": "244",
+        "Lote": "78"
+    },
+    {
+        "WKT": "POINT (-34.810100588673286 -7.154210661148091)",
+        "Nº da Casa": "4125",
+        "Proprietario": "FABIANA SANTOS REZENDE",
+        "Quadra": "244",
+        "Lote": "93"
+    },
+    {
+        "WKT": "POINT (-34.810230146436446 -7.154213874230396)",
+        "Nº da Casa": "4123",
+        "Proprietario": "MARIA ELIZABETH DINIZ NÓBREGA",
+        "Quadra": "244",
+        "Lote": "108"
+    },
+    {
+        "WKT": "POINT (-34.81036365994587 -7.154219834941148)",
+        "Nº da Casa": "4121",
+        "Proprietario": "CARLOS ALBERTO DE SOUZA FILHO",
+        "Quadra": "244",
+        "Lote": "123"
+    },
+    {
+        "WKT": "POINT (-34.81050191179175 -7.154225327478589)",
+        "Nº da Casa": "4119",
+        "Proprietario": "MICHELLE BRASILEIRO SOUCY",
+        "Quadra": "244",
+        "Lote": "138"
+    },
+    {
+        "WKT": "POINT (-34.81064362361984 -7.154229268737691)",
+        "Nº da Casa": "4117",
+        "Proprietario": "GEORGE WANDERLEY PETRUCCI",
+        "Quadra": "244",
+        "Lote": "153"
+    },
+    {
+        "WKT": "POINT (-34.81077415584391 -7.154234977331093)",
+        "Nº da Casa": "4115",
+        "Proprietario": "HENIO ALVES e/ou NATALIA LOPES ALVES",
+        "Quadra": "244",
+        "Lote": "168"
+    },
+    {
+        "WKT": "POINT (-34.81090800860328 -7.154241817923679)",
+        "Nº da Casa": "4113",
+        "Proprietario": "MARCELO WANDERLEY M PAIVA",
+        "Quadra": "244",
+        "Lote": "183"
+    },
+    {
+        "WKT": "POINT (-34.811055320634324 -7.154247693135964)",
+        "Nº da Casa": "4111",
+        "Proprietario": "ANDRÉ LOUIS PORTO CHAVES",
+        "Quadra": "244",
+        "Lote": "198"
+    },
+    {
+        "WKT": "POINT (-34.81119163102701 -7.1542498812512445)",
+        "Nº da Casa": "4109",
+        "Proprietario": "ANDRÉ LOUIS PORTO CHAVES",
+        "Quadra": "244",
+        "Lote": "213"
+    },
+    {
+        "WKT": "POINT (-34.81131860781611 -7.154252299792585)",
+        "Nº da Casa": "4107",
+        "Proprietario": "AGOSTINHO HERMES DE MEDEIROS NETO",
+        "Quadra": "244",
+        "Lote": "228"
+    },
+    {
+        "WKT": "POINT (-34.811451000000005 -7.154259)",
+        "Nº da Casa": "4105",
+        "Proprietario": "LUIS ANTÔNIO CASTRO AMARAL",
+        "Quadra": "244",
+        "Lote": "243"
+    },
+    {
+        "WKT": "POINT (-34.811587494643184 -7.154263676540006)",
+        "Nº da Casa": "4103",
+        "Proprietario": "ALINE FERRAZ DE MOURA JÁCOME",
+        "Quadra": "244",
+        "Lote": "258"
+    },
+    {
+        "WKT": "POINT (-34.811763007914834 -7.154273487136638)",
+        "Nº da Casa": "4101",
+        "Proprietario": "ANDRÉ FERRAZ DE MOURA",
+        "Quadra": "244",
+        "Lote": "282"
+    },
+    {
+        "WKT": "POINT (-34.81177421212538 -7.153977967068784)",
+        "Nº da Casa": "3102",
+        "Proprietario": "GERALDO CAMILO NETO",
+        "Quadra": "244",
+        "Lote": "366"
+    },
+    {
+        "WKT": "POINT (-34.811607662827036 -7.153970157408208)",
+        "Nº da Casa": "3104",
+        "Proprietario": "RODRIGO MÁRCIO M PAIVA",
+        "Quadra": "244",
+        "Lote": "381"
+    },
+    {
+        "WKT": "POINT (-34.8114658251866 -7.153963798925904)",
+        "Nº da Casa": "3106",
+        "Proprietario": "FELIPE OLIVEIRA REIS – 244-0396",
+        "Quadra": "244",
+        "Lote": "396"
+    },
+    {
+        "WKT": "POINT (-34.811325802662545 -7.153962092320661)",
+        "Nº da Casa": "3108",
+        "Proprietario": "MARIA DE FÁTIMA DA CRUZ",
+        "Quadra": "244",
+        "Lote": "411"
+    },
+    {
+        "WKT": "POINT (-34.81119294430466 -7.153954120720582)",
+        "Nº da Casa": "3110",
+        "Proprietario": "TÂNIA BRAGA RAMOS",
+        "Quadra": "244",
+        "Lote": "426"
+    },
+    {
+        "WKT": "POINT (-34.81105573409421 -7.153950222958684)",
+        "Nº da Casa": "3112",
+        "Proprietario": "STEFFERSON PINHEIRO DINIZ",
+        "Quadra": "244",
+        "Lote": "441"
+    },
+    {
+        "WKT": "POINT (-34.810912579591864 -7.15394401621236)",
+        "Nº da Casa": "3114",
+        "Proprietario": "RADJANDEMONTES FRANCA DE LIMA",
+        "Quadra": "244",
+        "Lote": "456"
+    },
+    {
+        "WKT": "POINT (-34.81077810601286 -7.153939274914714)",
+        "Nº da Casa": "3116",
+        "Proprietario": "SILLAS DUARTE DE MELO e/ou TÁSSIO AUGUSTO DE LIMA M. D. MELO",
+        "Quadra": "244",
+        "Lote": "471"
+    },
+    {
+        "WKT": "POINT (-34.81064555834954 -7.1539363967616785)",
+        "Nº da Casa": "3118",
+        "Proprietario": "FABIANO ANGELO DE SOUZA SANTOS",
+        "Quadra": "244",
+        "Lote": "486"
+    },
+    {
+        "WKT": "POINT (-34.81050974169657 -7.153931347143186)",
+        "Nº da Casa": "3120",
+        "Proprietario": "DIOGENES ARAUJO LINS",
+        "Quadra": "244",
+        "Lote": "501"
+    },
+    {
+        "WKT": "POINT (-34.81036897068035 -7.153927044429382)",
+        "Nº da Casa": "3122",
+        "Proprietario": "GIOVANNI LOREIRO F. DE MENDONÇA",
+        "Quadra": "244",
+        "Lote": "516"
+    },
+    {
+        "WKT": "POINT (-34.810231927502464 -7.153918991854061)",
+        "Nº da Casa": "3124",
+        "Proprietario": "GÉNESIO DARIO PASSOA",
+        "Quadra": "244",
+        "Lote": "531"
+    },
+    {
+        "WKT": "POINT (-34.81009917574311 -7.15391705754096)",
+        "Nº da Casa": "3126",
+        "Proprietario": "GLAUCO DE GUSMÃO FILHO",
+        "Quadra": "244",
+        "Lote": "546"
+    },
+    {
+        "WKT": "POINT (-34.8099662203129 -7.153910054428082)",
+        "Nº da Casa": "3128",
+        "Proprietario": "GEOVANA RÉGIA R AMORIM",
+        "Quadra": "244",
+        "Lote": "561"
+    },
+    {
+        "WKT": "POINT (-34.809832500000006 -7.153904500000001)",
+        "Nº da Casa": "3130",
+        "Proprietario": "ONACIR CARNEIRO GUEDES",
+        "Quadra": "244",
+        "Lote": "576"
+    },
+    {
+        "WKT": "POINT (-34.809694257061636 -7.153900321054861)",
+        "Nº da Casa": "3132",
+        "Proprietario": "FLÁVIO LONDRES DA NÓBREGA",
+        "Quadra": "244",
+        "Lote": "591"
+    },
+    {
+        "WKT": "POINT (-34.80955493151724 -7.153895798274635)",
+        "Nº da Casa": "3134",
+        "Proprietario": "FRANCISCO DE A FERREIRA",
+        "Quadra": "244",
+        "Lote": "606"
+    },
+    {
+        "WKT": "POINT (-34.80937272678457 -7.154828905463322)",
+        "Nº da Casa": "5135",
+        "Proprietario": "MARIA GLÁUCIA GUSMÃO",
+        "Quadra": "245",
+        "Lote": "18"
+    },
+    {
+        "WKT": "POINT (-34.809529251324136 -7.154833695728054)",
+        "Nº da Casa": "5133",
+        "Proprietario": "GEORGIA A RAMOS AMORIM",
+        "Quadra": "245",
+        "Lote": "33"
+    },
+    {
+        "WKT": "POINT (-34.80966879519845 -7.15483847037483)",
+        "Nº da Casa": "5131",
+        "Proprietario": "LEOPOLDO GONDIM MEDEIROS",
+        "Quadra": "245",
+        "Lote": "48"
+    },
+    {
+        "WKT": "POINT (-34.80980365729519 -7.154846143157214)",
+        "Nº da Casa": "5129",
+        "Proprietario": "FELIPE DE LUCENA FALCÃO",
+        "Quadra": "245",
+        "Lote": "63"
+    },
+    {
+        "WKT": "POINT (-34.80994191978016 -7.154851915896126)",
+        "Nº da Casa": "5127",
+        "Proprietario": "ANA TEREZA DA S MACHADO e/ou JANILSON",
+        "Quadra": "245",
+        "Lote": "78"
+    },
+    {
+        "WKT": "POINT (-34.81008106022757 -7.154857370131885)",
+        "Nº da Casa": "5125",
+        "Proprietario": "JOSEMAR DOS SANTOS SILVA",
+        "Quadra": "245",
+        "Lote": "93"
+    },
+    {
+        "WKT": "POINT (-34.81021632189431 -7.154863187082048)",
+        "Nº da Casa": "5123",
+        "Proprietario": "MÔNICA NÓBREGA FIGUEIREDO",
+        "Quadra": "245",
+        "Lote": "108"
+    },
+    {
+        "WKT": "POINT (-34.81034597161433 -7.154866371868062)",
+        "Nº da Casa": "5121",
+        "Proprietario": "VLADEMIR ANTÔNIO COUSSEAU",
+        "Quadra": "245",
+        "Lote": "123"
+    },
+    {
+        "WKT": "POINT (-34.81047741655557 -7.154868762036755)",
+        "Nº da Casa": "5119",
+        "Proprietario": "JOSÉ JUVENCIO DE ALMEIDA FILHO",
+        "Quadra": "245",
+        "Lote": "138"
+    },
+    {
+        "WKT": "POINT (-34.81061175400621 -7.1548776458595515)",
+        "Nº da Casa": "5117",
+        "Proprietario": "FABRIZIO VITTORIO B. POLARI",
+        "Quadra": "245",
+        "Lote": "153"
+    },
+    {
+        "WKT": "POINT (-34.81074858680777 -7.154882140126343)",
+        "Nº da Casa": "5115",
+        "Proprietario": "ADRIANO R DE M PEREIRA",
+        "Quadra": "245",
+        "Lote": "168"
+    },
+    {
+        "WKT": "POINT (-34.810886656993766 -7.1548880419200644)",
+        "Nº da Casa": "5113",
+        "Proprietario": "CRISTINA ATALLA FERREIRA",
+        "Quadra": "245",
+        "Lote": "183"
+    },
+    {
+        "WKT": "POINT (-34.81102336140263 -7.154894447739392)",
+        "Nº da Casa": "5111",
+        "Proprietario": "LUCIANA C TRINDADE",
+        "Quadra": "245",
+        "Lote": "198"
+    },
+    {
+        "WKT": "POINT (-34.81115940493017 -7.154899260576602)",
+        "Nº da Casa": "5109",
+        "Proprietario": "MARCOS ANTÔNIO LEITE R JUNIOR",
+        "Quadra": "245",
+        "Lote": "213"
+    },
+    {
+        "WKT": "POINT (-34.81129171084126 -7.154905886844003)",
+        "Nº da Casa": "5107",
+        "Proprietario": "JOÃO RICARDO SALES ALVES",
+        "Quadra": "245",
+        "Lote": "228"
+    },
+    {
+        "WKT": "POINT (-34.81143581470184 -7.154910496215928)",
+        "Nº da Casa": "5105",
+        "Proprietario": "NELSON DE OLIVEIRA JUNIOR",
+        "Quadra": "245",
+        "Lote": "243"
+    },
+    {
+        "WKT": "POINT (-34.8115751293135 -7.154914910109455)",
+        "Nº da Casa": "5103",
+        "Proprietario": "ANDRE LUIS DE ALMEIDA RAMALHO",
+        "Quadra": "245",
+        "Lote": "258"
+    },
+    {
+        "WKT": "POINT (-34.81173540304487 -7.154917899305555)",
+        "Nº da Casa": "5101",
+        "Proprietario": "LEONARDO STEFANIS F LINS 245-0282",
+        "Quadra": "245",
+        "Lote": "282"
+    },
+    {
+        "WKT": "POINT (-34.81174808104974 -7.154627855490512)",
+        "Nº da Casa": "4102",
+        "Proprietario": "CONSTRUTORA VIGAMENTO LTDA-Q245L366",
+        "Quadra": "245",
+        "Lote": "366"
+    },
+    {
+        "WKT": "POINT (-34.8115844590369 -7.15462255932685)",
+        "Nº da Casa": "4104",
+        "Proprietario": "MÔNICA MORAES DE ANDRADE",
+        "Quadra": "245",
+        "Lote": "381"
+    },
+    {
+        "WKT": "POINT (-34.811439616716925 -7.15461915813077)",
+        "Nº da Casa": "4106",
+        "Proprietario": "JADER MACHADO DE LIRA",
+        "Quadra": "245",
+        "Lote": "396"
+    },
+    {
+        "WKT": "POINT (-34.81130153451226 -7.15461525137859)",
+        "Nº da Casa": "4108",
+        "Proprietario": "MANOEL GALDINO DA COSTA NETO",
+        "Quadra": "245",
+        "Lote": "411"
+    },
+    {
+        "WKT": "POINT (-34.811167469442736 -7.154605565840536)",
+        "Nº da Casa": "4110",
+        "Proprietario": "GRAZIELA Q GADELHA D SOUZA",
+        "Quadra": "245",
+        "Lote": "426"
+    },
+    {
+        "WKT": "POINT (-34.81103102789574 -7.154603100347745)",
+        "Nº da Casa": "4112",
+        "Proprietario": "ANETTE JEANNE SIMÕES DIAS",
+        "Quadra": "245",
+        "Lote": "441"
+    },
+    {
+        "WKT": "POINT (-34.81089574786101 -7.154597691854373)",
+        "Nº da Casa": "4114",
+        "Proprietario": "TELES SOUTO HENRIQUE",
+        "Quadra": "245",
+        "Lote": "456"
+    },
+    {
+        "WKT": "POINT (-34.810762584959306 -7.1545935949422965)",
+        "Nº da Casa": "4116",
+        "Proprietario": "LUIZA DE MORAIS E SILVA",
+        "Quadra": "245",
+        "Lote": "471"
+    },
+    {
+        "WKT": "POINT (-34.81062856361748 -7.154585059659373)",
+        "Nº da Casa": "4118",
+        "Proprietario": "ANDRÉ LUIS LUNA LEITE",
+        "Quadra": "245",
+        "Lote": "486"
+    },
+    {
+        "WKT": "POINT (-34.81049129139864 -7.154581753976932)",
+        "Nº da Casa": "4120",
+        "Proprietario": "SORAYA CAVALCANTE MANGUEIRA SERPA",
+        "Quadra": "245",
+        "Lote": "501"
+    },
+    {
+        "WKT": "POINT (-34.81035498193761 -7.154576542692938)",
+        "Nº da Casa": "4122",
+        "Proprietario": "ANDRE CUNHA PEREIRA DE OLIVEIRA",
+        "Quadra": "245",
+        "Lote": "516"
+    },
+    {
+        "WKT": "POINT (-34.810221480424275 -7.154571508937763)",
+        "Nº da Casa": "4124",
+        "Proprietario": "FELIPE SÁ BRASILEIRO",
+        "Quadra": "245",
+        "Lote": "531"
+    },
+    {
+        "WKT": "POINT (-34.810088389690996 -7.154568093754111)",
+        "Nº da Casa": "4126",
+        "Proprietario": "FERNANDO ANTÔNIO FONSECA DA SILVA",
+        "Quadra": "245",
+        "Lote": "546"
+    },
+    {
+        "WKT": "POINT (-34.80995089838622 -7.154561378941322)",
+        "Nº da Casa": "4128",
+        "Proprietario": "RODRIGO LEITE DA COSTA 245-561",
+        "Quadra": "245",
+        "Lote": "561"
+    },
+    {
+        "WKT": "POINT (-34.80981425670499 -7.1545548212005095)",
+        "Nº da Casa": "4130",
+        "Proprietario": "MANOEL FRANCISCO MOREIRA",
+        "Quadra": "245",
+        "Lote": "576"
+    },
+    {
+        "WKT": "POINT (-34.80967702918963 -7.154551595194354)",
+        "Nº da Casa": "4132",
+        "Proprietario": "CLODOMILDO JESUS PACHECO",
+        "Quadra": "245",
+        "Lote": "591"
+    },
+    {
+        "WKT": "POINT (-34.80953942224534 -7.1545464866676936)",
+        "Nº da Casa": "4134",
+        "Proprietario": "ROBERTO MOURA MARTINS",
+        "Quadra": "245",
+        "Lote": "606"
+    },
+    {
+        "WKT": "POINT (-34.80938205622097 -7.154539081730692)",
+        "Nº da Casa": "4136",
+        "Proprietario": "FABIO DE ALBUQUERQUE CABRAL",
+        "Quadra": "245",
+        "Lote": "624"
+    },
+    {
+        "WKT": "POINT (-34.808145194945496 -7.155182134502714)",
+        "Nº da Casa": "5402",
+        "Proprietario": "SANDRA ALBUQUERQUE FARIAS Q246L984",
+        "Quadra": "246",
+        "Lote": "984"
+    },
+    {
+        "WKT": "POINT (-34.80828241404126 -7.155189410859058)",
+        "Nº da Casa": "5404",
+        "Proprietario": "PATRICIA VIEIRA DE ANDRADE",
+        "Quadra": "246",
+        "Lote": "999"
+    },
+    {
+        "WKT": "POINT (-34.808421186528285 -7.155189925339509)",
+        "Nº da Casa": "5406",
+        "Proprietario": "DENNYS CARNEIRO R DOS SANTO246-1014",
+        "Quadra": "246",
+        "Lote": "1014"
+    },
+    {
+        "WKT": "POINT (-34.80855289382902 -7.155192529705928)",
+        "Nº da Casa": "5408",
+        "Proprietario": "MYRIAN KARLA DA SILVA PALMEIRA ARAÚ",
+        "Quadra": "246",
+        "Lote": "1029"
+    },
+    {
+        "WKT": "POINT (-34.80801079017351 -7.155179068156859)",
+        "Nº da Casa": "5410",
+        "Proprietario": "ADRIANO ANSELMO DE LUCENA 1",
+        "Quadra": "246",
+        "Lote": "1044"
+    },
+    {
+        "WKT": "POINT (-34.80787338880939 -7.155172866819308)",
+        "Nº da Casa": "5412",
+        "Proprietario": "GERALDO AMORIM DE SOUSA",
+        "Quadra": "246",
+        "Lote": "1059"
+    },
+    {
+        "WKT": "POINT (-34.80773418175307 -7.155166802625545)",
+        "Nº da Casa": "5414",
+        "Proprietario": "ANDREZZA MARTINS DAS C. DE PAULA",
+        "Quadra": "246",
+        "Lote": "1074"
+    },
+    {
+        "WKT": "POINT (-34.80760173565447 -7.155163185470118)",
+        "Nº da Casa": "5416",
+        "Proprietario": "MARIA INÊS RODRIGUES DA SILVA",
+        "Quadra": "246",
+        "Lote": "1089"
+    },
+    {
+        "WKT": "POINT (-34.8074648022216 -7.155158540103522)",
+        "Nº da Casa": "5418",
+        "Proprietario": "MARCELLA PIMENTA DA CUNHA",
+        "Quadra": "246",
+        "Lote": "1104"
+    },
+    {
+        "WKT": "POINT (-34.807326331138896 -7.155152867791009)",
+        "Nº da Casa": "5420",
+        "Proprietario": "MANOEL FRANCISCO DE OLIVEIRA FILHO",
+        "Quadra": "246",
+        "Lote": "1119"
+    },
+    {
+        "WKT": "POINT (-34.807189794413766 -7.155148578726267)",
+        "Nº da Casa": "5422",
+        "Proprietario": "LUIZ FABIO T. PAIVA CAVALCANTI",
+        "Quadra": "246",
+        "Lote": "1134"
+    },
+    {
+        "WKT": "POINT (-34.80705552542284 -7.155144131399348)",
+        "Nº da Casa": "5424",
+        "Proprietario": "ALDEMAR SILVA TORRES",
+        "Quadra": "246",
+        "Lote": "1149"
+    },
+    {
+        "WKT": "POINT (-34.80692638895447 -7.155139715956369)",
+        "Nº da Casa": "5426",
+        "Proprietario": "MARCUS ANTONIUS DA SILVA LEITE",
+        "Quadra": "246",
+        "Lote": "1164"
+    },
+    {
+        "WKT": "POINT (-34.8067903072493 -7.1551350269719)",
+        "Nº da Casa": "5428",
+        "Proprietario": "JOSÉ VANDALBERTO DE CARVALHO",
+        "Quadra": "246",
+        "Lote": "1179"
+    },
+    {
+        "WKT": "POINT (-34.806651824040216 -7.155126855327242)",
+        "Nº da Casa": "5430",
+        "Proprietario": "FLÁVIA SILVA PIMENTA FERNANDES",
+        "Quadra": "246",
+        "Lote": "1194"
+    },
+    {
+        "WKT": "POINT (-34.806515896285404 -7.155124375398319)",
+        "Nº da Casa": "5432",
+        "Proprietario": "CRISTIANO CARNEIRO GAMA",
+        "Quadra": "246",
+        "Lote": "1209"
+    },
+    {
+        "WKT": "POINT (-34.80637629432764 -7.155120081485137)",
+        "Nº da Casa": "5434",
+        "Proprietario": "FRANCISCO L DE MEDEIROS",
+        "Quadra": "246",
+        "Lote": "1224"
+    },
+    {
+        "WKT": "POINT (-34.80624031100989 -7.155117063959743)",
+        "Nº da Casa": "5436",
+        "Proprietario": "LEONARDO GRISI GUESES",
+        "Quadra": "246",
+        "Lote": "1239"
+    },
+    {
+        "WKT": "POINT (-34.80610643295019 -7.155109629118774)",
+        "Nº da Casa": "5438",
+        "Proprietario": "ISABEL RANGEL CORREIA",
+        "Quadra": "246",
+        "Lote": "1254"
+    },
+    {
+        "WKT": "POINT (-34.80597073390474 -7.155105357178612)",
+        "Nº da Casa": "5440",
+        "Proprietario": "DEMOSTENES PAREDES CUNHA LIMA",
+        "Quadra": "246",
+        "Lote": "1269"
+    },
+    {
+        "WKT": "POINT (-34.80583210104333 -7.155100809814072)",
+        "Nº da Casa": "5442",
+        "Proprietario": "JOÃO DEON DE FIGUEIREDO",
+        "Quadra": "246",
+        "Lote": "1284"
+    },
+    {
+        "WKT": "POINT (-34.805695016784384 -7.155095984519756)",
+        "Nº da Casa": "5444",
+        "Proprietario": "FÁBIO SOUZA",
+        "Quadra": "246",
+        "Lote": "1299"
+    },
+    {
+        "WKT": "POINT (-34.80556137625942 -7.1550915974091955)",
+        "Nº da Casa": "5446",
+        "Proprietario": "NEWTON DE ARAÚJO L FILHO",
+        "Quadra": "246",
+        "Lote": "1314"
+    },
+    {
+        "WKT": "POINT (-34.80722021957937 -7.154740839658687)",
+        "Nº da Casa": "5227",
+        "Proprietario": "JOÃO PEREIRA ALVES",
+        "Quadra": "247",
+        "Lote": "18"
+    },
+    {
+        "WKT": "POINT (-34.80737372601455 -7.154746536554852)",
+        "Nº da Casa": "5225",
+        "Proprietario": "JOÃO PEREIRA ALVES",
+        "Quadra": "247",
+        "Lote": "33"
+    },
+    {
+        "WKT": "POINT (-34.80750657815013 -7.154751538358462)",
+        "Nº da Casa": "5223",
+        "Proprietario": "FELIPE GIMENES NOGUEIRA",
+        "Quadra": "247",
+        "Lote": "48"
+    },
+    {
+        "WKT": "POINT (-34.80763873552665 -7.154759172149961)",
+        "Nº da Casa": "5221",
+        "Proprietario": "MARCOS ANTÔNIO FONSECA LIMA",
+        "Quadra": "247",
+        "Lote": "63"
+    },
+    {
+        "WKT": "POINT (-34.80777363250643 -7.154762883234488)",
+        "Nº da Casa": "5219",
+        "Proprietario": "EDILTON MENEZES SARMENTO",
+        "Quadra": "247",
+        "Lote": "78"
+    },
+    {
+        "WKT": "POINT (-34.807910718695155 -7.154766568853118)",
+        "Nº da Casa": "5217",
+        "Proprietario": "ALBERTO JORGE DA FRANCA PEREIRA",
+        "Quadra": "247",
+        "Lote": "93"
+    },
+    {
+        "WKT": "POINT (-34.80804945935125 -7.154772241322213)",
+        "Nº da Casa": "5215",
+        "Proprietario": "CARLA ROSSANA F NOGUEIRA BRAGA",
+        "Quadra": "247",
+        "Lote": "108"
+    },
+    {
+        "WKT": "POINT (-34.80818764843135 -7.15477748486843)",
+        "Nº da Casa": "5213",
+        "Proprietario": "JULIETA PENHA DA SILVA",
+        "Quadra": "247",
+        "Lote": "123"
+    },
+    {
+        "WKT": "POINT (-34.80832245042643 -7.1547806128458875)",
+        "Nº da Casa": "5211",
+        "Proprietario": "LUIZ CARLOS A. DE HOLANDA JUNIOR",
+        "Quadra": "247",
+        "Lote": "138"
+    },
+    {
+        "WKT": "POINT (-34.8084585888133 -7.154786225434621)",
+        "Nº da Casa": "5209",
+        "Proprietario": "FRANCISCO SALES R QUEIROZ",
+        "Quadra": "247",
+        "Lote": "153"
+    },
+    {
+        "WKT": "POINT (-34.808593112310035 -7.154792767572091)",
+        "Nº da Casa": "5207",
+        "Proprietario": "EDMILSON G DE OLIVEIRA",
+        "Quadra": "247",
+        "Lote": "168"
+    },
+    {
+        "WKT": "POINT (-34.808728510750214 -7.154796948189755)",
+        "Nº da Casa": "5205",
+        "Proprietario": "GENIEZER PEREIRA VENTURA FILHO",
+        "Quadra": "247",
+        "Lote": "183"
+    },
+    {
+        "WKT": "POINT (-34.80886316263664 -7.154802509262142)",
+        "Nº da Casa": "5203",
+        "Proprietario": "LUIZ CARLOS A. DE HOLANDA JUNIOR",
+        "Quadra": "247",
+        "Lote": "198"
+    },
+    {
+        "WKT": "POINT (-34.809016204722276 -7.1548050158987895)",
+        "Nº da Casa": "5201",
+        "Proprietario": "RODSON UCELLI JULIATO",
+        "Quadra": "247",
+        "Lote": "216"
+    },
+    {
+        "WKT": "POINT (-34.809022699042345 -7.15451752117403)",
+        "Nº da Casa": "4202",
+        "Proprietario": "ALEXANDRE JOSÉ C LUCENA",
+        "Quadra": "247",
+        "Lote": "294"
+    },
+    {
+        "WKT": "POINT (-34.80886706540753 -7.154509377315242)",
+        "Nº da Casa": "4204",
+        "Proprietario": "FERNANDO TAVARES DA SILVA",
+        "Quadra": "247",
+        "Lote": "309"
+    },
+    {
+        "WKT": "POINT (-34.80873516770636 -7.154506669252814)",
+        "Nº da Casa": "4206",
+        "Proprietario": "RAISSA DE CARVALHO GAMA BELTRÃO",
+        "Quadra": "247",
+        "Lote": "324"
+    },
+    {
+        "WKT": "POINT (-34.80860016696697 -7.154499332732732)",
+        "Nº da Casa": "4208",
+        "Proprietario": "DORIS SANDRA DE M FREITAS",
+        "Quadra": "247",
+        "Lote": "339"
+    },
+    {
+        "WKT": "POINT (-34.80846637646828 -7.154497293750371)",
+        "Nº da Casa": "4210",
+        "Proprietario": "FILIPE LAURITZEN QUEIROZ- 247-0354",
+        "Quadra": "247",
+        "Lote": "354"
+    },
+    {
+        "WKT": "POINT (-34.80833159954781 -7.15448878844738)",
+        "Nº da Casa": "4212",
+        "Proprietario": "ARTHUR CANTALICE e/ou GABRIELA QUEIROGA DANTAS-247-0364",
+        "Quadra": "247",
+        "Lote": "364"
+    },
+    {
+        "WKT": "POINT (-34.80819295675976 -7.154486592441294)",
+        "Nº da Casa": "4214",
+        "Proprietario": "ALINE KELLY R. SOARES DE OLIVEIRA",
+        "Quadra": "247",
+        "Lote": "384"
+    },
+    {
+        "WKT": "POINT (-34.80805436141397 -7.154481295650176)",
+        "Nº da Casa": "4216",
+        "Proprietario": "CLAUIRTON DE ALBUQUERQUE",
+        "Quadra": "247",
+        "Lote": "399"
+    },
+    {
+        "WKT": "POINT (-34.80791600874316 -7.154476798907103)",
+        "Nº da Casa": "4218",
+        "Proprietario": "MARIA FERNANDA F LOPES A COSTA",
+        "Quadra": "247",
+        "Lote": "414"
+    },
+    {
+        "WKT": "POINT (-34.80777893772893 -7.154471124542124)",
+        "Nº da Casa": "4220",
+        "Proprietario": "ALICE TOSCANO FRANCA PEREIRA",
+        "Quadra": "247",
+        "Lote": "429"
+    },
+    {
+        "WKT": "POINT (-34.807648243212824 -7.154466192346756)",
+        "Nº da Casa": "4222",
+        "Proprietario": "PAOLO LOMBARDI",
+        "Quadra": "247",
+        "Lote": "444"
+    },
+    {
+        "WKT": "POINT (-34.807516577480094 -7.154461821888031)",
+        "Nº da Casa": "4224",
+        "Proprietario": "CONSTRUTORA S VIEIRA EIRELI LTDA",
+        "Quadra": "247",
+        "Lote": "459"
+    },
+    {
+        "WKT": "POINT (-34.80738066505384 -7.154456662929018)",
+        "Nº da Casa": "4226",
+        "Proprietario": "JURANDIR C. VIANA DE ANDRADE",
+        "Quadra": "247",
+        "Lote": "474"
+    },
+    {
+        "WKT": "POINT (-34.8072295688001 -7.1544540863730175)",
+        "Nº da Casa": "4228",
+        "Proprietario": "VALBERTO COSME LIRA – 247-0492",
+        "Quadra": "247",
+        "Lote": "492"
+    },
+    {
+        "WKT": "POINT (-34.80724086012932 -7.1540803806783915)",
+        "Nº da Casa": "4227",
+        "Proprietario": "IVANILSON DE BRITO GALINDO",
+        "Quadra": "248",
+        "Lote": "18"
+    },
+    {
+        "WKT": "POINT (-34.80739549297639 -7.154088272012174)",
+        "Nº da Casa": "4225",
+        "Proprietario": "JOSÉ MARCOS MENDES ARAGÃO",
+        "Quadra": "248",
+        "Lote": "33"
+    },
+    {
+        "WKT": "POINT (-34.80753050712022 -7.154090673853845)",
+        "Nº da Casa": "4223",
+        "Proprietario": "NIVALDO LINS VILAR JUNIOR",
+        "Quadra": "248",
+        "Lote": "48"
+    },
+    {
+        "WKT": "POINT (-34.8076622779639 -7.154097442490229)",
+        "Nº da Casa": "4221",
+        "Proprietario": "RAFAEL DA SILVA MARÇAL-248/063",
+        "Quadra": "248",
+        "Lote": "63"
+    },
+    {
+        "WKT": "POINT (-34.80779380360065 -7.1541025417348605)",
+        "Nº da Casa": "4219",
+        "Proprietario": "VALKER V DE LACERDA",
+        "Quadra": "248",
+        "Lote": "78"
+    },
+    {
+        "WKT": "POINT (-34.80792980108321 -7.15410809551945)",
+        "Nº da Casa": "4217",
+        "Proprietario": "FREDERICO M DA N COUTINHO",
+        "Quadra": "248",
+        "Lote": "93"
+    },
+    {
+        "WKT": "POINT (-34.808070040655046 -7.154114759779813)",
+        "Nº da Casa": "4215",
+        "Proprietario": "FREDERICO M DA N COUTINHO",
+        "Quadra": "248",
+        "Lote": "108"
+    },
+    {
+        "WKT": "POINT (-34.80820676260842 -7.154120271716457)",
+        "Nº da Casa": "4213",
+        "Proprietario": "JÚLIO AURÉLIO M COUTINHO",
+        "Quadra": "248",
+        "Lote": "123"
+    },
+    {
+        "WKT": "POINT (-34.808342728049674 -7.154125246813614)",
+        "Nº da Casa": "4211",
+        "Proprietario": "RAUL GALVÃO CAVALCANTE",
+        "Quadra": "248",
+        "Lote": "138"
+    },
+    {
+        "WKT": "POINT (-34.80847865385387 -7.154130698839218)",
+        "Nº da Casa": "4209",
+        "Proprietario": "MARIA DOLORES S DOS SANTOS",
+        "Quadra": "248",
+        "Lote": "153"
+    },
+    {
+        "WKT": "POINT (-34.808616665689584 -7.154137027944697)",
+        "Nº da Casa": "4207",
+        "Proprietario": "JOSÉ RENIVAL SILVA",
+        "Quadra": "248",
+        "Lote": "168"
+    },
+    {
+        "WKT": "POINT (-34.80875261134279 -7.154141294690017)",
+        "Nº da Casa": "4205",
+        "Proprietario": "JOSÉ RENIVAL SILVA",
+        "Quadra": "248",
+        "Lote": "183"
+    },
+    {
+        "WKT": "POINT (-34.8088823675019 -7.154149635535309)",
+        "Nº da Casa": "4203",
+        "Proprietario": "ERICK OURIQUES THOMAZ DA SILVA",
+        "Quadra": "248",
+        "Lote": "198"
+    },
+    {
+        "WKT": "POINT (-34.809042658603914 -7.154011262170313)",
+        "Nº da Casa": "3202",
+        "Proprietario": "HJ CONST E EMPREEND LTDA",
+        "Quadra": "248",
+        "Lote": "216"
+    },
+    {
+        "WKT": "POINT (-34.80889140958634 -7.153856323206317)",
+        "Nº da Casa": "3204",
+        "Proprietario": "OTONIEL MACHADO DA SILVA",
+        "Quadra": "248",
+        "Lote": "336"
+    },
+    {
+        "WKT": "POINT (-34.80876536585978 -7.153851440469919)",
+        "Nº da Casa": "3206",
+        "Proprietario": "LUCIANA SCOTTI",
+        "Quadra": "248",
+        "Lote": "351"
+    },
+    {
+        "WKT": "POINT (-34.80862662372086 -7.153845898674719)",
+        "Nº da Casa": "3208",
+        "Proprietario": "ROSARIA DE FARTIMA DE F GOUVEIA",
+        "Quadra": "248",
+        "Lote": "366"
+    },
+    {
+        "WKT": "POINT (-34.80848835402746 -7.153840467798813)",
+        "Nº da Casa": "3210",
+        "Proprietario": "VANESSA DE ARAÚJO MENDONÇA",
+        "Quadra": "248",
+        "Lote": "381"
+    },
+    {
+        "WKT": "POINT (-34.80835279452886 -7.1538345731692825)",
+        "Nº da Casa": "3212",
+        "Proprietario": "MARIA LIDIA REZENDE FERNANDES",
+        "Quadra": "248",
+        "Lote": "396"
+    },
+    {
+        "WKT": "POINT (-34.80821507560756 -7.1538285133513355)",
+        "Nº da Casa": "3214",
+        "Proprietario": "MARCOS HEMÍLIO ALVES RIBEIRO",
+        "Quadra": "248",
+        "Lote": "411"
+    },
+    {
+        "WKT": "POINT (-34.80807645342156 -7.153823771370715)",
+        "Nº da Casa": "3216",
+        "Proprietario": "FLAVIA DAVI LIRA DE OLIVEIRA e/ou JOSINALDO LUCAS DE OLIVEIRA",
+        "Quadra": "248",
+        "Lote": "426"
+    },
+    {
+        "WKT": "POINT (-34.80793391648267 -7.153818351780134)",
+        "Nº da Casa": "3218",
+        "Proprietario": "ANTÔNIO KLÜPPEL NETO",
+        "Quadra": "248",
+        "Lote": "441"
+    },
+    {
+        "WKT": "POINT (-34.80779130569197 -7.153813541127829)",
+        "Nº da Casa": "3220",
+        "Proprietario": "ILDO VLADEMIR LAGO",
+        "Quadra": "248",
+        "Lote": "456"
+    },
+    {
+        "WKT": "POINT (-34.80766103889825 -7.153806679398537)",
+        "Nº da Casa": "3222",
+        "Proprietario": "PATRICIA MONTENEGRO MOURA HENRIQUES",
+        "Quadra": "248",
+        "Lote": "471"
+    },
+    {
+        "WKT": "POINT (-34.807536134437775 -7.153801916259984)",
+        "Nº da Casa": "3224",
+        "Proprietario": "ANDREW SOUZA DE LIMA",
+        "Quadra": "248",
+        "Lote": "486"
+    },
+    {
+        "WKT": "POINT (-34.807404839544176 -7.153795464051133)",
+        "Nº da Casa": "3226",
+        "Proprietario": "DULCINEIA DE FÁTIMA TEODORO",
+        "Quadra": "248",
+        "Lote": "501"
+    },
+    {
+        "WKT": "POINT (-34.80724954871779 -7.153792256130263)",
+        "Nº da Casa": "3228",
+        "Proprietario": "EMEIDE NÓBREGA DUARTE",
+        "Quadra": "248",
+        "Lote": "516"
+    },
+    {
+        "WKT": "POINT (-34.8072630620438 -7.153370575233704)",
+        "Nº da Casa": "3227",
+        "Proprietario": "SIOMARA REGINA C.DE LUCENA",
+        "Quadra": "249",
+        "Lote": "18"
+    },
+    {
+        "WKT": "POINT (-34.80742128780828 -7.15337561299028)",
+        "Nº da Casa": "3225",
+        "Proprietario": "ANDERSON ANDRADE DE ARAUJO e/aou MARINA TARGINO DE LUCENA CABRAL",
+        "Quadra": "249",
+        "Lote": "33"
+    },
+    {
+        "WKT": "POINT (-34.80755631655925 -7.1533807529088245)",
+        "Nº da Casa": "3223",
+        "Proprietario": "LÊDA MAURA TEIXEIRA LEITE",
+        "Quadra": "249",
+        "Lote": "48"
+    },
+    {
+        "WKT": "POINT (-34.807688034154026 -7.153386350491021)",
+        "Nº da Casa": "3221",
+        "Proprietario": "LOURIVAL BATISTA CABRAL -249-0063",
+        "Quadra": "249",
+        "Lote": "63"
+    },
+    {
+        "WKT": "POINT (-34.807820040920674 -7.153392699550264)",
+        "Nº da Casa": "3219",
+        "Proprietario": "LOURIVAL BATISTA CABRAL-249-0078",
+        "Quadra": "249",
+        "Lote": "78"
+    },
+    {
+        "WKT": "POINT (-34.80795978552832 -7.153397884866131)",
+        "Nº da Casa": "3217",
+        "Proprietario": "LOURIVAL BATISTA CABRAL 249-0093",
+        "Quadra": "249",
+        "Lote": "93"
+    },
+    {
+        "WKT": "POINT (-34.80809143994767 -7.153402626768047)",
+        "Nº da Casa": "3215",
+        "Proprietario": "DANIEL RODRIGUES DE LACERDA NUNES",
+        "Quadra": "249",
+        "Lote": "108"
+    },
+    {
+        "WKT": "POINT (-34.80822650379323 -7.15340757934556)",
+        "Nº da Casa": "3213",
+        "Proprietario": "CONSTRUIR INCORPORAÇÃO LTDA",
+        "Quadra": "249",
+        "Lote": "123"
+    },
+    {
+        "WKT": "POINT (-34.80836589928685 -7.153412128836312)",
+        "Nº da Casa": "3211",
+        "Proprietario": "ANNA CLÁUDIA DE S FARIAS",
+        "Quadra": "249",
+        "Lote": "138"
+    },
+    {
+        "WKT": "POINT (-34.808505675083325 -7.153417184944642)",
+        "Nº da Casa": "3209",
+        "Proprietario": "JOSÉ CRISPINIANO FEITOSA FILHO",
+        "Quadra": "249",
+        "Lote": "153"
+    },
+    {
+        "WKT": "POINT (-34.808641934914846 -7.153421130170317)",
+        "Nº da Casa": "3207",
+        "Proprietario": "ANDRÉ VITAL NAZIANZENO",
+        "Quadra": "249",
+        "Lote": "168"
+    },
+    {
+        "WKT": "POINT (-34.808776254765526 -7.153427474055674)",
+        "Nº da Casa": "3205",
+        "Proprietario": "VENÂNCIO T DE BRITO NETO",
+        "Quadra": "249",
+        "Lote": "183"
+    },
+    {
+        "WKT": "POINT (-34.80891233995186 -7.153429986762936)",
+        "Nº da Casa": "3203",
+        "Proprietario": "MARCEL JOSÉ GUIRELI",
+        "Quadra": "249",
+        "Lote": "198"
+    },
+    {
+        "WKT": "POINT (-34.80906944826125 -7.153273431243967)",
+        "Nº da Casa": "3201",
+        "Proprietario": "GERÁSIO PONTES DOS SANTOS",
+        "Quadra": "249",
+        "Lote": "286"
+    },
+    {
+        "WKT": "POINT (-34.8089184560905 -7.153144110801076)",
+        "Nº da Casa": "2202",
+        "Proprietario": "JOÃO SOARES DA COSTA NETO",
+        "Quadra": "249",
+        "Lote": "301"
+    },
+    {
+        "WKT": "POINT (-34.80878311730549 -7.153136406154761)",
+        "Nº da Casa": "2204",
+        "Proprietario": "GERALDEZ TOMAZ",
+        "Quadra": "249",
+        "Lote": "316"
+    },
+    {
+        "WKT": "POINT (-34.80864854809376 -7.153132891540461)",
+        "Nº da Casa": "2206",
+        "Proprietario": "NATALICIO LEMBECK",
+        "Quadra": "249",
+        "Lote": "331"
+    },
+    {
+        "WKT": "POINT (-34.80851531537454 -7.153128569454509)",
+        "Nº da Casa": "2208",
+        "Proprietario": "BARBARA AMÉLIA C. L. PEDROZA",
+        "Quadra": "249",
+        "Lote": "346"
+    },
+    {
+        "WKT": "POINT (-34.80837964760444 -7.153123009932808)",
+        "Nº da Casa": "2210",
+        "Proprietario": "PAULO SOARES DE MEDEIROS",
+        "Quadra": "249",
+        "Lote": "361"
+    },
+    {
+        "WKT": "POINT (-34.80824064979978 -7.153116536833073)",
+        "Nº da Casa": "2212",
+        "Proprietario": "MARIA DO SOCORRO SILVEIRA GOMES",
+        "Quadra": "249",
+        "Lote": "376"
+    },
+    {
+        "WKT": "POINT (-34.8081047154648 -7.153110087391786)",
+        "Nº da Casa": "2214",
+        "Proprietario": "ALEXANDRE JORGE DO AMARAL NOBREGA",
+        "Quadra": "249",
+        "Lote": "391"
+    },
+    {
+        "WKT": "POINT (-34.80796917155467 -7.153108650014112)",
+        "Nº da Casa": "2216",
+        "Proprietario": "IVANITA DE ALBUQUERQUE SIEBRA",
+        "Quadra": "249",
+        "Lote": "406"
+    },
+    {
+        "WKT": "POINT (-34.80783748100487 -7.153102362885219)",
+        "Nº da Casa": "2218",
+        "Proprietario": "MARIA LÚCIA B. B. GRANJA – 249-0421",
+        "Quadra": "249",
+        "Lote": "421"
+    },
+    {
+        "WKT": "POINT (-34.80770236008347 -7.153096948307166)",
+        "Nº da Casa": "2220",
+        "Proprietario": "LOURIVAL BATISTA CABRAL -249-0436",
+        "Quadra": "249",
+        "Lote": "436"
+    },
+    {
+        "WKT": "POINT (-34.807566387437205 -7.153091729117176)",
+        "Nº da Casa": "2222",
+        "Proprietario": "VALBER AZEVEDO MIRANDA CAVALCANTI",
+        "Quadra": "249",
+        "Lote": "451"
+    },
+    {
+        "WKT": "POINT (-34.807426867313914 -7.153086436702837)",
+        "Nº da Casa": "2224",
+        "Proprietario": "MAURICIO CARNEIRO SILVA",
+        "Quadra": "249",
+        "Lote": "466"
+    },
+    {
+        "WKT": "POINT (-34.80726628028351 -7.153080306372406)",
+        "Nº da Casa": "2226",
+        "Proprietario": "ANA TEREZA NOBREGA",
+        "Quadra": "249",
+        "Lote": "484"
+    },
+    {
+        "WKT": "POINT (-34.807289262501335 -7.15271947952791)",
+        "Nº da Casa": "2227",
+        "Proprietario": "ALUIZIO EDSON BUZZO – 250-0018",
+        "Quadra": "250",
+        "Lote": "18"
+    },
+    {
+        "WKT": "POINT (-34.80743792508768 -7.152723693799221)",
+        "Nº da Casa": "2225",
+        "Proprietario": "ALUIZIO E. BUZZO 250-0033/250-0018",
+        "Quadra": "250",
+        "Lote": "33"
+    },
+    {
+        "WKT": "POINT (-34.80757458267432 -7.152730512566222)",
+        "Nº da Casa": "2223",
+        "Proprietario": "ANADITE DOMICIANO MOURA",
+        "Quadra": "250",
+        "Lote": "48"
+    },
+    {
+        "WKT": "POINT (-34.807710707417044 -7.152735081891765)",
+        "Nº da Casa": "2221",
+        "Proprietario": "ANADITE DOMICIANO MOURA",
+        "Quadra": "250",
+        "Lote": "63"
+    },
+    {
+        "WKT": "POINT (-34.80784305812696 -7.15274091693709)",
+        "Nº da Casa": "2219",
+        "Proprietario": "MARCO ANTÔNIO VIESTI",
+        "Quadra": "250",
+        "Lote": "78"
+    },
+    {
+        "WKT": "POINT (-34.807979684354486 -7.152747542513286)",
+        "Nº da Casa": "2217",
+        "Proprietario": "LUÍS GUILHERME PONTE DE AZEVEDO",
+        "Quadra": "250",
+        "Lote": "93"
+    },
+    {
+        "WKT": "POINT (-34.80811695134608 -7.15274898978307)",
+        "Nº da Casa": "2215",
+        "Proprietario": "ANTONIETA M M DI PIACE",
+        "Quadra": "250",
+        "Lote": "108"
+    },
+    {
+        "WKT": "POINT (-34.808255613259675 -7.152754029465931)",
+        "Nº da Casa": "2213",
+        "Proprietario": "IVÔNIA DE LOURDES LINS",
+        "Quadra": "250",
+        "Lote": "123"
+    },
+    {
+        "WKT": "POINT (-34.80839124231421 -7.1527581706608565)",
+        "Nº da Casa": "2211",
+        "Proprietario": "ÁLVARO VITORINO PONTES JÚNIOR",
+        "Quadra": "250",
+        "Lote": "138"
+    },
+    {
+        "WKT": "POINT (-34.80852731107405 -7.152762758059393)",
+        "Nº da Casa": "2209",
+        "Proprietario": "REGINA CÉLIA GONÇALVES",
+        "Quadra": "250",
+        "Lote": "153"
+    },
+    {
+        "WKT": "POINT (-34.80865833389181 -7.152767834663259)",
+        "Nº da Casa": "2207",
+        "Proprietario": "REJANE VASCONCELOS SOARES 250-168",
+        "Quadra": "250",
+        "Lote": "168"
+    },
+    {
+        "WKT": "POINT (-34.808792571684684 -7.152771333510024)",
+        "Nº da Casa": "2205",
+        "Proprietario": "LUIS CARLOS A DA SILVA",
+        "Quadra": "250",
+        "Lote": "183"
+    },
+    {
+        "WKT": "POINT (-34.80893081121451 -7.1527757581230675)",
+        "Nº da Casa": "2203",
+        "Proprietario": "VALDIR PEREIRA DA SILVA",
+        "Quadra": "250",
+        "Lote": "198"
+    },
+    {
+        "WKT": "POINT (-34.809087216459446 -7.152781862484177)",
+        "Nº da Casa": "2201",
+        "Proprietario": "VALDIR PEREIRA DA SILVA JÚNIOR",
+        "Quadra": "250",
+        "Lote": "216"
+    },
+    {
+        "WKT": "POINT (-34.80909763889146 -7.152494473910488)",
+        "Nº da Casa": "1202",
+        "Proprietario": "ÁTILA BEZERRA TOLENTINO",
+        "Quadra": "250",
+        "Lote": "294"
+    },
+    {
+        "WKT": "POINT (-34.80894031440626 -7.152489210981219)",
+        "Nº da Casa": "1204",
+        "Proprietario": "ANTÔNIO JOSÉ BARBOSA e/ou  HELENA TTEIXEIRA DE LIMA BARBOSA e/ou SHARISY G. T.  DE LIMA BARBOSA",
+        "Quadra": "250",
+        "Lote": "309"
+    },
+    {
+        "WKT": "POINT (-34.80880496415879 -7.152486251167632)",
+        "Nº da Casa": "1206",
+        "Proprietario": "RANIERE FONSECA CLEMENTINO",
+        "Quadra": "250",
+        "Lote": "324"
+    },
+    {
+        "WKT": "POINT (-34.808672528918656 -7.152482765280762)",
+        "Nº da Casa": "1208",
+        "Proprietario": "EDES FRANCISCO LOCATELLI",
+        "Quadra": "250",
+        "Lote": "339"
+    },
+    {
+        "WKT": "POINT (-34.80853462853895 -7.152474978972928)",
+        "Nº da Casa": "1210",
+        "Proprietario": "WILLAMS SILVÉRIO COSTA",
+        "Quadra": "250",
+        "Lote": "354"
+    },
+    {
+        "WKT": "POINT (-34.808395774016354 -7.152470444302504)",
+        "Nº da Casa": "1212",
+        "Proprietario": "ARNALDO FORGAS JÚNIOR",
+        "Quadra": "250",
+        "Lote": "364"
+    },
+    {
+        "WKT": "POINT (-34.80826122339807 -7.152467545677266)",
+        "Nº da Casa": "1214",
+        "Proprietario": "ALESSANDRA RODRIGUES GOMES",
+        "Quadra": "250",
+        "Lote": "384"
+    },
+    {
+        "WKT": "POINT (-34.80812688624278 -7.152462722134017)",
+        "Nº da Casa": "1216",
+        "Proprietario": "DANILLO CONSERVA ARRUDA e/ou PRISCILLA MACHADO ARRUDA",
+        "Quadra": "250",
+        "Lote": "399"
+    },
+    {
+        "WKT": "POINT (-34.807991072749196 -7.152457532293817)",
+        "Nº da Casa": "1218",
+        "Proprietario": "ANTONIO LACERDA NETO e/ou ISABELLA LACERDA",
+        "Quadra": "250",
+        "Lote": "414"
+    },
+    {
+        "WKT": "POINT (-34.80785529702507 -7.1524535788240815)",
+        "Nº da Casa": "1220",
+        "Proprietario": "TARCÍSIO OSTERNE CARNEIRO",
+        "Quadra": "250",
+        "Lote": "429"
+    },
+    {
+        "WKT": "POINT (-34.80771902520534 -7.152448612353608)",
+        "Nº da Casa": "1222",
+        "Proprietario": "PAULINO BRAGA J. LEITE",
+        "Quadra": "250",
+        "Lote": "444"
+    },
+    {
+        "WKT": "POINT (-34.8075832840745 -7.152443598175596)",
+        "Nº da Casa": "1224",
+        "Proprietario": "FRANCISCO AUGUSTO BARBOSA",
+        "Quadra": "250",
+        "Lote": "459"
+    },
+    {
+        "WKT": "POINT (-34.80745027789079 -7.152441029804243)",
+        "Nº da Casa": "1226",
+        "Proprietario": "THIAGO LEITE FERREIRA",
+        "Quadra": "250",
+        "Lote": "474"
+    },
+    {
+        "WKT": "POINT (-34.807297805470505 -7.152435752449478)",
+        "Nº da Casa": "1228",
+        "Proprietario": "RICARDO CÉSAR DA NÓBREGA",
+        "Quadra": "250",
+        "Lote": "492"
+    },
+    {
+        "WKT": "POINT (-34.805532458146864 -7.152663711752032)",
+        "Nº da Casa": "2321",
+        "Proprietario": "VALMIR VITORIANO PEREIRA FILHO",
+        "Quadra": "253",
+        "Lote": "24"
+    },
+    {
+        "WKT": "POINT (-34.80572361587175 -7.152668734832381)",
+        "Nº da Casa": "2319",
+        "Proprietario": "JOÃO PEIXOTO NETO",
+        "Quadra": "253",
+        "Lote": "39"
+    },
+    {
+        "WKT": "POINT (-34.80587145958106 -7.152674740994122)",
+        "Nº da Casa": "2317",
+        "Proprietario": "JAMERSON ABILIO DE SOUZA",
+        "Quadra": "253",
+        "Lote": "54"
+    },
+    {
+        "WKT": "POINT (-34.80600287118463 -7.152676093120883)",
+        "Nº da Casa": "2315",
+        "Proprietario": "TARCÍSIO DE ALMEIDA LIRA",
+        "Quadra": "253",
+        "Lote": "69"
+    },
+    {
+        "WKT": "POINT (-34.8061358663746 -7.152682431853082)",
+        "Nº da Casa": "2313",
+        "Proprietario": "MARIA JOSÉ G DE OLIVEIRA",
+        "Quadra": "253",
+        "Lote": "84"
+    },
+    {
+        "WKT": "POINT (-34.806276348945495 -7.152685638318269)",
+        "Nº da Casa": "2311",
+        "Proprietario": "ENZO DE AZEVEDO MACIEL",
+        "Quadra": "253",
+        "Lote": "99"
+    },
+    {
+        "WKT": "POINT (-34.80641421330981 -7.152690366346342)",
+        "Nº da Casa": "2309",
+        "Proprietario": "OTÍLIO CIRAULO NETO",
+        "Quadra": "253",
+        "Lote": "114"
+    },
+    {
+        "WKT": "POINT (-34.806548192227424 -7.1526957628415015)",
+        "Nº da Casa": "2307",
+        "Proprietario": "AYRTON LINS FALCÃO FILHO",
+        "Quadra": "253",
+        "Lote": "129"
+    },
+    {
+        "WKT": "POINT (-34.806686461285004 -7.152696939593631)",
+        "Nº da Casa": "2305",
+        "Proprietario": "FRANCISCO DAS CHAGAS SARMENTO",
+        "Quadra": "253",
+        "Lote": "144"
+    },
+    {
+        "WKT": "POINT (-34.8068258012365 -7.152700594385612)",
+        "Nº da Casa": "2303",
+        "Proprietario": "FABRÍCIO MONTENEGRO DE MORAIS",
+        "Quadra": "253",
+        "Lote": "159"
+    },
+    {
+        "WKT": "POINT (-34.807003435895325 -7.15270707856221)",
+        "Nº da Casa": "2301",
+        "Proprietario": "IONE STEFANIS FARIAS LINS",
+        "Quadra": "253",
+        "Lote": "182"
+    },
+    {
+        "WKT": "POINT (-34.80701976923927 -7.152419912653143)",
+        "Nº da Casa": "1302",
+        "Proprietario": "MATTHIAS JUFER",
+        "Quadra": "253",
+        "Lote": "265"
+    },
+    {
+        "WKT": "POINT (-34.80683573462541 -7.152414756432052)",
+        "Nº da Casa": "1304",
+        "Proprietario": "MATTHIAS JUFER",
+        "Quadra": "253",
+        "Lote": "280"
+    },
+    {
+        "WKT": "POINT (-34.806691201758774 -7.152408078191835)",
+        "Nº da Casa": "1306",
+        "Proprietario": "ANA AMÉLIA ANDRADE A C TROCOLLI",
+        "Quadra": "253",
+        "Lote": "295"
+    },
+    {
+        "WKT": "POINT (-34.806556509009 -7.152404538538536)",
+        "Nº da Casa": "1308",
+        "Proprietario": "CRISTIANO S DE OLIVEIRA",
+        "Quadra": "253",
+        "Lote": "310"
+    },
+    {
+        "WKT": "POINT (-34.806420137906635 -7.152404033528151)",
+        "Nº da Casa": "1310",
+        "Proprietario": "MARIA MÔNICA L ALVES",
+        "Quadra": "253",
+        "Lote": "325"
+    },
+    {
+        "WKT": "POINT (-34.806285072892685 -7.1523978954489555)",
+        "Nº da Casa": "1312",
+        "Proprietario": "MÔNICA MARIA T CUNHA",
+        "Quadra": "253",
+        "Lote": "339"
+    },
+    {
+        "WKT": "POINT (-34.80614953183237 -7.152392264631811)",
+        "Nº da Casa": "1314",
+        "Proprietario": "GEORGE CUNHA NETO",
+        "Quadra": "253",
+        "Lote": "355"
+    },
+    {
+        "WKT": "POINT (-34.806013634850196 -7.152388921241195)",
+        "Nº da Casa": "1316",
+        "Proprietario": "CLODOALDO BELTRÃO BEZERRA DE MELO",
+        "Quadra": "253",
+        "Lote": "370"
+    },
+    {
+        "WKT": "POINT (-34.80588053973919 -7.152384763312369)",
+        "Nº da Casa": "1318",
+        "Proprietario": "FLÁVIO JOSÉ P DA ROCHA",
+        "Quadra": "253",
+        "Lote": "385"
+    },
+    {
+        "WKT": "POINT (-34.80573622136169 -7.152378752997002)",
+        "Nº da Casa": "1320",
+        "Proprietario": "GEORGE CUNHA",
+        "Quadra": "253",
+        "Lote": "400"
+    },
+    {
+        "WKT": "POINT (-34.805546307634835 -7.152375462058354)",
+        "Nº da Casa": "1322",
+        "Proprietario": "ANDERSON WANDERLEY DA SILVA VIANA",
+        "Quadra": "253",
+        "Lote": "423"
+    },
+    {
+        "WKT": "POINT (-34.80552680404819 -7.153309237204819)",
+        "Nº da Casa": "3321",
+        "Proprietario": "ANTÔNIO BAHIA C L JÚNIOR",
+        "Quadra": "254",
+        "Lote": "23"
+    },
+    {
+        "WKT": "POINT (-34.80570972360835 -7.153313764756229)",
+        "Nº da Casa": "3319",
+        "Proprietario": "WALQUÍRIA G DOS SANTOS",
+        "Quadra": "254",
+        "Lote": "38"
+    },
+    {
+        "WKT": "POINT (-34.8058501379651 -7.153321054994596)",
+        "Nº da Casa": "3317",
+        "Proprietario": "GERD BRUNO DA ROCHA",
+        "Quadra": "254",
+        "Lote": "53"
+    },
+    {
+        "WKT": "POINT (-34.8059840915668 -7.153323812605415)",
+        "Nº da Casa": "3315",
+        "Proprietario": "DANIEL WORTMANN e/ou OLDENA C PEREIRA DE MELO e SERGIO LEAL WORTMANN JUNIOR",
+        "Quadra": "254",
+        "Lote": "68"
+    },
+    {
+        "WKT": "POINT (-34.80612076637108 -7.1533284896106615)",
+        "Nº da Casa": "3313",
+        "Proprietario": "JONAS CAVALCANTE DE SOUZA",
+        "Quadra": "254",
+        "Lote": "83"
+    },
+    {
+        "WKT": "POINT (-34.806258784828565 -7.15333311009634)",
+        "Nº da Casa": "3311",
+        "Proprietario": "SHEILA MARIA FERREIRA DA SILVA",
+        "Quadra": "254",
+        "Lote": "98"
+    },
+    {
+        "WKT": "POINT (-34.80639177879134 -7.153338934625619)",
+        "Nº da Casa": "3309",
+        "Proprietario": "CASSIANO RIBEIRO C. NETO",
+        "Quadra": "254",
+        "Lote": "113"
+    },
+    {
+        "WKT": "POINT (-34.80652468073009 -7.153342807229293)",
+        "Nº da Casa": "3307",
+        "Proprietario": "RICARDO SERVULO FONSECA DA COSTA",
+        "Quadra": "254",
+        "Lote": "128"
+    },
+    {
+        "WKT": "POINT (-34.8066601362148 -7.153348054136651)",
+        "Nº da Casa": "3305",
+        "Proprietario": "LEANDRO DOMICIANO MOURA",
+        "Quadra": "254",
+        "Lote": "143"
+    },
+    {
+        "WKT": "POINT (-34.80679638670541 -7.153354171145725)",
+        "Nº da Casa": "3303",
+        "Proprietario": "DEOCLÉCIO LOPES DE MIRANDA NETO",
+        "Quadra": "254",
+        "Lote": "158"
+    },
+    {
+        "WKT": "POINT (-34.80697462317948 -7.153358432572609)",
+        "Nº da Casa": "3301",
+        "Proprietario": "GILMÁSIO M DE MEDEIROS",
+        "Quadra": "254",
+        "Lote": "181"
+    },
+    {
+        "WKT": "POINT (-34.806987381628986 -7.153070402646549)",
+        "Nº da Casa": "2302",
+        "Proprietario": "ANDRÉ FERNANDES ARAÚJO",
+        "Quadra": "254",
+        "Lote": "264"
+    },
+    {
+        "WKT": "POINT (-34.80680575525114 -7.153063836428209)",
+        "Nº da Casa": "2304",
+        "Proprietario": "ISA MONIA VANESSA DE FREITAS PAIVA",
+        "Quadra": "254",
+        "Lote": "279"
+    },
+    {
+        "WKT": "POINT (-34.80667085910085 -7.153057132545851)",
+        "Nº da Casa": "2306",
+        "Proprietario": "JOSÉ MARTINHO C DE PONTES",
+        "Quadra": "254",
+        "Lote": "294"
+    },
+    {
+        "WKT": "POINT (-34.80653680369185 -7.1530555988375895)",
+        "Nº da Casa": "2308",
+        "Proprietario": "SEBASTIÃO FIRMINO DE SOUZA",
+        "Quadra": "254",
+        "Lote": "309"
+    },
+    {
+        "WKT": "POINT (-34.80640374183498 -7.153049684889788)",
+        "Nº da Casa": "2310",
+        "Proprietario": "IARA LUNA e/ou OSVALDO LUNA DE FRANCA NETO",
+        "Quadra": "254",
+        "Lote": "324"
+    },
+    {
+        "WKT": "POINT (-34.806266809699004 -7.153043207527756)",
+        "Nº da Casa": "2312",
+        "Proprietario": "SANDRO LUIZ SANTIAGO SILVA",
+        "Quadra": "254",
+        "Lote": "338"
+    },
+    {
+        "WKT": "POINT (-34.80612880102625 -7.153038709931462)",
+        "Nº da Casa": "2314",
+        "Proprietario": "CARMEN VALÉRIA DE M FERNANDES",
+        "Quadra": "254",
+        "Lote": "354"
+    },
+    {
+        "WKT": "POINT (-34.805993395662995 -7.153035602441047)",
+        "Nº da Casa": "2316",
+        "Proprietario": "LUCIANA MARIA S G COUTINHO",
+        "Quadra": "254",
+        "Lote": "369"
+    },
+    {
+        "WKT": "POINT (-34.80585962434712 -7.153030258612958)",
+        "Nº da Casa": "2318",
+        "Proprietario": "IVO CILENTO",
+        "Quadra": "254",
+        "Lote": "384"
+    },
+    {
+        "WKT": "POINT (-34.80571982008252 -7.153023062061665)",
+        "Nº da Casa": "2320",
+        "Proprietario": "RICARDO CÉZAR FONSECA PINTO",
+        "Quadra": "254",
+        "Lote": "399"
+    },
+    {
+        "WKT": "POINT (-34.80553529167792 -7.153017516907199)",
+        "Nº da Casa": "2322",
+        "Proprietario": "JOSÉ EYMARD MORAES MEDEIROA FILHO",
+        "Quadra": "254",
+        "Lote": "422"
+    },
+    {
+        "WKT": "POINT (-34.8054999185625 -7.154026943436252)",
+        "Nº da Casa": "4321",
+        "Proprietario": "DORALICE DE FREITAS LIRA",
+        "Quadra": "255",
+        "Lote": "23"
+    },
+    {
+        "WKT": "POINT (-34.805687692343085 -7.154033775570976)",
+        "Nº da Casa": "4319",
+        "Proprietario": "ISABELLE KARINA T. F.MELO – 255L038",
+        "Quadra": "255",
+        "Lote": "38"
+    },
+    {
+        "WKT": "POINT (-34.80582339069479 -7.154036679990949)",
+        "Nº da Casa": "4317",
+        "Proprietario": "JOÃO EUCLIDES FERNANDES BRAGA",
+        "Quadra": "255",
+        "Lote": "53"
+    },
+    {
+        "WKT": "POINT (-34.805962907499705 -7.1540413393259765)",
+        "Nº da Casa": "4315",
+        "Proprietario": "FRANCISCO WILSON ANDRADE DUARTE",
+        "Quadra": "255",
+        "Lote": "68"
+    },
+    {
+        "WKT": "POINT (-34.80609803003083 -7.154045261963892)",
+        "Nº da Casa": "4313",
+        "Proprietario": "GARIBALDI DANTAS FILHO",
+        "Quadra": "255",
+        "Lote": "83"
+    },
+    {
+        "WKT": "POINT (-34.80623249046146 -7.15404890145656)",
+        "Nº da Casa": "4311",
+        "Proprietario": "SEBASTIÃO A. DE FREITAS - 255 098",
+        "Quadra": "255",
+        "Lote": "98"
+    },
+    {
+        "WKT": "POINT (-34.806370321632826 -7.154053655691297)",
+        "Nº da Casa": "4309",
+        "Proprietario": "CÍCERA DE CARVALHO XAVIER REICHERT",
+        "Quadra": "255",
+        "Lote": "113"
+    },
+    {
+        "WKT": "POINT (-34.80650957376707 -7.1540562235950365)",
+        "Nº da Casa": "4307",
+        "Proprietario": "ROMÉRIO COELHO P DE MELO",
+        "Quadra": "255",
+        "Lote": "128"
+    },
+    {
+        "WKT": "POINT (-34.80664076357827 -7.154062819882392)",
+        "Nº da Casa": "4305",
+        "Proprietario": "ALINE BRUNO MEIRA DE SOUZA e/ou LEANDRO VITOR DE SOUZA",
+        "Quadra": "255",
+        "Lote": "143"
+    },
+    {
+        "WKT": "POINT (-34.806775058583185 -7.154065458369085)",
+        "Nº da Casa": "4303",
+        "Proprietario": "LINDOLFO SOBRINHO TRIGUEIRO",
+        "Quadra": "255",
+        "Lote": "158"
+    },
+    {
+        "WKT": "POINT (-34.80695565427487 -7.154068439320274)",
+        "Nº da Casa": "4301",
+        "Proprietario": "MARIA DO SOCORRO B.L.MONTENEGRO",
+        "Quadra": "255",
+        "Lote": "181"
+    },
+    {
+        "WKT": "POINT (-34.806968111899245 -7.153784233014862)",
+        "Nº da Casa": "3302",
+        "Proprietario": "HAMILTON CAVALCANTI ÚNIOR",
+        "Quadra": "255",
+        "Lote": "264"
+    },
+    {
+        "WKT": "POINT (-34.80678787084814 -7.153777669435257)",
+        "Nº da Casa": "3304",
+        "Proprietario": "ANTÔNIO LUIS XIMENES",
+        "Quadra": "255",
+        "Lote": "279"
+    },
+    {
+        "WKT": "POINT (-34.806649356103705 -7.153773833748033)",
+        "Nº da Casa": "3306",
+        "Proprietario": "ANTÔNIO LUIS XIMENES",
+        "Quadra": "255",
+        "Lote": "294"
+    },
+    {
+        "WKT": "POINT (-34.80651595357681 -7.1537672693387435)",
+        "Nº da Casa": "3308",
+        "Proprietario": "JOSÉ VITAL NETO e/ou ZELITA DA CRUZ VITAL",
+        "Quadra": "255",
+        "Lote": "309"
+    },
+    {
+        "WKT": "POINT (-34.80637966477809 -7.153763162417377)",
+        "Nº da Casa": "3310",
+        "Proprietario": "CARLOS EDUARDO M C DA CUNHA",
+        "Quadra": "255",
+        "Lote": "324"
+    },
+    {
+        "WKT": "POINT (-34.80624137392958 -7.153758095781796)",
+        "Nº da Casa": "3312",
+        "Proprietario": "FRANCISCO ELDIVAR PEIXOTO e/ou MARIA CRISTINA DOMINGUEZ FEIJOÓ e MARIA DAS GRAÇAS DE OLIVEIRA",
+        "Quadra": "255",
+        "Lote": "338"
+    },
+    {
+        "WKT": "POINT (-34.80610663065706 -7.1537524139770605)",
+        "Nº da Casa": "3314",
+        "Proprietario": "ANTONIO FERNANDES DO N. JUNIOR",
+        "Quadra": "255",
+        "Lote": "354"
+    },
+    {
+        "WKT": "POINT (-34.805972449756354 -7.153747608018898)",
+        "Nº da Casa": "3316",
+        "Proprietario": "KEYNES PORTO CARNEIRO",
+        "Quadra": "255",
+        "Lote": "369"
+    },
+    {
+        "WKT": "POINT (-34.80583481925979 -7.153743191340279)",
+        "Nº da Casa": "3318",
+        "Proprietario": "MANOLYS MARCELINO P. DE SILANS",
+        "Quadra": "255",
+        "Lote": "384"
+    },
+    {
+        "WKT": "POINT (-34.805697942377826 -7.1537366068563095)",
+        "Nº da Casa": "3320",
+        "Proprietario": "MOACIR MACHADO DE ARAUJO FILHO",
+        "Quadra": "255",
+        "Lote": "399"
+    },
+    {
+        "WKT": "POINT (-34.805505812905416 -7.153729788112147)",
+        "Nº da Casa": "3322",
+        "Proprietario": "MARIA DE F FREITAS",
+        "Quadra": "255",
+        "Lote": "422"
+    },
+    {
+        "WKT": "POINT (-34.805488374770285 -7.154675587595939)",
+        "Nº da Casa": "5321",
+        "Proprietario": "SILVANA MEIRE DE FREITAS FIGUEIREDO",
+        "Quadra": "256",
+        "Lote": "22"
+    },
+    {
+        "WKT": "POINT (-34.80566856848704 -7.154680540479704)",
+        "Nº da Casa": "5319",
+        "Proprietario": "MIRANDA CAMPOS S. IMOBILIARIAS",
+        "Quadra": "256",
+        "Lote": "37"
+    },
+    {
+        "WKT": "POINT (-34.80580215264453 -7.154687544584994)",
+        "Nº da Casa": "5317",
+        "Proprietario": "MARCELO DA CUNHA CARNEIRO BRAGA",
+        "Quadra": "256",
+        "Lote": "52"
+    },
+    {
+        "WKT": "POINT (-34.80593625658636 -7.15469131832552)",
+        "Nº da Casa": "5315",
+        "Proprietario": "ALISSON MONTEIRO SALVADOR – 256-067",
+        "Quadra": "256",
+        "Lote": "67"
+    },
+    {
+        "WKT": "POINT (-34.80607423011145 -7.154699525478377)",
+        "Nº da Casa": "5313",
+        "Proprietario": "EDUARDO H DE F PEREIRA",
+        "Quadra": "256",
+        "Lote": "82"
+    },
+    {
+        "WKT": "POINT (-34.80621266462773 -7.154701661667983)",
+        "Nº da Casa": "5311",
+        "Proprietario": "EDUARDO H DE F PEREIRA",
+        "Quadra": "256",
+        "Lote": "97"
+    },
+    {
+        "WKT": "POINT (-34.806351362715304 -7.1547075689346125)",
+        "Nº da Casa": "5309",
+        "Proprietario": "JOSÉ CARLOS LINS FALCÃO",
+        "Quadra": "256",
+        "Lote": "112"
+    },
+    {
+        "WKT": "POINT (-34.80648298938194 -7.154711972645004)",
+        "Nº da Casa": "5307",
+        "Proprietario": "JANIO TENORIO CORDEIRO",
+        "Quadra": "256",
+        "Lote": "127"
+    },
+    {
+        "WKT": "POINT (-34.8066109668679 -7.154717251571855)",
+        "Nº da Casa": "5305",
+        "Proprietario": "MARIA DE FÁTIMA COSTA DA SILVA",
+        "Quadra": "256",
+        "Lote": "142"
+    },
+    {
+        "WKT": "POINT (-34.806747009158975 -7.154722657789032)",
+        "Nº da Casa": "5303",
+        "Proprietario": "MANOEL CARNEIRO DA SILVA",
+        "Quadra": "256",
+        "Lote": "157"
+    },
+    {
+        "WKT": "POINT (-34.80693508615845 -7.15472810250599)",
+        "Nº da Casa": "5301",
+        "Proprietario": "FRANCISCO SERAPHICO DE N. NETO",
+        "Quadra": "256",
+        "Lote": "180"
+    },
+    {
+        "WKT": "POINT (-34.80694561345216 -7.154432092703378)",
+        "Nº da Casa": "4302",
+        "Proprietario": "SAULO JOSÉ PARENTE MIRANDA",
+        "Quadra": "256",
+        "Lote": "263"
+    },
+    {
+        "WKT": "POINT (-34.80676091370435 -7.154421375034268)",
+        "Nº da Casa": "4304",
+        "Proprietario": "ELIZA D. P. DE A. LIMA",
+        "Quadra": "256",
+        "Lote": "278"
+    },
+    {
+        "WKT": "POINT (-34.80662699813487 -7.154417512097093)",
+        "Nº da Casa": "4306",
+        "Proprietario": "ELIZA D. P. DE A. LIMA 256-293/278",
+        "Quadra": "256",
+        "Lote": "293"
+    },
+    {
+        "WKT": "POINT (-34.80649149082759 -7.154415947668833)",
+        "Nº da Casa": "4308",
+        "Proprietario": "FREDERIC BARBOTIN",
+        "Quadra": "256",
+        "Lote": "308"
+    },
+    {
+        "WKT": "POINT (-34.80635461997862 -7.154406305131834)",
+        "Nº da Casa": "4310",
+        "Proprietario": "BÁRBARA PEREIRA DE OLIVEIRA e/ou JOSÉ ERMANDO COSTA DE OLIVEIRA",
+        "Quadra": "256",
+        "Lote": "323"
+    },
+    {
+        "WKT": "POINT (-34.80621919175788 -7.154401776773459)",
+        "Nº da Casa": "4312",
+        "Proprietario": "LUCIANA KARLA GOMES DA SILVA",
+        "Quadra": "256",
+        "Lote": "338"
+    },
+    {
+        "WKT": "POINT (-34.80608325721785 -7.154401309711287)",
+        "Nº da Casa": "4314",
+        "Proprietario": "RAFAEL ASSIS MÁXIMO DE LIMA",
+        "Quadra": "256",
+        "Lote": "353"
+    },
+    {
+        "WKT": "POINT (-34.80594453922463 -7.1543925164082625)",
+        "Nº da Casa": "4316",
+        "Proprietario": "SELMA VASCONCELOS SUN",
+        "Quadra": "256",
+        "Lote": "368"
+    },
+    {
+        "WKT": "POINT (-34.80580750174117 -7.154388425998056)",
+        "Nº da Casa": "4318",
+        "Proprietario": "MAGNALDO JOSÉ NICOLAU DA COSTA",
+        "Quadra": "256",
+        "Lote": "383"
+    },
+    {
+        "WKT": "POINT (-34.805671631828226 -7.154382075393329)",
+        "Nº da Casa": "4320",
+        "Proprietario": "FRANCISCO ROBERVALDO SILVA",
+        "Quadra": "256",
+        "Lote": "398"
+    },
+    {
+        "WKT": "POINT (-34.80549082667986 -7.154378224018476)",
+        "Nº da Casa": "4322",
+        "Proprietario": "VICENTE RUBENS L DE ARAÚJO",
+        "Quadra": "256",
+        "Lote": "421"
+    },
+    {
+        "WKT": "POINT (-34.808999587972544 -7.155146915962757)",
+        "Nº da Casa": "6000",
+        "Proprietario": "Portaria",
+        "Quadra": "",
+        "Lote": ""
+    },
+    {
+        "WKT": "POINT (-34.808994229548354 -7.1552745108712426)",
+        "Nº da Casa": "6001",
+        "Proprietario": "Salão de Festas",
+        "Quadra": "",
+        "Lote": ""
+    },
+    {
+        "WKT": "POINT (-34.809725230038275 -7.155243311625651)",
+        "Nº da Casa": "6002",
+        "Proprietario": "Área Gourmet",
+        "Quadra": "",
+        "Lote": ""
+    },
+    {
+        "WKT": "POINT (-34.808831399674325 -7.1550991669778075)",
+        "Nº da Casa": "6003",
+        "Proprietario": "Administração",
+        "Quadra": "",
+        "Lote": ""
+    }
+,
+            // Continue adicionando todos os registros aqui
+        ];
+
+        // Função para extrair as coordenadas do WKT
+        function getCoordinatesFromWKT(wkt) {
+            const regex = /POINT \(([-\d.]+) ([-\d.]+)\)/;
+            const match = wkt.match(regex);
+            if (match) {
+                return `${match[2]}, ${match[1]}`;
+            }
+            return null;
+        }
+
+        // Função para popular as opções de destino
+        function populateSearchValues() {
+            const searchType = searchTypeSelect.value;
+            searchValueSelect.innerHTML = '';
+
+            const valuesSet = new Set();
+
+            houseData.forEach(house => {
+                let value;
+                if (searchType === 'Quadra-Lote') {
+                    if (house['Quadra'] && house['Lote']) {
+                        value = `${house['Quadra']}-${house['Lote']}`;
+                    } else {
+                        return; // Pula este registro se faltar Quadra ou Lote
+                    }
+                } else {
+                    value = house[searchType];
+                }
+                if (value && !valuesSet.has(value)) {
+                    valuesSet.add(value);
+                }
+            });
+
+            const sortedValues = Array.from(valuesSet);
+
+            // Ordenar em ordem crescente
+            sortedValues.sort((a, b) => {
+                return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+            });
+
+            sortedValues.forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = value;
+                searchValueSelect.appendChild(option);
+            });
+        }
+
+        // Função para gerar o QR Code
+        function generateQRCode(event) {
+            event.preventDefault();
+
+            const searchType = searchTypeSelect.value;
+            const searchValue = searchValueSelect.value;
+
+            let house;
+            if (searchType === 'Quadra-Lote') {
+                house = houseData.find(house => {
+                    return `${house['Quadra']}-${house['Lote']}` === searchValue;
+                });
+            } else {
+                house = houseData.find(house => house[searchType] === searchValue);
+            }
+
+            if (house) {
+                const destinationCoords = getCoordinatesFromWKT(house['WKT']);
+
+                if (!destinationCoords) {
+                    alert('Coordenadas inválidas para o destino selecionado.');
+                    return;
+                }
+
+                const googleMapsLink = `https://www.google.com/maps/dir/?api=1&origin=${portariaCoords}&destination=${destinationCoords}&travelmode=driving`;
+
+                document.getElementById('qrcode').innerHTML = '';
+
+                new QRCode(document.getElementById('qrcode'), {
+                    text: googleMapsLink,
+                    width: 256,
+                    height: 256,
+                });
+
+                proprietarioInfoDiv.textContent = `Nº da Casa: ${house['Nº da Casa']}, Proprietário: ${house['Proprietario']}, Quadra: ${house['Quadra']}, Lote: ${house['Lote']}`;
+
+                linkContainer.innerHTML = '';
+                const link = document.createElement('a');
+                link.href = googleMapsLink;
+                link.target = '_blank';
+                link.textContent = 'Clique aqui para abrir o trajeto no Google Maps';
+                linkContainer.appendChild(link);
+            } else {
+                alert('Destino não encontrado.');
+            }
+        }
+
+        // Eventos
+        searchTypeSelect.addEventListener('change', populateSearchValues);
+        qrForm.addEventListener('submit', generateQRCode);
+
+        // Inicialização
+        populateSearchValues();
+    </script>
 </body>
 </html>
