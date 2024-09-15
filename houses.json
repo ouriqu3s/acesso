@@ -1,0 +1,51 @@
+[
+    {
+        "WKT": "POINT (-34.80944116911525 -7.152811565247221)",
+        "Nº da Casa": "2135",
+        "Proprietario": "VALMIR VITORIANO PEREIRA – 242-0018",
+        "Quadra-Lote": "242-18",
+        "Quadra": "242",
+        "Lote": "18"
+    },
+    {
+        "WKT": "POINT (-34.809592731932554 -7.152818700674265)",
+        "Nº da Casa": "2133",
+        "Proprietario": "VALMIR VITORIANO PEREIRA",
+        "Quadra-Lote": "242-33",
+        "Quadra": "242",
+        "Lote": "33"
+    },
+    {
+        "WKT": "POINT (-34.80972527097546 -7.152819562665905)",
+        "Nº da Casa": "2131",
+        "Proprietario": "ERNANI ALEIXO A FILHO",
+        "Quadra-Lote": "242-48",
+        "Quadra": "242",
+        "Lote": "48"
+    },
+    {
+        "WKT": "POINT (-34.80986732607889 -7.152830396677109)",
+        "Nº da Casa": "2129",
+        "Proprietario": "RODRIGO MARQUES DA NÓBREGA",
+        "Quadra-Lote": "242-63",
+        "Quadra": "242",
+        "Lote": "63"
+    },
+    {
+        "WKT": "POINT (-34.809999949771104 -7.1528305928740235)",
+        "Nº da Casa": "2127",
+        "Proprietario": "CARLO GABRIEL PORTO BELLINI",
+        "Quadra-Lote": "242-78",
+        "Quadra": "242",
+        "Lote": "78"
+    },
+    {
+        "WKT": "POINT (-34.810142789220116 -7.152834440555056)",
+        "Nº da Casa": "2125",
+        "Proprietario": "FÁBIO RIVELINO DE M COSTA",
+        "Quadra-Lote": "242-93",
+        "Quadra": "242",
+        "Lote": "93"
+    }
+    // ... (Inclua todos os registros do seu array original aqui)
+]
