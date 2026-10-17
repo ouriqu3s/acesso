@@ -1,2402 +1,1660 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Localizador de Lotes</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f0f0f0;
-            color: #333333;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 500px;
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            padding: 25px;
-            text-align: center;
-            border: 1px solid #cccccc;
-        }
-
-        h2 {
-            color: #d2691e;
-            font-size: 1.8em;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        label {
-            font-weight: 600;
-            color: #333333;
-            margin-bottom: 5px;
-            display: inline-block;
-        }
-
-        select, input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #333333;
-            border-radius: 8px;
-            font-size: 16px;
-            color: #000000;
-            transition: all 0.3s;
-        }
-
-        input:focus, select:focus {
-            border-color: #d2691e;
-            box-shadow: 0 0 5px rgba(210, 105, 30, 0.5);
-            outline: none;
-        }
-
-        button {
-            width: 100%;
-            padding: 14px;
-            font-size: 16px;
-            color: #ffffff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 15px;
-        }
-
-        button#buscarButton {
-            background-color: #d2691e;
-        }
-
-        button#buscarButton:hover {
-            background-color: #a0522d;
-        }
-
-        button#mapsButton {
-            background-color: #28a745;
-        }
-
-        button#mapsButton:hover {
-            background-color: #218838;
-        }
-
-        #resultado {
-            margin-top: 25px;
-            font-size: 16px;
-            line-height: 1.5;
-            text-align: left;
-        }
-
-        .hidden {
-            display: none;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#13283f">
+  <meta name="description" content="Localize uma casa no Bougainville Residence Privê por número ou por quadra e lote.">
+  <title>Localizador de Casas | Bougainville Residence Privê</title>
+  <style>
+    :root { color-scheme:light; --navy:#13283f; --navy2:#1d3c56; --ink:#172c3e; --muted:#657583; --accent:#c57942; --accent-dark:#975523; --light:#f5f7f8; --stroke:#dae2e8; --white:#fff; }
+    * {box-sizing:border-box}
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--light); color:var(--ink); font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; -webkit-font-smoothing:antialiased; }
+    button, input {font:inherit}
+    a {color:inherit}
+    button {cursor:pointer}
+    :focus-visible {outline:3px solid #e6a26d;outline-offset:3px}
+    .hidden {display:none !important}
+    .site-header {position:relative; padding:34px 22px 95px; text-align:center; background:linear-gradient(138deg,#13283f 5%,#204159 80%); color:#fff; overflow:hidden}
+    .site-header:before {content:"";position:absolute;inset:0;pointer-events:none;opacity:.12;background:radial-gradient(circle at 0% 0%,#f6ad6f,transparent 35%),radial-gradient(circle at 90% 100%,#77b8d1,transparent 40%)}
+    .header-inner {position:relative;z-index:1;max-width:850px;margin:auto}
+    .brand {display:flex;gap:11px;align-items:center;justify-content:center;margin-bottom:20px}
+    .brand-mark {width:42px;height:42px;border:1px solid #ffffff66;border-radius:12px;display:grid;place-items:center;background:#ffffff1c}
+    .brand-name {text-align:left;font-weight:800;letter-spacing:.11em;font-size:.81rem;line-height:1.6}
+    .brand-name small {display:block;color:#d6c5b4;font-weight:600;letter-spacing:.19em;font-size:.64rem}
+    .site-header h1 {font-size:clamp(1.7rem,5vw,2.55rem);max-width:630px;margin:0 auto 12px;line-height:1.15;letter-spacing:-.04em}
+    .site-header p {font-size:1rem;line-height:1.6;margin:0;color:#cddce6}
+    .main {width:min(100% - 30px,660px);margin:-63px auto 40px;position:relative;z-index:2}
+    .panel {background:white;border:1px solid #edf0f2;box-shadow:0 14px 45px #0d25371c;border-radius:20px;overflow:hidden}
+    .panel-body {padding:clamp(20px,5vw,34px)}
+    .intro {font-size:.85rem;text-transform:uppercase;letter-spacing:.12em;font-weight:800;color:var(--accent-dark);margin:0 0 9px}
+    h2 {font-size:1.25rem;letter-spacing:-.025em;margin:0 0 8px}
+    .help {font-size:.92rem;color:var(--muted);line-height:1.5;margin:0 0 20px}
+    .switch {display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#eff3f5;padding:5px;border-radius:13px;margin:0 0 21px}
+    .switch button {border:0;background:transparent;color:#577084;min-height:48px;border-radius:10px;padding:7px 9px;font-weight:750;font-size:.89rem;transition:background .17s}
+    .switch button[aria-selected="true"] {background:white;color:var(--navy);box-shadow:0 2px 9px #182e451a}
+    .field {min-width:0}
+    .field label {display:block;color:#294055;font-size:.87rem;font-weight:750;margin-bottom:8px}
+    .field input {display:block;width:100%;height:54px;outline:none;border:1.5px solid #ccd8df;border-radius:11px;background:white;padding:0 16px;font-size:1.08rem;color:var(--ink);transition:.17s}
+    .field input:focus {border-color:var(--accent);box-shadow:0 0 0 4px #c5794224}
+    .fields-grid {display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .button-main {border:0;background:var(--accent);color:#fff;border-radius:12px;font-weight:800;min-height:53px;padding:13px 20px;display:flex;gap:9px;align-items:center;justify-content:center;text-decoration:none;transition:.16s}
+    .button-main:hover {background:var(--accent-dark)}
+    .form-search {margin-top:21px;width:100%}
+    .notice {color:var(--muted);font-size:.8rem;text-align:center;line-height:1.4;margin:16px 0 0}
+    .result {margin-top:18px;border-radius:17px;border:1px solid #dce7ec;background:white;box-shadow:0 5px 15px #112c3c0c;overflow:hidden}
+    .result-header {display:flex;gap:10px;align-items:center;padding:15px 19px;background:#eaf4ef;border-bottom:1px solid #d7ebe0;color:#225c46;font-size:.85rem;font-weight:800}
+    .result-content {padding:22px}
+    .house-big {margin:0 0 16px;letter-spacing:-.05em;font-size:clamp(2rem,9vw,3.3rem);font-weight:850}
+    .house-big small {display:block;font-size:.85rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:3px}
+    .result-info {display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+    .item-info {padding:13px 15px;border-radius:11px;background:#f3f6f8}
+    .item-info small {display:block;color:#627788;font-size:.75rem;font-weight:750;margin-bottom:6px}
+    .item-info strong {font-size:1.23rem;color:#1a3042}
+    .nav-actions {display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .map-link {grid-column:1 / -1;background:var(--navy)}
+    .map-link:hover {background:#244b68}
+    .secondary {min-height:43px;display:flex;justify-content:center;align-items:center;gap:7px;border:1px solid var(--stroke);border-radius:10px;background:white;color:#345063;font-size:.83rem;font-weight:750;padding:10px}
+    .secondary:hover {background:#f3f6f8}
+    .error {border-radius:13px;background:#fff4ed;border:1px solid #f2d9c2;padding:15px 17px;margin-top:17px;color:#80471c;font-size:.89rem;line-height:1.5}
+    .suggestions {margin:0;padding:5px;border:1px solid #d4e1e7;border-radius:11px;list-style:none;box-shadow:0 10px 20px #17334912}
+    .suggestions button {border:0;background:white;text-align:left;display:flex;width:100%;padding:10px 12px;border-radius:7px;align-items:center;justify-content:space-between;color:#26435a}
+    .suggestions button:hover,.suggestions button:focus {background:#f1f5f7}
+    .suggestions small {color:#798996}
+    .site-footer {color:#687985;text-align:center;font-size:.8rem;line-height:1.6;padding:0 20px 28px}
+    .site-footer a {font-weight:700;color:#3f6177;text-underline-offset:3px}
+    .icon {display:inline-block;flex:0 0 auto;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .kiosk {display:none}
+    body.kiosk-mode {background:#0f2335;min-height:100vh;color:white}
+    body.kiosk-mode .visitor {display:none}
+    body.kiosk-mode .kiosk {display:flex}
+    .kiosk {position:relative;min-height:100vh;min-height:100dvh;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 25px 30px;gap:22px;background:radial-gradient(ellipse at 10% 0%,#24475c 0,transparent 50%),linear-gradient(155deg,#0e2335,#17344a 65%,#0e2335)}
+    .kiosk-top {width:100%;max-width:850px;display:flex;justify-content:center;position:relative}
+    .kiosk-top .brand {margin:0}
+    .kiosk-tools {position:absolute;right:0;top:-6px;display:flex;gap:8px}
+    .tool-btn {background:#ffffff12;border:1px solid #ffffff2d;border-radius:9px;color:#e5edf2;padding:10px;min-width:40px;min-height:40px;display:grid;place-items:center}
+    .tool-btn:hover {background:#ffffff25}
+    .kiosk h1 {font-size:clamp(2rem,4.8vw,3.7rem);letter-spacing:-.04em;line-height:1.1;margin:0;max-width:900px}
+    .kiosk .subtitle {font-size:clamp(.95rem,2.1vw,1.3rem);color:#c4d7e1;line-height:1.5;max-width:650px;margin:0}
+    .qr-frame {width:min(54vmin,455px);min-width:min(74vw,265px);background:#fff;border-radius:21px;padding:17px;box-shadow:0 25px 70px #0005}
+    .qr-frame svg {width:100%;display:block;aspect-ratio:1;image-rendering:pixelated}
+    .qr-description {padding:12px 16px 0;color:#243e50;font-size:.83rem;font-weight:750;letter-spacing:.045em}
+    .kiosk-bottom {color:#b5cbd6;font-size:clamp(.89rem,1.6vw,1.05rem);max-width:620px;line-height:1.55}
+    .kiosk-bottom p {margin:0 0 5px}
+    .kiosk-bottom strong {color:white}
+    .kiosk-site {display:inline-block;text-decoration:none;color:#fff;word-break:break-word;font-size:.87rem;opacity:.87;margin-top:3px;text-underline-offset:4px}
+    .setup {background:white;color:var(--ink);border-radius:18px;padding:25px;width:min(100%,510px);text-align:left;box-shadow:0 18px 60px #0005}
+    .setup h2 {margin-bottom:10px}
+    .setup p {line-height:1.55;font-size:.9rem;color:var(--muted)}
+    .setup .field {margin:18px 0 12px}
+    .setup .field input {font-size:.89rem}
+    .setup .button-main {width:100%}
+    .kiosk-errors {color:#ffdbc8;font-weight:650;font-size:.86rem;min-height:1.2em}
+    dialog {border:0;border-radius:19px;max-width:min(94vw,540px);width:100%;padding:0;background:transparent}
+    dialog::backdrop {background:#04111ccc;backdrop-filter:blur(4px)}
+    .dialog-card {padding:24px;background:white;border-radius:19px;color:var(--ink)}
+    .dialog-top {display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .dialog-top h2 {margin:0}
+    .close-dialog {border:0;background:#eaf0f4;border-radius:8px;font-size:1.3rem;width:35px;height:35px}
+    .dialog-card p {font-size:.87rem;line-height:1.5;color:#677e8e}
+    .dialog-card .field {margin:18px 0}
+    .dialog-actions {display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .dialog-actions button {width:100%;font-size:.88rem}
+    .dialog-note {font-size:.8rem;line-height:1.5;color:#748492;margin-top:12px}
+    @media(max-width:520px) {
+      .site-header {padding-top:24px;padding-bottom:88px}
+      .brand-mark {width:38px;height:38px}
+      .site-header h1 {font-size:1.85rem}
+      .main {margin-top:-58px}
+      .panel-body {padding:22px 18px}
+      .switch button {font-size:.81rem}
+      .nav-actions {grid-template-columns:1fr 1fr}
+      .kiosk {gap:17px;padding:26px 16px 20px}
+      .kiosk-top {justify-content:flex-start;padding-right:92px}
+      .kiosk-top .brand-name {font-size:.68rem}
+      .kiosk h1 {font-size:1.85rem}
+      .qr-frame {width:min(70vw,40vh,430px)}
+    }
+    @media(max-height:740px) and (min-width:650px) {
+      .kiosk {gap:10px;padding:14px 25px}
+      .kiosk h1 {font-size:2rem}
+      .qr-frame {width:min(38vh,350px);padding:11px}
+      .qr-description {padding-top:7px;font-size:.68rem}
+      .kiosk .subtitle {font-size:.97rem}
+    }
+    @media(prefers-reduced-motion:reduce) {*{scroll-behavior:auto;transition:none !important}}
+  </style>
 </head>
 <body>
-
-<div class="container" role="main">
-    <h2>Localizador de Lotes</h2>
-    <div class="form-group">
-        <label for="searchType">Escolha o tipo de busca:</label>
-        <select id="searchType" onchange="toggleFields()" aria-label="Tipo de busca">
-            <option value="casa">Por Número da Casa</option>
-            <option value="quadraLote">Por Quadra e Lote</option>
-        </select>
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="icon-pin" viewBox="0 0 24 24"><path d="M20 10c0 5.5-8 11.5-8 11.5S4 15.5 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.6"/></symbol>
+  <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+  <symbol id="icon-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></symbol>
+  <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  <symbol id="icon-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
+  <symbol id="icon-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.5 1.5 0 0 0 .3 1.7l.1.1-2 2-.1-.1a1.5 1.5 0 0 0-1.7-.3l-1 .5V21h-3v-1.9l-1-.5a1.5 1.5 0 0 0-1.7.3l-.1.1-2-2 .1-.1a1.5 1.5 0 0 0 .3-1.7l-.5-1H5v-3h1.9l.5-1a1.5 1.5 0 0 0-.3-1.7L7 8.4l2-2 .1.1a1.5 1.5 0 0 0 1.7.3l1-.5V4h3v2.3l1 .5a1.5 1.5 0 0 0 1.7-.3l.1-.1 2 2-.1.1a1.5 1.5 0 0 0-.3 1.7l.5 1H21v3h-1.9Z"/></symbol>
+</svg>
+<div class="visitor" id="visitorView">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand"><span class="brand-mark"><svg class="icon" width="26" height="26" style="width:26px;height:26px"><use href="#icon-pin"/></svg></span><span class="brand-name">BOUGAINVILLE <small>RESIDENCE PRIVÊ</small></span></div>
+      <h1>Encontre a casa que você procura.</h1>
+      <p>Informe o número da casa ou consulte por quadra e lote.</p>
     </div>
-    
-    <div id="quadraLoteFields" class="form-group hidden">
-        <label for="quadraInput">Quadra:</label>
-        <input type="text" id="quadraInput" placeholder="Digite a quadra" aria-required="true">
-        <label for="loteInput">Lote:</label>
-        <input type="text" id="loteInput" placeholder="Digite o lote" aria-required="true">
-    </div>
-
-    <div id="casaFields" class="form-group">
-        <label for="casaInput">Número da Casa:</label>
-        <input type="text" id="casaInput" placeholder="Digite o número da casa" aria-required="true">
-    </div>
-
-    <button id="buscarButton" onclick="buscarLote()">Buscar</button>
-    
-    <div id="resultado" aria-live="polite"></div>
-    <button id="mapsButton" class="hidden" onclick="abrirGoogleMaps()" aria-label="Gerar trajeto para o Google Maps">Gerar Trajeto</button>
+  </header>
+  <main class="main">
+    <section class="panel" aria-label="Localizador">
+      <div class="panel-body">
+        <p class="intro">LOCALIZAÇÃO RÁPIDA</p>
+        <h2>Qual é o seu destino?</h2>
+        <p class="help">Encontre o endereço e abra a navegação no Google Maps.</p>
+        <div class="switch" role="tablist" aria-label="Tipo de pesquisa">
+          <button id="tabCasa" role="tab" type="button" aria-selected="true" aria-controls="byCasa">Número da casa</button>
+          <button id="tabQuadra" role="tab" type="button" aria-selected="false" aria-controls="byQuadra">Quadra e lote</button>
+        </div>
+        <form id="searchForm" autocomplete="off">
+          <div id="byCasa" role="tabpanel" aria-labelledby="tabCasa">
+            <div class="field"><label for="casaInput">Número da casa</label><input id="casaInput" inputmode="numeric" pattern="[0-9]*" placeholder="Ex.: 2135" maxlength="8" autocomplete="off"></div>
+          </div>
+          <div id="byQuadra" class="hidden" role="tabpanel" aria-labelledby="tabQuadra">
+            <div class="fields-grid">
+              <div class="field"><label for="quadraInput">Quadra</label><input id="quadraInput" inputmode="numeric" pattern="[0-9]*" placeholder="Ex.: 242" maxlength="8" autocomplete="off"></div>
+              <div class="field"><label for="loteInput">Lote</label><input id="loteInput" inputmode="numeric" pattern="[0-9]*" placeholder="Ex.: 18" maxlength="8" autocomplete="off"></div>
+            </div>
+          </div>
+          <button class="button-main form-search" type="submit"><svg class="icon"><use href="#icon-search"/></svg> Localizar endereço</button>
+        </form>
+        <p class="notice">A localização é aproximada. O trajeto depende das ruas reconhecidas pelo Google Maps.</p>
+      </div>
+    </section>
+    <div id="result" aria-live="polite" aria-atomic="true"></div>
+  </main>
+  <footer class="site-footer">Bougainville Residence Privê<br><a id="totemLink" href="?totem=1">Exibir QR Code no tablet</a></footer>
 </div>
-
+<section class="kiosk" id="kioskView" aria-label="QR Code de acesso ao localizador">
+  <div class="kiosk-top">
+    <div class="brand"><span class="brand-mark"><svg class="icon" style="width:26px;height:26px"><use href="#icon-pin"/></svg></span><span class="brand-name">BOUGAINVILLE <small>RESIDENCE PRIVÊ</small></span></div>
+    <div class="kiosk-tools">
+      <button id="fullScreenBtn" class="tool-btn" type="button" aria-label="Tela cheia" title="Tela cheia"><svg class="icon"><use href="#icon-expand"/></svg></button>
+      <button id="settingsBtn" class="tool-btn" type="button" aria-label="Configurar QR Code" title="Configurar endereço"><svg class="icon"><use href="#icon-settings"/></svg></button>
+    </div>
+  </div>
+  <h1>Seu destino está<br>na palma da mão.</h1>
+  <p class="subtitle">Aponte a câmera do celular para o QR Code e encontre a casa que deseja visitar.</p>
+  <div class="qr-frame hidden" id="qrFrame"><div id="qrCode" aria-label="QR Code do localizador"></div><div class="qr-description">ESCANEIE COM SEU CELULAR</div></div>
+  <div class="setup hidden" id="kioskSetup">
+    <h2>Configurar o endereço do localizador</h2>
+    <p>Primeiro, publique o arquivo HTML em um site. Depois, informe o link público onde o visitante abrirá o localizador.</p>
+    <form id="setupForm"><div class="field"><label for="setupUrl">Endereço público (HTTPS recomendado)</label><input type="url" id="setupUrl" placeholder="https://exemplo.com.br/localizador/" required></div><button class="button-main" type="submit">Gerar QR Code</button></form>
+    <p id="setupStatus" role="status"></p>
+  </div>
+  <div id="kioskDetails" class="kiosk-bottom hidden"><p><strong>1.</strong> Escaneie o QR Code &nbsp; <strong>2.</strong> Digite o número da casa &nbsp; <strong>3.</strong> Inicie a navegação</p><a id="kioskUrl" class="kiosk-site" href="#" target="_blank" rel="noopener noreferrer"></a></div>
+  <p class="kiosk-errors" id="kioskError" role="alert"></p>
+</section>
+<dialog id="settingsDialog" aria-labelledby="settingsTitle">
+  <div class="dialog-card">
+    <div class="dialog-top"><h2 id="settingsTitle">Configurações do totem</h2><button type="button" id="closeSettings" class="close-dialog" aria-label="Fechar">×</button></div>
+    <p>Configure a URL pública do arquivo HTML. O QR Code sempre abrirá a versão do visitante, sem o modo totem.</p>
+    <form id="settingsForm">
+      <div class="field"><label for="settingsUrl">Link público do localizador</label><input id="settingsUrl" type="url" placeholder="https://exemplo.com.br/localizador/" required></div>
+      <div class="dialog-actions"><button class="button-main" type="submit">Salvar e atualizar</button><button class="secondary" id="autoUrlBtn" type="button">Usar endereço atual</button></div>
+    </form>
+    <div class="dialog-note">A URL é guardada somente neste tablet. Para sair do modo totem, remova <code>?totem=1</code> do endereço ou <a id="visitorLink" href="./">abra a consulta</a>.</div>
+  </div>
+</dialog>
 <script>
-    const dados = [
-       {
-        "WKT": "POINT (-34.80944116911525 -7.152811565247221)",
-        "Nº da Casa": "2135",
-        "Quadra": "242",
-        "Lote": "18"
-    },
-    {
-        "WKT": "POINT (-34.809592731932554 -7.152818700674265)",
-        "Nº da Casa": "2133",
-        "Quadra": "242",
-        "Lote": "33"
-    },
-    {
-        "WKT": "POINT (-34.80972527097546 -7.152819562665905)",
-        "Nº da Casa": "2131",
-        "Quadra": "242",
-        "Lote": "48"
-    },
-    {
-        "WKT": "POINT (-34.80986732607889 -7.152830396677109)",
-        "Nº da Casa": "2129",
-        "Quadra": "242",
-        "Lote": "63"
-    },
-    {
-        "WKT": "POINT (-34.809999949771104 -7.1528305928740235)",
-        "Nº da Casa": "2127",
-        "Quadra": "242",
-        "Lote": "78"
-    },
-    {
-        "WKT": "POINT (-34.810142789220116 -7.152834440555056)",
-        "Nº da Casa": "2125",
-        "Quadra": "242",
-        "Lote": "93"
-    },
-    {
-        "WKT": "POINT (-34.81027281814977 -7.152841046180186)",
-        "Nº da Casa": "2123",
-        "Quadra": "242",
-        "Lote": "108"
-    },
-    {
-        "WKT": "POINT (-34.8104095043626 -7.15284366504517)",
-        "Nº da Casa": "2121",
-        "Quadra": "242",
-        "Lote": "123"
-    },
-    {
-        "WKT": "POINT (-34.81054685170642 -7.152848742375392)",
-        "Nº da Casa": "2119",
-        "Quadra": "242",
-        "Lote": "138"
-    },
-    {
-        "WKT": "POINT (-34.81068662821135 -7.152851916303118)",
-        "Nº da Casa": "2117",
-        "Quadra": "242",
-        "Lote": "153"
-    },
-    {
-        "WKT": "POINT (-34.810819499999994 -7.152859)",
-        "Nº da Casa": "2115",
-        "Quadra": "242",
-        "Lote": "168"
-    },
-    {
-        "WKT": "POINT (-34.810951554694235 -7.152863719724376)",
-        "Nº da Casa": "2113",
-        "Quadra": "242",
-        "Lote": "183"
-    },
-    {
-        "WKT": "POINT (-34.811089707588216 -7.152867899418999)",
-        "Nº da Casa": "2111",
-        "Quadra": "242",
-        "Lote": "198"
-    },
-    {
-        "WKT": "POINT (-34.81122163160649 -7.15287141936159)",
-        "Nº da Casa": "2109",
-        "Quadra": "242",
-        "Lote": "213"
-    },
-    {
-        "WKT": "POINT (-34.81135970328463 -7.152876079766219)",
-        "Nº da Casa": "2107",
-        "Quadra": "242",
-        "Lote": "228"
-    },
-    {
-        "WKT": "POINT (-34.81149714730759 -7.152881520045938)",
-        "Nº da Casa": "2105",
-        "Quadra": "242",
-        "Lote": "243"
-    },
-    {
-        "WKT": "POINT (-34.811638149005944 -7.15288639196967)",
-        "Nº da Casa": "2103",
-        "Quadra": "242",
-        "Lote": "258"
-    },
-    {
-        "WKT": "POINT (-34.811805414949944 -7.1528885011552585)",
-        "Nº da Casa": "2101",
-        "Quadra": "242",
-        "Lote": "280"
-    },
-    {
-        "WKT": "POINT (-34.81182132243786 -7.1525968165928955)",
-        "Nº da Casa": "1102",
-        "Quadra": "242",
-        "Lote": "362"
-    },
-    {
-        "WKT": "POINT (-34.811649381605484 -7.152593510824259)",
-        "Nº da Casa": "1104",
-        "Quadra": "242",
-        "Lote": "377"
-    },
-    {
-        "WKT": "POINT (-34.811508466495816 -7.1525881101210596)",
-        "Nº da Casa": "1106",
-        "Quadra": "242",
-        "Lote": "392"
-    },
-    {
-        "WKT": "POINT (-34.81136805246905 -7.152581903202885)",
-        "Nº da Casa": "1108",
-        "Quadra": "242",
-        "Lote": "407"
-    },
-    {
-        "WKT": "POINT (-34.811233859327224 -7.152578948012231)",
-        "Nº da Casa": "1110",
-        "Quadra": "242",
-        "Lote": "422"
-    },
-    {
-        "WKT": "POINT (-34.8111022418274 -7.152575674974185)",
-        "Nº da Casa": "1112",
-        "Quadra": "242",
-        "Lote": "437"
-    },
-    {
-        "WKT": "POINT (-34.81097112419931 -7.1525687475333175)",
-        "Nº da Casa": "1114",
-        "Quadra": "242",
-        "Lote": "452"
-    },
-    {
-        "WKT": "POINT (-34.81083873934838 -7.152566187969925)",
-        "Nº da Casa": "1116",
-        "Quadra": "242",
-        "Lote": "467"
-    },
-    {
-        "WKT": "POINT (-34.81069558148708 -7.152562799535517)",
-        "Nº da Casa": "1118",
-        "Quadra": "242",
-        "Lote": "482"
-    },
-    {
-        "WKT": "POINT (-34.810552464446204 -7.152556867948719)",
-        "Nº da Casa": "1120",
-        "Quadra": "242",
-        "Lote": "497"
-    },
-    {
-        "WKT": "POINT (-34.81040948465461 -7.152552336022253)",
-        "Nº da Casa": "1122",
-        "Quadra": "242",
-        "Lote": "512"
-    },
-    {
-        "WKT": "POINT (-34.81027834179618 -7.152548760113891)",
-        "Nº da Casa": "1124",
-        "Quadra": "242",
-        "Lote": "527"
-    },
-    {
-        "WKT": "POINT (-34.81013761272785 -7.1525442705468505)",
-        "Nº da Casa": "1126",
-        "Quadra": "242",
-        "Lote": "542"
-    },
-    {
-        "WKT": "POINT (-34.81000850192123 -7.1525386126320845)",
-        "Nº da Casa": "1128",
-        "Quadra": "242",
-        "Lote": "557"
-    },
-    {
-        "WKT": "POINT (-34.80988023351708 -7.152538919243826)",
-        "Nº da Casa": "1130",
-        "Quadra": "242",
-        "Lote": "572"
-    },
-    {
-        "WKT": "POINT (-34.80974228754904 -7.152531085303524)",
-        "Nº da Casa": "1132",
-        "Quadra": "242",
-        "Lote": "587"
-    },
-    {
-        "WKT": "POINT (-34.809603957290776 -7.152528559922036)",
-        "Nº da Casa": "1134",
-        "Quadra": "242",
-        "Lote": "602"
-    },
-    {
-        "WKT": "POINT (-34.80945272908915 -7.152521615130218)",
-        "Nº da Casa": "1136",
-        "Quadra": "242",
-        "Lote": "620"
-    },
-    {
-        "WKT": "POINT (-34.809576383641506 -7.15345924970365)",
-        "Nº da Casa": "3133",
-        "Quadra": "243",
-        "Lote": "19"
-    },
-    {
-        "WKT": "POINT (-34.809713575279005 -7.15346251400295)",
-        "Nº da Casa": "3131",
-        "Quadra": "243",
-        "Lote": "34"
-    },
-    {
-        "WKT": "POINT (-34.809841135860815 -7.153464992823636)",
-        "Nº da Casa": "3129",
-        "Quadra": "243",
-        "Lote": "49"
-    },
-    {
-        "WKT": "POINT (-34.80997855996465 -7.153470145184204)",
-        "Nº da Casa": "3127",
-        "Quadra": "243",
-        "Lote": "64"
-    },
-    {
-        "WKT": "POINT (-34.81011731512903 -7.153476200194859)",
-        "Nº da Casa": "3125",
-        "Quadra": "243",
-        "Lote": "79"
-    },
-    {
-        "WKT": "POINT (-34.810253782056755 -7.153480428513394)",
-        "Nº da Casa": "3123",
-        "Quadra": "243",
-        "Lote": "94"
-    },
-    {
-        "WKT": "POINT (-34.81038809250163 -7.15348515190481)",
-        "Nº da Casa": "3121",
-        "Quadra": "243",
-        "Lote": "109"
-    },
-    {
-        "WKT": "POINT (-34.81051948938398 -7.15348880624527)",
-        "Nº da Casa": "3119",
-        "Quadra": "243",
-        "Lote": "124"
-    },
-    {
-        "WKT": "POINT (-34.81065601701348 -7.153493155449651)",
-        "Nº da Casa": "3117",
-        "Quadra": "243",
-        "Lote": "139"
-    },
-    {
-        "WKT": "POINT (-34.81079246746061 -7.153497911824854)",
-        "Nº da Casa": "3115",
-        "Quadra": "243",
-        "Lote": "154"
-    },
-    {
-        "WKT": "POINT (-34.810933516041125 -7.1535021528551965)",
-        "Nº da Casa": "3113",
-        "Quadra": "243",
-        "Lote": "169"
-    },
-    {
-        "WKT": "POINT (-34.81106587202176 -7.153507083108461)",
-        "Nº da Casa": "3111",
-        "Quadra": "243",
-        "Lote": "184"
-    },
-    {
-        "WKT": "POINT (-34.81119976001185 -7.153509821846972)",
-        "Nº da Casa": "3109",
-        "Quadra": "243",
-        "Lote": "199"
-    },
-    {
-        "WKT": "POINT (-34.8113331895017 -7.153516846917895)",
-        "Nº da Casa": "3107",
-        "Quadra": "243",
-        "Lote": "214"
-    },
-    {
-        "WKT": "POINT (-34.811472461053675 -7.153520242141949)",
-        "Nº da Casa": "3105",
-        "Quadra": "243",
-        "Lote": "229"
-    },
-    {
-        "WKT": "POINT (-34.811613379593304 -7.1535256051691505)",
-        "Nº da Casa": "3103",
-        "Quadra": "243",
-        "Lote": "244"
-    },
-    {
-        "WKT": "POINT (-34.811789744686195 -7.153531110910116)",
-        "Nº da Casa": "3101",
-        "Quadra": "243",
-        "Lote": "267"
-    },
-    {
-        "WKT": "POINT (-34.8117985 -7.153246000000001)",
-        "Nº da Casa": "2102",
-        "Quadra": "243",
-        "Lote": "349"
-    },
-    {
-        "WKT": "POINT (-34.811623683301626 -7.15324108473584)",
-        "Nº da Casa": "2104",
-        "Quadra": "243",
-        "Lote": "364"
-    },
-    {
-        "WKT": "POINT (-34.81148958929619 -7.153235653010198)",
-        "Nº da Casa": "2106",
-        "Quadra": "243",
-        "Lote": "379"
-    },
-    {
-        "WKT": "POINT (-34.811348502237514 -7.153230896197668)",
-        "Nº da Casa": "2108",
-        "Quadra": "243",
-        "Lote": "394"
-    },
-    {
-        "WKT": "POINT (-34.811211500000006 -7.153225999999999)",
-        "Nº da Casa": "2110",
-        "Quadra": "243",
-        "Lote": "409"
-    },
-    {
-        "WKT": "POINT (-34.81107742360625 -7.153219673379468)",
-        "Nº da Casa": "2112",
-        "Quadra": "243",
-        "Lote": "424"
-    },
-    {
-        "WKT": "POINT (-34.81093742339254 -7.153217757556872)",
-        "Nº da Casa": "2114",
-        "Quadra": "243",
-        "Lote": "439"
-    },
-    {
-        "WKT": "POINT (-34.81080342271287 -7.153210989575673)",
-        "Nº da Casa": "2116",
-        "Quadra": "243",
-        "Lote": "454"
-    },
-    {
-        "WKT": "POINT (-34.81066653623851 -7.153208405480032)",
-        "Nº da Casa": "2118",
-        "Quadra": "243",
-        "Lote": "469"
-    },
-    {
-        "WKT": "POINT (-34.810532218687584 -7.153200572693394)",
-        "Nº da Casa": "2120",
-        "Quadra": "243",
-        "Lote": "484"
-    },
-    {
-        "WKT": "POINT (-34.8103969375282 -7.1531961264215225)",
-        "Nº da Casa": "2122",
-        "Quadra": "243",
-        "Lote": "499"
-    },
-    {
-        "WKT": "POINT (-34.81025929625896 -7.153191141594853)",
-        "Nº da Casa": "2124",
-        "Quadra": "243",
-        "Lote": "514"
-    },
-    {
-        "WKT": "POINT (-34.8101235999949 -7.15318596844033)",
-        "Nº da Casa": "2126",
-        "Quadra": "243",
-        "Lote": "529"
-    },
-    {
-        "WKT": "POINT (-34.809989369684466 -7.153181931227589)",
-        "Nº da Casa": "2128",
-        "Quadra": "243",
-        "Lote": "544"
-    },
-    {
-        "WKT": "POINT (-34.809853147540984 -7.1531757049180325)",
-        "Nº da Casa": "2130",
-        "Quadra": "243",
-        "Lote": "559"
-    },
-    {
-        "WKT": "POINT (-34.8097181750233 -7.153173126054061)",
-        "Nº da Casa": "2132",
-        "Quadra": "243",
-        "Lote": "574"
-    },
-    {
-        "WKT": "POINT (-34.80958216622023 -7.153168123601411)",
-        "Nº da Casa": "2134",
-        "Quadra": "243",
-        "Lote": "589"
-    },
-    {
-        "WKT": "POINT (-34.80942638830029 -7.153293575701426)",
-        "Nº da Casa": "3135",
-        "Quadra": "243",
-        "Lote": "607"
-    },
-    {
-        "WKT": "POINT (-34.809390563257274 -7.154045251421986)",
-        "Nº da Casa": "3136",
-        "Quadra": "244",
-        "Lote": "19"
-    },
-    {
-        "WKT": "POINT (-34.80954700000001 -7.154192)",
-        "Nº da Casa": "4133",
-        "Quadra": "244",
-        "Lote": "33"
-    },
-    {
-        "WKT": "POINT (-34.809692656343316 -7.154192664009737)",
-        "Nº da Casa": "4131",
-        "Quadra": "244",
-        "Lote": "48"
-    },
-    {
-        "WKT": "POINT (-34.80983628413962 -7.154199499203919)",
-        "Nº da Casa": "4129",
-        "Quadra": "244",
-        "Lote": "63"
-    },
-    {
-        "WKT": "POINT (-34.80997264052806 -7.154206027313891)",
-        "Nº da Casa": "4127",
-        "Quadra": "244",
-        "Lote": "78"
-    },
-    {
-        "WKT": "POINT (-34.810100588673286 -7.154210661148091)",
-        "Nº da Casa": "4125",
-        "Quadra": "244",
-        "Lote": "93"
-    },
-    {
-        "WKT": "POINT (-34.810230146436446 -7.154213874230396)",
-        "Nº da Casa": "4123",
-        "Quadra": "244",
-        "Lote": "108"
-    },
-    {
-        "WKT": "POINT (-34.81036365994587 -7.154219834941148)",
-        "Nº da Casa": "4121",
-        "Quadra": "244",
-        "Lote": "123"
-    },
-    {
-        "WKT": "POINT (-34.81050191179175 -7.154225327478589)",
-        "Nº da Casa": "4119",
-        "Quadra": "244",
-        "Lote": "138"
-    },
-    {
-        "WKT": "POINT (-34.81064362361984 -7.154229268737691)",
-        "Nº da Casa": "4117",
-        "Quadra": "244",
-        "Lote": "153"
-    },
-    {
-        "WKT": "POINT (-34.81077415584391 -7.154234977331093)",
-        "Nº da Casa": "4115",
-        "Quadra": "244",
-        "Lote": "168"
-    },
-    {
-        "WKT": "POINT (-34.81090800860328 -7.154241817923679)",
-        "Nº da Casa": "4113",
-        "Quadra": "244",
-        "Lote": "183"
-    },
-    {
-        "WKT": "POINT (-34.811055320634324 -7.154247693135964)",
-        "Nº da Casa": "4111",
-        "Quadra": "244",
-        "Lote": "198"
-    },
-    {
-        "WKT": "POINT (-34.81119163102701 -7.1542498812512445)",
-        "Nº da Casa": "4109",
-        "Quadra": "244",
-        "Lote": "213"
-    },
-    {
-        "WKT": "POINT (-34.81131860781611 -7.154252299792585)",
-        "Nº da Casa": "4107",
-        "Quadra": "244",
-        "Lote": "228"
-    },
-    {
-        "WKT": "POINT (-34.811451000000005 -7.154259)",
-        "Nº da Casa": "4105",
-        "Quadra": "244",
-        "Lote": "243"
-    },
-    {
-        "WKT": "POINT (-34.811587494643184 -7.154263676540006)",
-        "Nº da Casa": "4103",
-        "Quadra": "244",
-        "Lote": "258"
-    },
-    {
-        "WKT": "POINT (-34.811763007914834 -7.154273487136638)",
-        "Nº da Casa": "4101",
-        "Quadra": "244",
-        "Lote": "282"
-    },
-    {
-        "WKT": "POINT (-34.81177421212538 -7.153977967068784)",
-        "Nº da Casa": "3102",
-        "Quadra": "244",
-        "Lote": "366"
-    },
-    {
-        "WKT": "POINT (-34.811607662827036 -7.153970157408208)",
-        "Nº da Casa": "3104",
-        "Quadra": "244",
-        "Lote": "381"
-    },
-    {
-        "WKT": "POINT (-34.8114658251866 -7.153963798925904)",
-        "Nº da Casa": "3106",
-        "Quadra": "244",
-        "Lote": "396"
-    },
-    {
-        "WKT": "POINT (-34.811325802662545 -7.153962092320661)",
-        "Nº da Casa": "3108",
-        "Quadra": "244",
-        "Lote": "411"
-    },
-    {
-        "WKT": "POINT (-34.81119294430466 -7.153954120720582)",
-        "Nº da Casa": "3110",
-        "Quadra": "244",
-        "Lote": "426"
-    },
-    {
-        "WKT": "POINT (-34.81105573409421 -7.153950222958684)",
-        "Nº da Casa": "3112",
-        "Quadra": "244",
-        "Lote": "441"
-    },
-    {
-        "WKT": "POINT (-34.810912579591864 -7.15394401621236)",
-        "Nº da Casa": "3114",
-        "Quadra": "244",
-        "Lote": "456"
-    },
-    {
-        "WKT": "POINT (-34.81077810601286 -7.153939274914714)",
-        "Nº da Casa": "3116",
-        "Quadra": "244",
-        "Lote": "471"
-    },
-    {
-        "WKT": "POINT (-34.81064555834954 -7.1539363967616785)",
-        "Nº da Casa": "3118",
-        "Quadra": "244",
-        "Lote": "486"
-    },
-    {
-        "WKT": "POINT (-34.81050974169657 -7.153931347143186)",
-        "Nº da Casa": "3120",
-        "Quadra": "244",
-        "Lote": "501"
-    },
-    {
-        "WKT": "POINT (-34.81036897068035 -7.153927044429382)",
-        "Nº da Casa": "3122",
-        "Quadra": "244",
-        "Lote": "516"
-    },
-    {
-        "WKT": "POINT (-34.810231927502464 -7.153918991854061)",
-        "Nº da Casa": "3124",
-        "Quadra": "244",
-        "Lote": "531"
-    },
-    {
-        "WKT": "POINT (-34.81009917574311 -7.15391705754096)",
-        "Nº da Casa": "3126",
-        "Quadra": "244",
-        "Lote": "546"
-    },
-    {
-        "WKT": "POINT (-34.8099662203129 -7.153910054428082)",
-        "Nº da Casa": "3128",
-        "Quadra": "244",
-        "Lote": "561"
-    },
-    {
-        "WKT": "POINT (-34.809832500000006 -7.153904500000001)",
-        "Nº da Casa": "3130",
-        "Quadra": "244",
-        "Lote": "576"
-    },
-    {
-        "WKT": "POINT (-34.809694257061636 -7.153900321054861)",
-        "Nº da Casa": "3132",
-        "Quadra": "244",
-        "Lote": "591"
-    },
-    {
-        "WKT": "POINT (-34.80955493151724 -7.153895798274635)",
-        "Nº da Casa": "3134",
-        "Quadra": "244",
-        "Lote": "606"
-    },
-    {
-        "WKT": "POINT (-34.80937272678457 -7.154828905463322)",
-        "Nº da Casa": "5135",
-        "Quadra": "245",
-        "Lote": "18"
-    },
-    {
-        "WKT": "POINT (-34.809529251324136 -7.154833695728054)",
-        "Nº da Casa": "5133",
-        "Quadra": "245",
-        "Lote": "33"
-    },
-    {
-        "WKT": "POINT (-34.80966879519845 -7.15483847037483)",
-        "Nº da Casa": "5131",
-        "Quadra": "245",
-        "Lote": "48"
-    },
-    {
-        "WKT": "POINT (-34.80980365729519 -7.154846143157214)",
-        "Nº da Casa": "5129",
-        "Quadra": "245",
-        "Lote": "63"
-    },
-    {
-        "WKT": "POINT (-34.80994191978016 -7.154851915896126)",
-        "Nº da Casa": "5127",
-        "Quadra": "245",
-        "Lote": "78"
-    },
-    {
-        "WKT": "POINT (-34.81008106022757 -7.154857370131885)",
-        "Nº da Casa": "5125",
-        "Quadra": "245",
-        "Lote": "93"
-    },
-    {
-        "WKT": "POINT (-34.81021632189431 -7.154863187082048)",
-        "Nº da Casa": "5123",
-        "Quadra": "245",
-        "Lote": "108"
-    },
-    {
-        "WKT": "POINT (-34.81034597161433 -7.154866371868062)",
-        "Nº da Casa": "5121",
-        "Quadra": "245",
-        "Lote": "123"
-    },
-    {
-        "WKT": "POINT (-34.81047741655557 -7.154868762036755)",
-        "Nº da Casa": "5119",
-        "Quadra": "245",
-        "Lote": "138"
-    },
-    {
-        "WKT": "POINT (-34.81061175400621 -7.1548776458595515)",
-        "Nº da Casa": "5117",
-        "Quadra": "245",
-        "Lote": "153"
-    },
-    {
-        "WKT": "POINT (-34.81074858680777 -7.154882140126343)",
-        "Nº da Casa": "5115",
-        "Quadra": "245",
-        "Lote": "168"
-    },
-    {
-        "WKT": "POINT (-34.810886656993766 -7.1548880419200644)",
-        "Nº da Casa": "5113",
-        "Quadra": "245",
-        "Lote": "183"
-    },
-    {
-        "WKT": "POINT (-34.81102336140263 -7.154894447739392)",
-        "Nº da Casa": "5111",
-        "Quadra": "245",
-        "Lote": "198"
-    },
-    {
-        "WKT": "POINT (-34.81115940493017 -7.154899260576602)",
-        "Nº da Casa": "5109",
-        "Quadra": "245",
-        "Lote": "213"
-    },
-    {
-        "WKT": "POINT (-34.81129171084126 -7.154905886844003)",
-        "Nº da Casa": "5107",
-        "Quadra": "245",
-        "Lote": "228"
-    },
-    {
-        "WKT": "POINT (-34.81143581470184 -7.154910496215928)",
-        "Nº da Casa": "5105",
-        "Quadra": "245",
-        "Lote": "243"
-    },
-    {
-        "WKT": "POINT (-34.8115751293135 -7.154914910109455)",
-        "Nº da Casa": "5103",
-        "Quadra": "245",
-        "Lote": "258"
-    },
-    {
-        "WKT": "POINT (-34.81173540304487 -7.154917899305555)",
-        "Nº da Casa": "5101",
-        "Quadra": "245",
-        "Lote": "282"
-    },
-    {
-        "WKT": "POINT (-34.81174808104974 -7.154627855490512)",
-        "Nº da Casa": "4102",
-        "Quadra": "245",
-        "Lote": "366"
-    },
-    {
-        "WKT": "POINT (-34.8115844590369 -7.15462255932685)",
-        "Nº da Casa": "4104",
-        "Quadra": "245",
-        "Lote": "381"
-    },
-    {
-        "WKT": "POINT (-34.811439616716925 -7.15461915813077)",
-        "Nº da Casa": "4106",
-        "Quadra": "245",
-        "Lote": "396"
-    },
-    {
-        "WKT": "POINT (-34.81130153451226 -7.15461525137859)",
-        "Nº da Casa": "4108",
-        "Quadra": "245",
-        "Lote": "411"
-    },
-    {
-        "WKT": "POINT (-34.811167469442736 -7.154605565840536)",
-        "Nº da Casa": "4110",
-        "Quadra": "245",
-        "Lote": "426"
-    },
-    {
-        "WKT": "POINT (-34.81103102789574 -7.154603100347745)",
-        "Nº da Casa": "4112",
-        "Quadra": "245",
-        "Lote": "441"
-    },
-    {
-        "WKT": "POINT (-34.81089574786101 -7.154597691854373)",
-        "Nº da Casa": "4114",
-        "Quadra": "245",
-        "Lote": "456"
-    },
-    {
-        "WKT": "POINT (-34.810762584959306 -7.1545935949422965)",
-        "Nº da Casa": "4116",
-        "Quadra": "245",
-        "Lote": "471"
-    },
-    {
-        "WKT": "POINT (-34.81062856361748 -7.154585059659373)",
-        "Nº da Casa": "4118",
-        "Quadra": "245",
-        "Lote": "486"
-    },
-    {
-        "WKT": "POINT (-34.81049129139864 -7.154581753976932)",
-        "Nº da Casa": "4120",
-        "Quadra": "245",
-        "Lote": "501"
-    },
-    {
-        "WKT": "POINT (-34.81035498193761 -7.154576542692938)",
-        "Nº da Casa": "4122",
-        "Quadra": "245",
-        "Lote": "516"
-    },
-    {
-        "WKT": "POINT (-34.810221480424275 -7.154571508937763)",
-        "Nº da Casa": "4124",
-        "Quadra": "245",
-        "Lote": "531"
-    },
-    {
-        "WKT": "POINT (-34.810088389690996 -7.154568093754111)",
-        "Nº da Casa": "4126",
-        "Quadra": "245",
-        "Lote": "546"
-    },
-    {
-        "WKT": "POINT (-34.80995089838622 -7.154561378941322)",
-        "Nº da Casa": "4128",
-        "Quadra": "245",
-        "Lote": "561"
-    },
-    {
-        "WKT": "POINT (-34.80981425670499 -7.1545548212005095)",
-        "Nº da Casa": "4130",
-        "Quadra": "245",
-        "Lote": "576"
-    },
-    {
-        "WKT": "POINT (-34.80967702918963 -7.154551595194354)",
-        "Nº da Casa": "4132",
-        "Quadra": "245",
-        "Lote": "591"
-    },
-    {
-        "WKT": "POINT (-34.80953942224534 -7.1545464866676936)",
-        "Nº da Casa": "4134",
-        "Quadra": "245",
-        "Lote": "606"
-    },
-    {
-        "WKT": "POINT (-34.80938205622097 -7.154539081730692)",
-        "Nº da Casa": "4136",
-        "Quadra": "245",
-        "Lote": "624"
-    },
-    {
-        "WKT": "POINT (-34.808145194945496 -7.155182134502714)",
-        "Nº da Casa": "5402",
-        "Quadra": "246",
-        "Lote": "984"
-    },
-    {
-        "WKT": "POINT (-34.80828241404126 -7.155189410859058)",
-        "Nº da Casa": "5404",
-        "Quadra": "246",
-        "Lote": "999"
-    },
-    {
-        "WKT": "POINT (-34.808421186528285 -7.155189925339509)",
-        "Nº da Casa": "5406",
-        "Quadra": "246",
-        "Lote": "1014"
-    },
-    {
-        "WKT": "POINT (-34.80855289382902 -7.155192529705928)",
-        "Nº da Casa": "5408",
-        "Quadra": "246",
-        "Lote": "1029"
-    },
-    {
-        "WKT": "POINT (-34.80801079017351 -7.155179068156859)",
-        "Nº da Casa": "5410",
-        "Quadra": "246",
-        "Lote": "1044"
-    },
-    {
-        "WKT": "POINT (-34.80787338880939 -7.155172866819308)",
-        "Nº da Casa": "5412",
-        "Quadra": "246",
-        "Lote": "1059"
-    },
-    {
-        "WKT": "POINT (-34.80773418175307 -7.155166802625545)",
-        "Nº da Casa": "5414",
-        "Quadra": "246",
-        "Lote": "1074"
-    },
-    {
-        "WKT": "POINT (-34.80760173565447 -7.155163185470118)",
-        "Nº da Casa": "5416",
-        "Quadra": "246",
-        "Lote": "1089"
-    },
-    {
-        "WKT": "POINT (-34.8074648022216 -7.155158540103522)",
-        "Nº da Casa": "5418",
-        "Quadra": "246",
-        "Lote": "1104"
-    },
-    {
-        "WKT": "POINT (-34.807326331138896 -7.155152867791009)",
-        "Nº da Casa": "5420",
-        "Quadra": "246",
-        "Lote": "1119"
-    },
-    {
-        "WKT": "POINT (-34.807189794413766 -7.155148578726267)",
-        "Nº da Casa": "5422",
-        "Quadra": "246",
-        "Lote": "1134"
-    },
-    {
-        "WKT": "POINT (-34.80705552542284 -7.155144131399348)",
-        "Nº da Casa": "5424",
-        "Quadra": "246",
-        "Lote": "1149"
-    },
-    {
-        "WKT": "POINT (-34.80692638895447 -7.155139715956369)",
-        "Nº da Casa": "5426",
-        "Quadra": "246",
-        "Lote": "1164"
-    },
-    {
-        "WKT": "POINT (-34.8067903072493 -7.1551350269719)",
-        "Nº da Casa": "5428",
-        "Quadra": "246",
-        "Lote": "1179"
-    },
-    {
-        "WKT": "POINT (-34.806651824040216 -7.155126855327242)",
-        "Nº da Casa": "5430",
-        "Quadra": "246",
-        "Lote": "1194"
-    },
-    {
-        "WKT": "POINT (-34.806515896285404 -7.155124375398319)",
-        "Nº da Casa": "5432",
-        "Quadra": "246",
-        "Lote": "1209"
-    },
-    {
-        "WKT": "POINT (-34.80637629432764 -7.155120081485137)",
-        "Nº da Casa": "5434",
-        "Quadra": "246",
-        "Lote": "1224"
-    },
-    {
-        "WKT": "POINT (-34.80624031100989 -7.155117063959743)",
-        "Nº da Casa": "5436",
-        "Quadra": "246",
-        "Lote": "1239"
-    },
-    {
-        "WKT": "POINT (-34.80610643295019 -7.155109629118774)",
-        "Nº da Casa": "5438",
-        "Quadra": "246",
-        "Lote": "1254"
-    },
-    {
-        "WKT": "POINT (-34.80597073390474 -7.155105357178612)",
-        "Nº da Casa": "5440",
-        "Quadra": "246",
-        "Lote": "1269"
-    },
-    {
-        "WKT": "POINT (-34.80583210104333 -7.155100809814072)",
-        "Nº da Casa": "5442",
-        "Quadra": "246",
-        "Lote": "1284"
-    },
-    {
-        "WKT": "POINT (-34.805695016784384 -7.155095984519756)",
-        "Nº da Casa": "5444",
-        "Quadra": "246",
-        "Lote": "1299"
-    },
-    {
-        "WKT": "POINT (-34.80556137625942 -7.1550915974091955)",
-        "Nº da Casa": "5446",
-        "Quadra": "246",
-        "Lote": "1314"
-    },
-    {
-        "WKT": "POINT (-34.80722021957937 -7.154740839658687)",
-        "Nº da Casa": "5227",
-        "Quadra": "247",
-        "Lote": "18"
-    },
-    {
-        "WKT": "POINT (-34.80737372601455 -7.154746536554852)",
-        "Nº da Casa": "5225",
-        "Quadra": "247",
-        "Lote": "33"
-    },
-    {
-        "WKT": "POINT (-34.80750657815013 -7.154751538358462)",
-        "Nº da Casa": "5223",
-        "Quadra": "247",
-        "Lote": "48"
-    },
-    {
-        "WKT": "POINT (-34.80763873552665 -7.154759172149961)",
-        "Nº da Casa": "5221",
-        "Quadra": "247",
-        "Lote": "63"
-    },
-    {
-        "WKT": "POINT (-34.80777363250643 -7.154762883234488)",
-        "Nº da Casa": "5219",
-        "Quadra": "247",
-        "Lote": "78"
-    },
-    {
-        "WKT": "POINT (-34.807910718695155 -7.154766568853118)",
-        "Nº da Casa": "5217",
-        "Quadra": "247",
-        "Lote": "93"
-    },
-    {
-        "WKT": "POINT (-34.80804945935125 -7.154772241322213)",
-        "Nº da Casa": "5215",
-        "Quadra": "247",
-        "Lote": "108"
-    },
-    {
-        "WKT": "POINT (-34.80818764843135 -7.15477748486843)",
-        "Nº da Casa": "5213",
-        "Quadra": "247",
-        "Lote": "123"
-    },
-    {
-        "WKT": "POINT (-34.80832245042643 -7.1547806128458875)",
-        "Nº da Casa": "5211",
-        "Quadra": "247",
-        "Lote": "138"
-    },
-    {
-        "WKT": "POINT (-34.8084585888133 -7.154786225434621)",
-        "Nº da Casa": "5209",
-        "Quadra": "247",
-        "Lote": "153"
-    },
-    {
-        "WKT": "POINT (-34.808593112310035 -7.154792767572091)",
-        "Nº da Casa": "5207",
-        "Quadra": "247",
-        "Lote": "168"
-    },
-    {
-        "WKT": "POINT (-34.808728510750214 -7.154796948189755)",
-        "Nº da Casa": "5205",
-        "Quadra": "247",
-        "Lote": "183"
-    },
-    {
-        "WKT": "POINT (-34.80886316263664 -7.154802509262142)",
-        "Nº da Casa": "5203",
-        "Quadra": "247",
-        "Lote": "198"
-    },
-    {
-        "WKT": "POINT (-34.809016204722276 -7.1548050158987895)",
-        "Nº da Casa": "5201",
-        "Quadra": "247",
-        "Lote": "216"
-    },
-    {
-        "WKT": "POINT (-34.809022699042345 -7.15451752117403)",
-        "Nº da Casa": "4202",
-        "Quadra": "247",
-        "Lote": "294"
-    },
-    {
-        "WKT": "POINT (-34.80886706540753 -7.154509377315242)",
-        "Nº da Casa": "4204",
-        "Quadra": "247",
-        "Lote": "309"
-    },
-    {
-        "WKT": "POINT (-34.80873516770636 -7.154506669252814)",
-        "Nº da Casa": "4206",
-        "Quadra": "247",
-        "Lote": "324"
-    },
-    {
-        "WKT": "POINT (-34.80860016696697 -7.154499332732732)",
-        "Nº da Casa": "4208",
-        "Quadra": "247",
-        "Lote": "339"
-    },
-    {
-        "WKT": "POINT (-34.80846637646828 -7.154497293750371)",
-        "Nº da Casa": "4210",
-        "Quadra": "247",
-        "Lote": "354"
-    },
-    {
-        "WKT": "POINT (-34.80833159954781 -7.15448878844738)",
-        "Nº da Casa": "4212",
-        "Quadra": "247",
-        "Lote": "364"
-    },
-    {
-        "WKT": "POINT (-34.80819295675976 -7.154486592441294)",
-        "Nº da Casa": "4214",
-        "Quadra": "247",
-        "Lote": "384"
-    },
-    {
-        "WKT": "POINT (-34.80805436141397 -7.154481295650176)",
-        "Nº da Casa": "4216",
-        "Quadra": "247",
-        "Lote": "399"
-    },
-    {
-        "WKT": "POINT (-34.80791600874316 -7.154476798907103)",
-        "Nº da Casa": "4218",
-        "Quadra": "247",
-        "Lote": "414"
-    },
-    {
-        "WKT": "POINT (-34.80777893772893 -7.154471124542124)",
-        "Nº da Casa": "4220",
-        "Quadra": "247",
-        "Lote": "429"
-    },
-    {
-        "WKT": "POINT (-34.807648243212824 -7.154466192346756)",
-        "Nº da Casa": "4222",
-        "Quadra": "247",
-        "Lote": "444"
-    },
-    {
-        "WKT": "POINT (-34.807516577480094 -7.154461821888031)",
-        "Nº da Casa": "4224",
-        "Quadra": "247",
-        "Lote": "459"
-    },
-    {
-        "WKT": "POINT (-34.80738066505384 -7.154456662929018)",
-        "Nº da Casa": "4226",
-        "Quadra": "247",
-        "Lote": "474"
-    },
-    {
-        "WKT": "POINT (-34.8072295688001 -7.1544540863730175)",
-        "Nº da Casa": "4228",
-        "Quadra": "247",
-        "Lote": "492"
-    },
-    {
-        "WKT": "POINT (-34.80724086012932 -7.1540803806783915)",
-        "Nº da Casa": "4227",
-        "Quadra": "248",
-        "Lote": "18"
-    },
-    {
-        "WKT": "POINT (-34.80739549297639 -7.154088272012174)",
-        "Nº da Casa": "4225",
-        "Quadra": "248",
-        "Lote": "33"
-    },
-    {
-        "WKT": "POINT (-34.80753050712022 -7.154090673853845)",
-        "Nº da Casa": "4223",
-        "Quadra": "248",
-        "Lote": "48"
-    },
-    {
-        "WKT": "POINT (-34.8076622779639 -7.154097442490229)",
-        "Nº da Casa": "4221",
-        "Quadra": "248",
-        "Lote": "63"
-    },
-    {
-        "WKT": "POINT (-34.80779380360065 -7.1541025417348605)",
-        "Nº da Casa": "4219",
-        "Quadra": "248",
-        "Lote": "78"
-    },
-    {
-        "WKT": "POINT (-34.80792980108321 -7.15410809551945)",
-        "Nº da Casa": "4217",
-        "Quadra": "248",
-        "Lote": "93"
-    },
-    {
-        "WKT": "POINT (-34.808070040655046 -7.154114759779813)",
-        "Nº da Casa": "4215",
-        "Quadra": "248",
-        "Lote": "108"
-    },
-    {
-        "WKT": "POINT (-34.80820676260842 -7.154120271716457)",
-        "Nº da Casa": "4213",
-        "Quadra": "248",
-        "Lote": "123"
-    },
-    {
-        "WKT": "POINT (-34.808342728049674 -7.154125246813614)",
-        "Nº da Casa": "4211",
-        "Quadra": "248",
-        "Lote": "138"
-    },
-    {
-        "WKT": "POINT (-34.80847865385387 -7.154130698839218)",
-        "Nº da Casa": "4209",
-        "Quadra": "248",
-        "Lote": "153"
-    },
-    {
-        "WKT": "POINT (-34.808616665689584 -7.154137027944697)",
-        "Nº da Casa": "4207",
-        "Quadra": "248",
-        "Lote": "168"
-    },
-    {
-        "WKT": "POINT (-34.80875261134279 -7.154141294690017)",
-        "Nº da Casa": "4205",
-        "Quadra": "248",
-        "Lote": "183"
-    },
-    {
-        "WKT": "POINT (-34.8088823675019 -7.154149635535309)",
-        "Nº da Casa": "4203",
-        "Quadra": "248",
-        "Lote": "198"
-    },
-    {
-        "WKT": "POINT (-34.809042658603914 -7.154011262170313)",
-        "Nº da Casa": "3202",
-        "Quadra": "248",
-        "Lote": "216"
-    },
-    {
-        "WKT": "POINT (-34.80889140958634 -7.153856323206317)",
-        "Nº da Casa": "3204",
-        "Quadra": "248",
-        "Lote": "336"
-    },
-    {
-        "WKT": "POINT (-34.80876536585978 -7.153851440469919)",
-        "Nº da Casa": "3206",
-        "Quadra": "248",
-        "Lote": "351"
-    },
-    {
-        "WKT": "POINT (-34.80862662372086 -7.153845898674719)",
-        "Nº da Casa": "3208",
-        "Quadra": "248",
-        "Lote": "366"
-    },
-    {
-        "WKT": "POINT (-34.80848835402746 -7.153840467798813)",
-        "Nº da Casa": "3210",
-        "Quadra": "248",
-        "Lote": "381"
-    },
-    {
-        "WKT": "POINT (-34.80835279452886 -7.1538345731692825)",
-        "Nº da Casa": "3212",
-        "Quadra": "248",
-        "Lote": "396"
-    },
-    {
-        "WKT": "POINT (-34.80821507560756 -7.1538285133513355)",
-        "Nº da Casa": "3214",
-        "Quadra": "248",
-        "Lote": "411"
-    },
-    {
-        "WKT": "POINT (-34.80807645342156 -7.153823771370715)",
-        "Nº da Casa": "3216",
-        "Quadra": "248",
-        "Lote": "426"
-    },
-    {
-        "WKT": "POINT (-34.80793391648267 -7.153818351780134)",
-        "Nº da Casa": "3218",
-        "Quadra": "248",
-        "Lote": "441"
-    },
-    {
-        "WKT": "POINT (-34.80779130569197 -7.153813541127829)",
-        "Nº da Casa": "3220",
-        "Quadra": "248",
-        "Lote": "456"
-    },
-    {
-        "WKT": "POINT (-34.80766103889825 -7.153806679398537)",
-        "Nº da Casa": "3222",
-        "Quadra": "248",
-        "Lote": "471"
-    },
-    {
-        "WKT": "POINT (-34.807536134437775 -7.153801916259984)",
-        "Nº da Casa": "3224",
-        "Quadra": "248",
-        "Lote": "486"
-    },
-    {
-        "WKT": "POINT (-34.807404839544176 -7.153795464051133)",
-        "Nº da Casa": "3226",
-        "Quadra": "248",
-        "Lote": "501"
-    },
-    {
-        "WKT": "POINT (-34.80724954871779 -7.153792256130263)",
-        "Nº da Casa": "3228",
-        "Quadra": "248",
-        "Lote": "516"
-    },
-    {
-        "WKT": "POINT (-34.8072630620438 -7.153370575233704)",
-        "Nº da Casa": "3227",
-        "Quadra": "249",
-        "Lote": "18"
-    },
-    {
-        "WKT": "POINT (-34.80742128780828 -7.15337561299028)",
-        "Nº da Casa": "3225",
-        "Quadra": "249",
-        "Lote": "33"
-    },
-    {
-        "WKT": "POINT (-34.80755631655925 -7.1533807529088245)",
-        "Nº da Casa": "3223",
-        "Quadra": "249",
-        "Lote": "48"
-    },
-    {
-        "WKT": "POINT (-34.807688034154026 -7.153386350491021)",
-        "Nº da Casa": "3221",
-        "Quadra": "249",
-        "Lote": "63"
-    },
-    {
-        "WKT": "POINT (-34.807820040920674 -7.153392699550264)",
-        "Nº da Casa": "3219",
-        "Quadra": "249",
-        "Lote": "78"
-    },
-    {
-        "WKT": "POINT (-34.80795978552832 -7.153397884866131)",
-        "Nº da Casa": "3217",
-        "Quadra": "249",
-        "Lote": "93"
-    },
-    {
-        "WKT": "POINT (-34.80809143994767 -7.153402626768047)",
-        "Nº da Casa": "3215",
-        "Quadra": "249",
-        "Lote": "108"
-    },
-    {
-        "WKT": "POINT (-34.80822650379323 -7.15340757934556)",
-        "Nº da Casa": "3213",
-        "Quadra": "249",
-        "Lote": "123"
-    },
-    {
-        "WKT": "POINT (-34.80836589928685 -7.153412128836312)",
-        "Nº da Casa": "3211",
-        "Quadra": "249",
-        "Lote": "138"
-    },
-    {
-        "WKT": "POINT (-34.808505675083325 -7.153417184944642)",
-        "Nº da Casa": "3209",
-        "Quadra": "249",
-        "Lote": "153"
-    },
-    {
-        "WKT": "POINT (-34.808641934914846 -7.153421130170317)",
-        "Nº da Casa": "3207",
-        "Quadra": "249",
-        "Lote": "168"
-    },
-    {
-        "WKT": "POINT (-34.808776254765526 -7.153427474055674)",
-        "Nº da Casa": "3205",
-        "Quadra": "249",
-        "Lote": "183"
-    },
-    {
-        "WKT": "POINT (-34.80891233995186 -7.153429986762936)",
-        "Nº da Casa": "3203",
-        "Quadra": "249",
-        "Lote": "198"
-    },
-    {
-        "WKT": "POINT (-34.80906944826125 -7.153273431243967)",
-        "Nº da Casa": "3201",
-        "Quadra": "249",
-        "Lote": "286"
-    },
-    {
-        "WKT": "POINT (-34.8089184560905 -7.153144110801076)",
-        "Nº da Casa": "2202",
-        "Quadra": "249",
-        "Lote": "301"
-    },
-    {
-        "WKT": "POINT (-34.80878311730549 -7.153136406154761)",
-        "Nº da Casa": "2204",
-        "Quadra": "249",
-        "Lote": "316"
-    },
-    {
-        "WKT": "POINT (-34.80864854809376 -7.153132891540461)",
-        "Nº da Casa": "2206",
-        "Quadra": "249",
-        "Lote": "331"
-    },
-    {
-        "WKT": "POINT (-34.80851531537454 -7.153128569454509)",
-        "Nº da Casa": "2208",
-        "Quadra": "249",
-        "Lote": "346"
-    },
-    {
-        "WKT": "POINT (-34.80837964760444 -7.153123009932808)",
-        "Nº da Casa": "2210",
-        "Quadra": "249",
-        "Lote": "361"
-    },
-    {
-        "WKT": "POINT (-34.80824064979978 -7.153116536833073)",
-        "Nº da Casa": "2212",
-        "Quadra": "249",
-        "Lote": "376"
-    },
-    {
-        "WKT": "POINT (-34.8081047154648 -7.153110087391786)",
-        "Nº da Casa": "2214",
-        "Quadra": "249",
-        "Lote": "391"
-    },
-    {
-        "WKT": "POINT (-34.80796917155467 -7.153108650014112)",
-        "Nº da Casa": "2216",
-        "Quadra": "249",
-        "Lote": "406"
-    },
-    {
-        "WKT": "POINT (-34.80783748100487 -7.153102362885219)",
-        "Nº da Casa": "2218",
-        "Quadra": "249",
-        "Lote": "421"
-    },
-    {
-        "WKT": "POINT (-34.80770236008347 -7.153096948307166)",
-        "Nº da Casa": "2220",
-        "Quadra": "249",
-        "Lote": "436"
-    },
-    {
-        "WKT": "POINT (-34.807566387437205 -7.153091729117176)",
-        "Nº da Casa": "2222",
-        "Quadra": "249",
-        "Lote": "451"
-    },
-    {
-        "WKT": "POINT (-34.807426867313914 -7.153086436702837)",
-        "Nº da Casa": "2224",
-        "Quadra": "249",
-        "Lote": "466"
-    },
-    {
-        "WKT": "POINT (-34.80726628028351 -7.153080306372406)",
-        "Nº da Casa": "2226",
-        "Quadra": "249",
-        "Lote": "484"
-    },
-    {
-        "WKT": "POINT (-34.807289262501335 -7.15271947952791)",
-        "Nº da Casa": "2227",
-        "Quadra": "250",
-        "Lote": "18"
-    },
-    {
-        "WKT": "POINT (-34.80743792508768 -7.152723693799221)",
-        "Nº da Casa": "2225",
-        "Quadra": "250",
-        "Lote": "33"
-    },
-    {
-        "WKT": "POINT (-34.80757458267432 -7.152730512566222)",
-        "Nº da Casa": "2223",
-        "Quadra": "250",
-        "Lote": "48"
-    },
-    {
-        "WKT": "POINT (-34.807710707417044 -7.152735081891765)",
-        "Nº da Casa": "2221",
-        "Quadra": "250",
-        "Lote": "63"
-    },
-    {
-        "WKT": "POINT (-34.80784305812696 -7.15274091693709)",
-        "Nº da Casa": "2219",
-        "Quadra": "250",
-        "Lote": "78"
-    },
-    {
-        "WKT": "POINT (-34.807979684354486 -7.152747542513286)",
-        "Nº da Casa": "2217",
-        "Quadra": "250",
-        "Lote": "93"
-    },
-    {
-        "WKT": "POINT (-34.80811695134608 -7.15274898978307)",
-        "Nº da Casa": "2215",
-        "Quadra": "250",
-        "Lote": "108"
-    },
-    {
-        "WKT": "POINT (-34.808255613259675 -7.152754029465931)",
-        "Nº da Casa": "2213",
-        "Quadra": "250",
-        "Lote": "123"
-    },
-    {
-        "WKT": "POINT (-34.80839124231421 -7.1527581706608565)",
-        "Nº da Casa": "2211",
-        "Quadra": "250",
-        "Lote": "138"
-    },
-    {
-        "WKT": "POINT (-34.80852731107405 -7.152762758059393)",
-        "Nº da Casa": "2209",
-        "Quadra": "250",
-        "Lote": "153"
-    },
-    {
-        "WKT": "POINT (-34.80865833389181 -7.152767834663259)",
-        "Nº da Casa": "2207",
-        "Quadra": "250",
-        "Lote": "168"
-    },
-    {
-        "WKT": "POINT (-34.808792571684684 -7.152771333510024)",
-        "Nº da Casa": "2205",
-        "Quadra": "250",
-        "Lote": "183"
-    },
-    {
-        "WKT": "POINT (-34.80893081121451 -7.1527757581230675)",
-        "Nº da Casa": "2203",
-        "Quadra": "250",
-        "Lote": "198"
-    },
-    {
-        "WKT": "POINT (-34.809087216459446 -7.152781862484177)",
-        "Nº da Casa": "2201",
-        "Quadra": "250",
-        "Lote": "216"
-    },
-    {
-        "WKT": "POINT (-34.80909763889146 -7.152494473910488)",
-        "Nº da Casa": "1202",
-        "Quadra": "250",
-        "Lote": "294"
-    },
-    {
-        "WKT": "POINT (-34.80894031440626 -7.152489210981219)",
-        "Nº da Casa": "1204",
-        "Quadra": "250",
-        "Lote": "309"
-    },
-    {
-        "WKT": "POINT (-34.80880496415879 -7.152486251167632)",
-        "Nº da Casa": "1206",
-        "Quadra": "250",
-        "Lote": "324"
-    },
-    {
-        "WKT": "POINT (-34.808672528918656 -7.152482765280762)",
-        "Nº da Casa": "1208",
-        "Quadra": "250",
-        "Lote": "339"
-    },
-    {
-        "WKT": "POINT (-34.80853462853895 -7.152474978972928)",
-        "Nº da Casa": "1210",
-        "Quadra": "250",
-        "Lote": "354"
-    },
-    {
-        "WKT": "POINT (-34.808395774016354 -7.152470444302504)",
-        "Nº da Casa": "1212",
-        "Quadra": "250",
-        "Lote": "364"
-    },
-    {
-        "WKT": "POINT (-34.80826122339807 -7.152467545677266)",
-        "Nº da Casa": "1214",
-        "Quadra": "250",
-        "Lote": "384"
-    },
-    {
-        "WKT": "POINT (-34.80812688624278 -7.152462722134017)",
-        "Nº da Casa": "1216",
-        "Quadra": "250",
-        "Lote": "399"
-    },
-    {
-        "WKT": "POINT (-34.807991072749196 -7.152457532293817)",
-        "Nº da Casa": "1218",
-        "Quadra": "250",
-        "Lote": "414"
-    },
-    {
-        "WKT": "POINT (-34.80785529702507 -7.1524535788240815)",
-        "Nº da Casa": "1220",
-        "Quadra": "250",
-        "Lote": "429"
-    },
-    {
-        "WKT": "POINT (-34.80771902520534 -7.152448612353608)",
-        "Nº da Casa": "1222",
-        "Quadra": "250",
-        "Lote": "444"
-    },
-    {
-        "WKT": "POINT (-34.8075832840745 -7.152443598175596)",
-        "Nº da Casa": "1224",
-        "Quadra": "250",
-        "Lote": "459"
-    },
-    {
-        "WKT": "POINT (-34.80745027789079 -7.152441029804243)",
-        "Nº da Casa": "1226",
-        "Quadra": "250",
-        "Lote": "474"
-    },
-    {
-        "WKT": "POINT (-34.807297805470505 -7.152435752449478)",
-        "Nº da Casa": "1228",
-        "Quadra": "250",
-        "Lote": "492"
-    },
-    {
-        "WKT": "POINT (-34.805532458146864 -7.152663711752032)",
-        "Nº da Casa": "2321",
-        "Quadra": "253",
-        "Lote": "24"
-    },
-    {
-        "WKT": "POINT (-34.80572361587175 -7.152668734832381)",
-        "Nº da Casa": "2319",
-        "Quadra": "253",
-        "Lote": "39"
-    },
-    {
-        "WKT": "POINT (-34.80587145958106 -7.152674740994122)",
-        "Nº da Casa": "2317",
-        "Quadra": "253",
-        "Lote": "54"
-    },
-    {
-        "WKT": "POINT (-34.80600287118463 -7.152676093120883)",
-        "Nº da Casa": "2315",
-        "Quadra": "253",
-        "Lote": "69"
-    },
-    {
-        "WKT": "POINT (-34.8061358663746 -7.152682431853082)",
-        "Nº da Casa": "2313",
-        "Quadra": "253",
-        "Lote": "84"
-    },
-    {
-        "WKT": "POINT (-34.806276348945495 -7.152685638318269)",
-        "Nº da Casa": "2311",
-        "Quadra": "253",
-        "Lote": "99"
-    },
-    {
-        "WKT": "POINT (-34.80641421330981 -7.152690366346342)",
-        "Nº da Casa": "2309",
-        "Quadra": "253",
-        "Lote": "114"
-    },
-    {
-        "WKT": "POINT (-34.806548192227424 -7.1526957628415015)",
-        "Nº da Casa": "2307",
-        "Quadra": "253",
-        "Lote": "129"
-    },
-    {
-        "WKT": "POINT (-34.806686461285004 -7.152696939593631)",
-        "Nº da Casa": "2305",
-        "Quadra": "253",
-        "Lote": "144"
-    },
-    {
-        "WKT": "POINT (-34.8068258012365 -7.152700594385612)",
-        "Nº da Casa": "2303",
-        "Quadra": "253",
-        "Lote": "159"
-    },
-    {
-        "WKT": "POINT (-34.807003435895325 -7.15270707856221)",
-        "Nº da Casa": "2301",
-        "Quadra": "253",
-        "Lote": "182"
-    },
-    {
-        "WKT": "POINT (-34.80701976923927 -7.152419912653143)",
-        "Nº da Casa": "1302",
-        "Quadra": "253",
-        "Lote": "265"
-    },
-    {
-        "WKT": "POINT (-34.80683573462541 -7.152414756432052)",
-        "Nº da Casa": "1304",
-        "Quadra": "253",
-        "Lote": "280"
-    },
-    {
-        "WKT": "POINT (-34.806691201758774 -7.152408078191835)",
-        "Nº da Casa": "1306",
-        "Quadra": "253",
-        "Lote": "295"
-    },
-    {
-        "WKT": "POINT (-34.806556509009 -7.152404538538536)",
-        "Nº da Casa": "1308",
-        "Quadra": "253",
-        "Lote": "310"
-    },
-    {
-        "WKT": "POINT (-34.806420137906635 -7.152404033528151)",
-        "Nº da Casa": "1310",
-        "Quadra": "253",
-        "Lote": "325"
-    },
-    {
-        "WKT": "POINT (-34.806285072892685 -7.1523978954489555)",
-        "Nº da Casa": "1312",
-        "Quadra": "253",
-        "Lote": "339"
-    },
-    {
-        "WKT": "POINT (-34.80614953183237 -7.152392264631811)",
-        "Nº da Casa": "1314",
-        "Quadra": "253",
-        "Lote": "355"
-    },
-    {
-        "WKT": "POINT (-34.806013634850196 -7.152388921241195)",
-        "Nº da Casa": "1316",
-        "Quadra": "253",
-        "Lote": "370"
-    },
-    {
-        "WKT": "POINT (-34.80588053973919 -7.152384763312369)",
-        "Nº da Casa": "1318",
-        "Quadra": "253",
-        "Lote": "385"
-    },
-    {
-        "WKT": "POINT (-34.80573622136169 -7.152378752997002)",
-        "Nº da Casa": "1320",
-        "Quadra": "253",
-        "Lote": "400"
-    },
-    {
-        "WKT": "POINT (-34.805546307634835 -7.152375462058354)",
-        "Nº da Casa": "1322",
-        "Quadra": "253",
-        "Lote": "423"
-    },
-    {
-        "WKT": "POINT (-34.80552680404819 -7.153309237204819)",
-        "Nº da Casa": "3321",
-        "Quadra": "254",
-        "Lote": "23"
-    },
-    {
-        "WKT": "POINT (-34.80570972360835 -7.153313764756229)",
-        "Nº da Casa": "3319",
-        "Quadra": "254",
-        "Lote": "38"
-    },
-    {
-        "WKT": "POINT (-34.8058501379651 -7.153321054994596)",
-        "Nº da Casa": "3317",
-        "Quadra": "254",
-        "Lote": "53"
-    },
-    {
-        "WKT": "POINT (-34.8059840915668 -7.153323812605415)",
-        "Nº da Casa": "3315",
-        "Quadra": "254",
-        "Lote": "68"
-    },
-    {
-        "WKT": "POINT (-34.80612076637108 -7.1533284896106615)",
-        "Nº da Casa": "3313",
-        "Quadra": "254",
-        "Lote": "83"
-    },
-    {
-        "WKT": "POINT (-34.806258784828565 -7.15333311009634)",
-        "Nº da Casa": "3311",
-        "Quadra": "254",
-        "Lote": "98"
-    },
-    {
-        "WKT": "POINT (-34.80639177879134 -7.153338934625619)",
-        "Nº da Casa": "3309",
-        "Quadra": "254",
-        "Lote": "113"
-    },
-    {
-        "WKT": "POINT (-34.80652468073009 -7.153342807229293)",
-        "Nº da Casa": "3307",
-        "Quadra": "254",
-        "Lote": "128"
-    },
-    {
-        "WKT": "POINT (-34.8066601362148 -7.153348054136651)",
-        "Nº da Casa": "3305",
-        "Quadra": "254",
-        "Lote": "143"
-    },
-    {
-        "WKT": "POINT (-34.80679638670541 -7.153354171145725)",
-        "Nº da Casa": "3303",
-        "Quadra": "254",
-        "Lote": "158"
-    },
-    {
-        "WKT": "POINT (-34.80697462317948 -7.153358432572609)",
-        "Nº da Casa": "3301",
-        "Quadra": "254",
-        "Lote": "181"
-    },
-    {
-        "WKT": "POINT (-34.806987381628986 -7.153070402646549)",
-        "Nº da Casa": "2302",
-        "Quadra": "254",
-        "Lote": "264"
-    },
-    {
-        "WKT": "POINT (-34.80680575525114 -7.153063836428209)",
-        "Nº da Casa": "2304",
-        "Quadra": "254",
-        "Lote": "279"
-    },
-    {
-        "WKT": "POINT (-34.80667085910085 -7.153057132545851)",
-        "Nº da Casa": "2306",
-        "Quadra": "254",
-        "Lote": "294"
-    },
-    {
-        "WKT": "POINT (-34.80653680369185 -7.1530555988375895)",
-        "Nº da Casa": "2308",
-        "Quadra": "254",
-        "Lote": "309"
-    },
-    {
-        "WKT": "POINT (-34.80640374183498 -7.153049684889788)",
-        "Nº da Casa": "2310",
-        "Quadra": "254",
-        "Lote": "324"
-    },
-    {
-        "WKT": "POINT (-34.806266809699004 -7.153043207527756)",
-        "Nº da Casa": "2312",
-        "Quadra": "254",
-        "Lote": "338"
-    },
-    {
-        "WKT": "POINT (-34.80612880102625 -7.153038709931462)",
-        "Nº da Casa": "2314",
-        "Quadra": "254",
-        "Lote": "354"
-    },
-    {
-        "WKT": "POINT (-34.805993395662995 -7.153035602441047)",
-        "Nº da Casa": "2316",
-        "Quadra": "254",
-        "Lote": "369"
-    },
-    {
-        "WKT": "POINT (-34.80585962434712 -7.153030258612958)",
-        "Nº da Casa": "2318",
-        "Quadra": "254",
-        "Lote": "384"
-    },
-    {
-        "WKT": "POINT (-34.80571982008252 -7.153023062061665)",
-        "Nº da Casa": "2320",
-        "Quadra": "254",
-        "Lote": "399"
-    },
-    {
-        "WKT": "POINT (-34.80553529167792 -7.153017516907199)",
-        "Nº da Casa": "2322",
-        "Quadra": "254",
-        "Lote": "422"
-    },
-    {
-        "WKT": "POINT (-34.8054999185625 -7.154026943436252)",
-        "Nº da Casa": "4321",
-        "Quadra": "255",
-        "Lote": "23"
-    },
-    {
-        "WKT": "POINT (-34.805687692343085 -7.154033775570976)",
-        "Nº da Casa": "4319",
-        "Quadra": "255",
-        "Lote": "38"
-    },
-    {
-        "WKT": "POINT (-34.80582339069479 -7.154036679990949)",
-        "Nº da Casa": "4317",
-        "Quadra": "255",
-        "Lote": "53"
-    },
-    {
-        "WKT": "POINT (-34.805962907499705 -7.1540413393259765)",
-        "Nº da Casa": "4315",
-        "Quadra": "255",
-        "Lote": "68"
-    },
-    {
-        "WKT": "POINT (-34.80609803003083 -7.154045261963892)",
-        "Nº da Casa": "4313",
-        "Quadra": "255",
-        "Lote": "83"
-    },
-    {
-        "WKT": "POINT (-34.80623249046146 -7.15404890145656)",
-        "Nº da Casa": "4311",
-        "Quadra": "255",
-        "Lote": "98"
-    },
-    {
-        "WKT": "POINT (-34.806370321632826 -7.154053655691297)",
-        "Nº da Casa": "4309",
-        "Quadra": "255",
-        "Lote": "113"
-    },
-    {
-        "WKT": "POINT (-34.80650957376707 -7.1540562235950365)",
-        "Nº da Casa": "4307",
-        "Quadra": "255",
-        "Lote": "128"
-    },
-    {
-        "WKT": "POINT (-34.80664076357827 -7.154062819882392)",
-        "Nº da Casa": "4305",
-        "Quadra": "255",
-        "Lote": "143"
-    },
-    {
-        "WKT": "POINT (-34.806775058583185 -7.154065458369085)",
-        "Nº da Casa": "4303",
-        "Quadra": "255",
-        "Lote": "158"
-    },
-    {
-        "WKT": "POINT (-34.80695565427487 -7.154068439320274)",
-        "Nº da Casa": "4301",
-        "Quadra": "255",
-        "Lote": "181"
-    },
-    {
-        "WKT": "POINT (-34.806968111899245 -7.153784233014862)",
-        "Nº da Casa": "3302",
-        "Quadra": "255",
-        "Lote": "264"
-    },
-    {
-        "WKT": "POINT (-34.80678787084814 -7.153777669435257)",
-        "Nº da Casa": "3304",
-        "Quadra": "255",
-        "Lote": "279"
-    },
-    {
-        "WKT": "POINT (-34.806649356103705 -7.153773833748033)",
-        "Nº da Casa": "3306",
-        "Quadra": "255",
-        "Lote": "294"
-    },
-    {
-        "WKT": "POINT (-34.80651595357681 -7.1537672693387435)",
-        "Nº da Casa": "3308",
-        "Quadra": "255",
-        "Lote": "309"
-    },
-    {
-        "WKT": "POINT (-34.80637966477809 -7.153763162417377)",
-        "Nº da Casa": "3310",
-        "Quadra": "255",
-        "Lote": "324"
-    },
-    {
-        "WKT": "POINT (-34.80624137392958 -7.153758095781796)",
-        "Nº da Casa": "3312",
-        "Quadra": "255",
-        "Lote": "338"
-    },
-    {
-        "WKT": "POINT (-34.80610663065706 -7.1537524139770605)",
-        "Nº da Casa": "3314",
-        "Quadra": "255",
-        "Lote": "354"
-    },
-    {
-        "WKT": "POINT (-34.805972449756354 -7.153747608018898)",
-        "Nº da Casa": "3316",
-        "Quadra": "255",
-        "Lote": "369"
-    },
-    {
-        "WKT": "POINT (-34.80583481925979 -7.153743191340279)",
-        "Nº da Casa": "3318",
-        "Quadra": "255",
-        "Lote": "384"
-    },
-    {
-        "WKT": "POINT (-34.805697942377826 -7.1537366068563095)",
-        "Nº da Casa": "3320",
-        "Quadra": "255",
-        "Lote": "399"
-    },
-    {
-        "WKT": "POINT (-34.805505812905416 -7.153729788112147)",
-        "Nº da Casa": "3322",
-        "Quadra": "255",
-        "Lote": "422"
-    },
-    {
-        "WKT": "POINT (-34.805488374770285 -7.154675587595939)",
-        "Nº da Casa": "5321",
-        "Quadra": "256",
-        "Lote": "22"
-    },
-    {
-        "WKT": "POINT (-34.80566856848704 -7.154680540479704)",
-        "Nº da Casa": "5319",
-        "Quadra": "256",
-        "Lote": "37"
-    },
-    {
-        "WKT": "POINT (-34.80580215264453 -7.154687544584994)",
-        "Nº da Casa": "5317",
-        "Quadra": "256",
-        "Lote": "52"
-    },
-    {
-        "WKT": "POINT (-34.80593625658636 -7.15469131832552)",
-        "Nº da Casa": "5315",
-        "Quadra": "256",
-        "Lote": "67"
-    },
-    {
-        "WKT": "POINT (-34.80607423011145 -7.154699525478377)",
-        "Nº da Casa": "5313",
-        "Quadra": "256",
-        "Lote": "82"
-    },
-    {
-        "WKT": "POINT (-34.80621266462773 -7.154701661667983)",
-        "Nº da Casa": "5311",
-        "Quadra": "256",
-        "Lote": "97"
-    },
-    {
-        "WKT": "POINT (-34.806351362715304 -7.1547075689346125)",
-        "Nº da Casa": "5309",
-        "Quadra": "256",
-        "Lote": "112"
-    },
-    {
-        "WKT": "POINT (-34.80648298938194 -7.154711972645004)",
-        "Nº da Casa": "5307",
-        "Quadra": "256",
-        "Lote": "127"
-    },
-    {
-        "WKT": "POINT (-34.8066109668679 -7.154717251571855)",
-        "Nº da Casa": "5305",
-        "Quadra": "256",
-        "Lote": "142"
-    },
-    {
-        "WKT": "POINT (-34.806747009158975 -7.154722657789032)",
-        "Nº da Casa": "5303",
-        "Quadra": "256",
-        "Lote": "157"
-    },
-    {
-        "WKT": "POINT (-34.80693508615845 -7.15472810250599)",
-        "Nº da Casa": "5301",
-        "Quadra": "256",
-        "Lote": "180"
-    },
-    {
-        "WKT": "POINT (-34.80694561345216 -7.154432092703378)",
-        "Nº da Casa": "4302",
-        "Quadra": "256",
-        "Lote": "263"
-    },
-    {
-        "WKT": "POINT (-34.80676091370435 -7.154421375034268)",
-        "Nº da Casa": "4304",
-        "Quadra": "256",
-        "Lote": "278"
-    },
-    {
-        "WKT": "POINT (-34.80662699813487 -7.154417512097093)",
-        "Nº da Casa": "4306",
-        "Quadra": "256",
-        "Lote": "293"
-    },
-    {
-        "WKT": "POINT (-34.80649149082759 -7.154415947668833)",
-        "Nº da Casa": "4308",
-        "Quadra": "256",
-        "Lote": "308"
-    },
-    {
-        "WKT": "POINT (-34.80635461997862 -7.154406305131834)",
-        "Nº da Casa": "4310",
-        "Quadra": "256",
-        "Lote": "323"
-    },
-    {
-        "WKT": "POINT (-34.80621919175788 -7.154401776773459)",
-        "Nº da Casa": "4312",
-        "Quadra": "256",
-        "Lote": "338"
-    },
-    {
-        "WKT": "POINT (-34.80608325721785 -7.154401309711287)",
-        "Nº da Casa": "4314",
-        "Quadra": "256",
-        "Lote": "353"
-    },
-    {
-        "WKT": "POINT (-34.80594453922463 -7.1543925164082625)",
-        "Nº da Casa": "4316",
-        "Quadra": "256",
-        "Lote": "368"
-    },
-    {
-        "WKT": "POINT (-34.80580750174117 -7.154388425998056)",
-        "Nº da Casa": "4318",
-        "Quadra": "256",
-        "Lote": "383"
-    },
-    {
-        "WKT": "POINT (-34.805671631828226 -7.154382075393329)",
-        "Nº da Casa": "4320",
-        "Quadra": "256",
-        "Lote": "398"
-    },
-    {
-        "WKT": "POINT (-34.80549082667986 -7.154378224018476)",
-        "Nº da Casa": "4322",
-        "Quadra": "256",
-        "Lote": "421"
-    },
-    {
-        "WKT": "POINT (-34.8090214309926 -7.155076204422196)",
-        "Nº da Casa": "6001",
-        "Quadra": "246",
-        "Lote": "6960"
-    },
-    {
-        "WKT": "POINT (-34.809725230038275 -7.155243311625651)",
-        "Nº da Casa": "6002",
-        "Quadra": "246",
-        "Lote": "6961"
-    },
-    {
-        "WKT": "POINT (-34.80958919793372 -7.155133171948564)",
-        "Nº da Casa": "6003",
-        "Quadra": "246",
-        "Lote": "6962"
-    },
-    {
-        "WKT": "POINT (-34.808823669473796 -7.155069874696612)",
-        "Nº da Casa": "6004",
-        "Quadra": "246",
-        "Lote": "6963"
-    }
-        // Outros dados podem ser adicionados aqui
-    ];
-
-    let googleMapsUrl = ""; // URL para o Google Maps
-
-    function toggleFields() {
-        const searchType = document.getElementById("searchType").value;
-        document.getElementById("quadraLoteFields").classList.toggle("hidden", searchType !== "quadraLote");
-        document.getElementById("casaFields").classList.toggle("hidden", searchType !== "casa");
-    }
-
-    function buscarLote() {
-        const searchType = document.getElementById("searchType").value;
-        const quadra = document.getElementById('quadraInput').value.trim();
-        const lote = document.getElementById('loteInput').value.trim();
-        const casa = document.getElementById('casaInput').value.trim();
-
-        const resultadoDiv = document.getElementById('resultado');
-        const mapsButton = document.getElementById('mapsButton');
-        resultadoDiv.innerHTML = '';
-        resultadoDiv.style.color = '#333';
-        mapsButton.classList.add("hidden");
-
-        let resultado;
-        if (searchType === "quadraLote") {
-            resultado = dados.find(dado => dado.Quadra === quadra && dado.Lote === lote);
-        } else if (searchType === "casa") {
-            resultado = dados.find(dado => dado["Nº da Casa"] === casa);
-        }
-
-        if (resultado) {
-            const coordenadas = resultado.WKT.match(/POINT \(([^ ]+) ([^ ]+)\)/);
-            if (coordenadas) {
-                const lat = coordenadas[2];
-                const lng = coordenadas[1];
-                googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
-
-                resultadoDiv.style.color = 'green';
-                resultadoDiv.innerHTML = `<p><strong>Quadra:</strong> ${resultado.Quadra}</p>
-                                          <p><strong>Lote:</strong> ${resultado.Lote}</p>
-                                          <p><strong>Casa:</strong> ${resultado["Nº da Casa"]}</p>`;
-
-                mapsButton.classList.remove("hidden");
-            } else {
-                resultadoDiv.style.color = 'red';
-                resultadoDiv.innerHTML = '<p>Erro ao obter coordenadas do lote.</p>';
-            }
-        } else {
-            resultadoDiv.style.color = 'red';
-            resultadoDiv.innerHTML = '<p>Nenhum resultado encontrado.</p>';
-        }
-    }
-
-    function abrirGoogleMaps() {
-        window.open(googleMapsUrl, '_blank');
-    }
+'use strict';
+// Dados originais preservados: 367 registros (número da casa, quadra, lote e coordenadas WKT).
+const DADOS = [{"WKT":"POINT (-34.80944116911525 -7.152811565247221)","Nº da Casa":"2135","Quadra":"242","Lote":"18"},{"WKT":"POINT (-34.809592731932554 -7.152818700674265)","Nº da Casa":"2133","Quadra":"242","Lote":"33"},{"WKT":"POINT (-34.80972527097546 -7.152819562665905)","Nº da Casa":"2131","Quadra":"242","Lote":"48"},{"WKT":"POINT (-34.80986732607889 -7.152830396677109)","Nº da Casa":"2129","Quadra":"242","Lote":"63"},{"WKT":"POINT (-34.809999949771104 -7.1528305928740235)","Nº da Casa":"2127","Quadra":"242","Lote":"78"},{"WKT":"POINT (-34.810142789220116 -7.152834440555056)","Nº da Casa":"2125","Quadra":"242","Lote":"93"},{"WKT":"POINT (-34.81027281814977 -7.152841046180186)","Nº da Casa":"2123","Quadra":"242","Lote":"108"},{"WKT":"POINT (-34.8104095043626 -7.15284366504517)","Nº da Casa":"2121","Quadra":"242","Lote":"123"},{"WKT":"POINT (-34.81054685170642 -7.152848742375392)","Nº da Casa":"2119","Quadra":"242","Lote":"138"},{"WKT":"POINT (-34.81068662821135 -7.152851916303118)","Nº da Casa":"2117","Quadra":"242","Lote":"153"},{"WKT":"POINT (-34.810819499999994 -7.152859)","Nº da Casa":"2115","Quadra":"242","Lote":"168"},{"WKT":"POINT (-34.810951554694235 -7.152863719724376)","Nº da Casa":"2113","Quadra":"242","Lote":"183"},{"WKT":"POINT (-34.811089707588216 -7.152867899418999)","Nº da Casa":"2111","Quadra":"242","Lote":"198"},{"WKT":"POINT (-34.81122163160649 -7.15287141936159)","Nº da Casa":"2109","Quadra":"242","Lote":"213"},{"WKT":"POINT (-34.81135970328463 -7.152876079766219)","Nº da Casa":"2107","Quadra":"242","Lote":"228"},{"WKT":"POINT (-34.81149714730759 -7.152881520045938)","Nº da Casa":"2105","Quadra":"242","Lote":"243"},{"WKT":"POINT (-34.811638149005944 -7.15288639196967)","Nº da Casa":"2103","Quadra":"242","Lote":"258"},{"WKT":"POINT (-34.811805414949944 -7.1528885011552585)","Nº da Casa":"2101","Quadra":"242","Lote":"280"},{"WKT":"POINT (-34.81182132243786 -7.1525968165928955)","Nº da Casa":"1102","Quadra":"242","Lote":"362"},{"WKT":"POINT (-34.811649381605484 -7.152593510824259)","Nº da Casa":"1104","Quadra":"242","Lote":"377"},{"WKT":"POINT (-34.811508466495816 -7.1525881101210596)","Nº da Casa":"1106","Quadra":"242","Lote":"392"},{"WKT":"POINT (-34.81136805246905 -7.152581903202885)","Nº da Casa":"1108","Quadra":"242","Lote":"407"},{"WKT":"POINT (-34.811233859327224 -7.152578948012231)","Nº da Casa":"1110","Quadra":"242","Lote":"422"},{"WKT":"POINT (-34.8111022418274 -7.152575674974185)","Nº da Casa":"1112","Quadra":"242","Lote":"437"},{"WKT":"POINT (-34.81097112419931 -7.1525687475333175)","Nº da Casa":"1114","Quadra":"242","Lote":"452"},{"WKT":"POINT (-34.81083873934838 -7.152566187969925)","Nº da Casa":"1116","Quadra":"242","Lote":"467"},{"WKT":"POINT (-34.81069558148708 -7.152562799535517)","Nº da Casa":"1118","Quadra":"242","Lote":"482"},{"WKT":"POINT (-34.810552464446204 -7.152556867948719)","Nº da Casa":"1120","Quadra":"242","Lote":"497"},{"WKT":"POINT (-34.81040948465461 -7.152552336022253)","Nº da Casa":"1122","Quadra":"242","Lote":"512"},{"WKT":"POINT (-34.81027834179618 -7.152548760113891)","Nº da Casa":"1124","Quadra":"242","Lote":"527"},{"WKT":"POINT (-34.81013761272785 -7.1525442705468505)","Nº da Casa":"1126","Quadra":"242","Lote":"542"},{"WKT":"POINT (-34.81000850192123 -7.1525386126320845)","Nº da Casa":"1128","Quadra":"242","Lote":"557"},{"WKT":"POINT (-34.80988023351708 -7.152538919243826)","Nº da Casa":"1130","Quadra":"242","Lote":"572"},{"WKT":"POINT (-34.80974228754904 -7.152531085303524)","Nº da Casa":"1132","Quadra":"242","Lote":"587"},{"WKT":"POINT (-34.809603957290776 -7.152528559922036)","Nº da Casa":"1134","Quadra":"242","Lote":"602"},{"WKT":"POINT (-34.80945272908915 -7.152521615130218)","Nº da Casa":"1136","Quadra":"242","Lote":"620"},{"WKT":"POINT (-34.809576383641506 -7.15345924970365)","Nº da Casa":"3133","Quadra":"243","Lote":"19"},{"WKT":"POINT (-34.809713575279005 -7.15346251400295)","Nº da Casa":"3131","Quadra":"243","Lote":"34"},{"WKT":"POINT (-34.809841135860815 -7.153464992823636)","Nº da Casa":"3129","Quadra":"243","Lote":"49"},{"WKT":"POINT (-34.80997855996465 -7.153470145184204)","Nº da Casa":"3127","Quadra":"243","Lote":"64"},{"WKT":"POINT (-34.81011731512903 -7.153476200194859)","Nº da Casa":"3125","Quadra":"243","Lote":"79"},{"WKT":"POINT (-34.810253782056755 -7.153480428513394)","Nº da Casa":"3123","Quadra":"243","Lote":"94"},{"WKT":"POINT (-34.81038809250163 -7.15348515190481)","Nº da Casa":"3121","Quadra":"243","Lote":"109"},{"WKT":"POINT (-34.81051948938398 -7.15348880624527)","Nº da Casa":"3119","Quadra":"243","Lote":"124"},{"WKT":"POINT (-34.81065601701348 -7.153493155449651)","Nº da Casa":"3117","Quadra":"243","Lote":"139"},{"WKT":"POINT (-34.81079246746061 -7.153497911824854)","Nº da Casa":"3115","Quadra":"243","Lote":"154"},{"WKT":"POINT (-34.810933516041125 -7.1535021528551965)","Nº da Casa":"3113","Quadra":"243","Lote":"169"},{"WKT":"POINT (-34.81106587202176 -7.153507083108461)","Nº da Casa":"3111","Quadra":"243","Lote":"184"},{"WKT":"POINT (-34.81119976001185 -7.153509821846972)","Nº da Casa":"3109","Quadra":"243","Lote":"199"},{"WKT":"POINT (-34.8113331895017 -7.153516846917895)","Nº da Casa":"3107","Quadra":"243","Lote":"214"},{"WKT":"POINT (-34.811472461053675 -7.153520242141949)","Nº da Casa":"3105","Quadra":"243","Lote":"229"},{"WKT":"POINT (-34.811613379593304 -7.1535256051691505)","Nº da Casa":"3103","Quadra":"243","Lote":"244"},{"WKT":"POINT (-34.811789744686195 -7.153531110910116)","Nº da Casa":"3101","Quadra":"243","Lote":"267"},{"WKT":"POINT (-34.8117985 -7.153246000000001)","Nº da Casa":"2102","Quadra":"243","Lote":"349"},{"WKT":"POINT (-34.811623683301626 -7.15324108473584)","Nº da Casa":"2104","Quadra":"243","Lote":"364"},{"WKT":"POINT (-34.81148958929619 -7.153235653010198)","Nº da Casa":"2106","Quadra":"243","Lote":"379"},{"WKT":"POINT (-34.811348502237514 -7.153230896197668)","Nº da Casa":"2108","Quadra":"243","Lote":"394"},{"WKT":"POINT (-34.811211500000006 -7.153225999999999)","Nº da Casa":"2110","Quadra":"243","Lote":"409"},{"WKT":"POINT (-34.81107742360625 -7.153219673379468)","Nº da Casa":"2112","Quadra":"243","Lote":"424"},{"WKT":"POINT (-34.81093742339254 -7.153217757556872)","Nº da Casa":"2114","Quadra":"243","Lote":"439"},{"WKT":"POINT (-34.81080342271287 -7.153210989575673)","Nº da Casa":"2116","Quadra":"243","Lote":"454"},{"WKT":"POINT (-34.81066653623851 -7.153208405480032)","Nº da Casa":"2118","Quadra":"243","Lote":"469"},{"WKT":"POINT (-34.810532218687584 -7.153200572693394)","Nº da Casa":"2120","Quadra":"243","Lote":"484"},{"WKT":"POINT (-34.8103969375282 -7.1531961264215225)","Nº da Casa":"2122","Quadra":"243","Lote":"499"},{"WKT":"POINT (-34.81025929625896 -7.153191141594853)","Nº da Casa":"2124","Quadra":"243","Lote":"514"},{"WKT":"POINT (-34.8101235999949 -7.15318596844033)","Nº da Casa":"2126","Quadra":"243","Lote":"529"},{"WKT":"POINT (-34.809989369684466 -7.153181931227589)","Nº da Casa":"2128","Quadra":"243","Lote":"544"},{"WKT":"POINT (-34.809853147540984 -7.1531757049180325)","Nº da Casa":"2130","Quadra":"243","Lote":"559"},{"WKT":"POINT (-34.8097181750233 -7.153173126054061)","Nº da Casa":"2132","Quadra":"243","Lote":"574"},{"WKT":"POINT (-34.80958216622023 -7.153168123601411)","Nº da Casa":"2134","Quadra":"243","Lote":"589"},{"WKT":"POINT (-34.80942638830029 -7.153293575701426)","Nº da Casa":"3135","Quadra":"243","Lote":"607"},{"WKT":"POINT (-34.809390563257274 -7.154045251421986)","Nº da Casa":"3136","Quadra":"244","Lote":"19"},{"WKT":"POINT (-34.80954700000001 -7.154192)","Nº da Casa":"4133","Quadra":"244","Lote":"33"},{"WKT":"POINT (-34.809692656343316 -7.154192664009737)","Nº da Casa":"4131","Quadra":"244","Lote":"48"},{"WKT":"POINT (-34.80983628413962 -7.154199499203919)","Nº da Casa":"4129","Quadra":"244","Lote":"63"},{"WKT":"POINT (-34.80997264052806 -7.154206027313891)","Nº da Casa":"4127","Quadra":"244","Lote":"78"},{"WKT":"POINT (-34.810100588673286 -7.154210661148091)","Nº da Casa":"4125","Quadra":"244","Lote":"93"},{"WKT":"POINT (-34.810230146436446 -7.154213874230396)","Nº da Casa":"4123","Quadra":"244","Lote":"108"},{"WKT":"POINT (-34.81036365994587 -7.154219834941148)","Nº da Casa":"4121","Quadra":"244","Lote":"123"},{"WKT":"POINT (-34.81050191179175 -7.154225327478589)","Nº da Casa":"4119","Quadra":"244","Lote":"138"},{"WKT":"POINT (-34.81064362361984 -7.154229268737691)","Nº da Casa":"4117","Quadra":"244","Lote":"153"},{"WKT":"POINT (-34.81077415584391 -7.154234977331093)","Nº da Casa":"4115","Quadra":"244","Lote":"168"},{"WKT":"POINT (-34.81090800860328 -7.154241817923679)","Nº da Casa":"4113","Quadra":"244","Lote":"183"},{"WKT":"POINT (-34.811055320634324 -7.154247693135964)","Nº da Casa":"4111","Quadra":"244","Lote":"198"},{"WKT":"POINT (-34.81119163102701 -7.1542498812512445)","Nº da Casa":"4109","Quadra":"244","Lote":"213"},{"WKT":"POINT (-34.81131860781611 -7.154252299792585)","Nº da Casa":"4107","Quadra":"244","Lote":"228"},{"WKT":"POINT (-34.811451000000005 -7.154259)","Nº da Casa":"4105","Quadra":"244","Lote":"243"},{"WKT":"POINT (-34.811587494643184 -7.154263676540006)","Nº da Casa":"4103","Quadra":"244","Lote":"258"},{"WKT":"POINT (-34.811763007914834 -7.154273487136638)","Nº da Casa":"4101","Quadra":"244","Lote":"282"},{"WKT":"POINT (-34.81177421212538 -7.153977967068784)","Nº da Casa":"3102","Quadra":"244","Lote":"366"},{"WKT":"POINT (-34.811607662827036 -7.153970157408208)","Nº da Casa":"3104","Quadra":"244","Lote":"381"},{"WKT":"POINT (-34.8114658251866 -7.153963798925904)","Nº da Casa":"3106","Quadra":"244","Lote":"396"},{"WKT":"POINT (-34.811325802662545 -7.153962092320661)","Nº da Casa":"3108","Quadra":"244","Lote":"411"},{"WKT":"POINT (-34.81119294430466 -7.153954120720582)","Nº da Casa":"3110","Quadra":"244","Lote":"426"},{"WKT":"POINT (-34.81105573409421 -7.153950222958684)","Nº da Casa":"3112","Quadra":"244","Lote":"441"},{"WKT":"POINT (-34.810912579591864 -7.15394401621236)","Nº da Casa":"3114","Quadra":"244","Lote":"456"},{"WKT":"POINT (-34.81077810601286 -7.153939274914714)","Nº da Casa":"3116","Quadra":"244","Lote":"471"},{"WKT":"POINT (-34.81064555834954 -7.1539363967616785)","Nº da Casa":"3118","Quadra":"244","Lote":"486"},{"WKT":"POINT (-34.81050974169657 -7.153931347143186)","Nº da Casa":"3120","Quadra":"244","Lote":"501"},{"WKT":"POINT (-34.81036897068035 -7.153927044429382)","Nº da Casa":"3122","Quadra":"244","Lote":"516"},{"WKT":"POINT (-34.810231927502464 -7.153918991854061)","Nº da Casa":"3124","Quadra":"244","Lote":"531"},{"WKT":"POINT (-34.81009917574311 -7.15391705754096)","Nº da Casa":"3126","Quadra":"244","Lote":"546"},{"WKT":"POINT (-34.8099662203129 -7.153910054428082)","Nº da Casa":"3128","Quadra":"244","Lote":"561"},{"WKT":"POINT (-34.809832500000006 -7.153904500000001)","Nº da Casa":"3130","Quadra":"244","Lote":"576"},{"WKT":"POINT (-34.809694257061636 -7.153900321054861)","Nº da Casa":"3132","Quadra":"244","Lote":"591"},{"WKT":"POINT (-34.80955493151724 -7.153895798274635)","Nº da Casa":"3134","Quadra":"244","Lote":"606"},{"WKT":"POINT (-34.80937272678457 -7.154828905463322)","Nº da Casa":"5135","Quadra":"245","Lote":"18"},{"WKT":"POINT (-34.809529251324136 -7.154833695728054)","Nº da Casa":"5133","Quadra":"245","Lote":"33"},{"WKT":"POINT (-34.80966879519845 -7.15483847037483)","Nº da Casa":"5131","Quadra":"245","Lote":"48"},{"WKT":"POINT (-34.80980365729519 -7.154846143157214)","Nº da Casa":"5129","Quadra":"245","Lote":"63"},{"WKT":"POINT (-34.80994191978016 -7.154851915896126)","Nº da Casa":"5127","Quadra":"245","Lote":"78"},{"WKT":"POINT (-34.81008106022757 -7.154857370131885)","Nº da Casa":"5125","Quadra":"245","Lote":"93"},{"WKT":"POINT (-34.81021632189431 -7.154863187082048)","Nº da Casa":"5123","Quadra":"245","Lote":"108"},{"WKT":"POINT (-34.81034597161433 -7.154866371868062)","Nº da Casa":"5121","Quadra":"245","Lote":"123"},{"WKT":"POINT (-34.81047741655557 -7.154868762036755)","Nº da Casa":"5119","Quadra":"245","Lote":"138"},{"WKT":"POINT (-34.81061175400621 -7.1548776458595515)","Nº da Casa":"5117","Quadra":"245","Lote":"153"},{"WKT":"POINT (-34.81074858680777 -7.154882140126343)","Nº da Casa":"5115","Quadra":"245","Lote":"168"},{"WKT":"POINT (-34.810886656993766 -7.1548880419200644)","Nº da Casa":"5113","Quadra":"245","Lote":"183"},{"WKT":"POINT (-34.81102336140263 -7.154894447739392)","Nº da Casa":"5111","Quadra":"245","Lote":"198"},{"WKT":"POINT (-34.81115940493017 -7.154899260576602)","Nº da Casa":"5109","Quadra":"245","Lote":"213"},{"WKT":"POINT (-34.81129171084126 -7.154905886844003)","Nº da Casa":"5107","Quadra":"245","Lote":"228"},{"WKT":"POINT (-34.81143581470184 -7.154910496215928)","Nº da Casa":"5105","Quadra":"245","Lote":"243"},{"WKT":"POINT (-34.8115751293135 -7.154914910109455)","Nº da Casa":"5103","Quadra":"245","Lote":"258"},{"WKT":"POINT (-34.81173540304487 -7.154917899305555)","Nº da Casa":"5101","Quadra":"245","Lote":"282"},{"WKT":"POINT (-34.81174808104974 -7.154627855490512)","Nº da Casa":"4102","Quadra":"245","Lote":"366"},{"WKT":"POINT (-34.8115844590369 -7.15462255932685)","Nº da Casa":"4104","Quadra":"245","Lote":"381"},{"WKT":"POINT (-34.811439616716925 -7.15461915813077)","Nº da Casa":"4106","Quadra":"245","Lote":"396"},{"WKT":"POINT (-34.81130153451226 -7.15461525137859)","Nº da Casa":"4108","Quadra":"245","Lote":"411"},{"WKT":"POINT (-34.811167469442736 -7.154605565840536)","Nº da Casa":"4110","Quadra":"245","Lote":"426"},{"WKT":"POINT (-34.81103102789574 -7.154603100347745)","Nº da Casa":"4112","Quadra":"245","Lote":"441"},{"WKT":"POINT (-34.81089574786101 -7.154597691854373)","Nº da Casa":"4114","Quadra":"245","Lote":"456"},{"WKT":"POINT (-34.810762584959306 -7.1545935949422965)","Nº da Casa":"4116","Quadra":"245","Lote":"471"},{"WKT":"POINT (-34.81062856361748 -7.154585059659373)","Nº da Casa":"4118","Quadra":"245","Lote":"486"},{"WKT":"POINT (-34.81049129139864 -7.154581753976932)","Nº da Casa":"4120","Quadra":"245","Lote":"501"},{"WKT":"POINT (-34.81035498193761 -7.154576542692938)","Nº da Casa":"4122","Quadra":"245","Lote":"516"},{"WKT":"POINT (-34.810221480424275 -7.154571508937763)","Nº da Casa":"4124","Quadra":"245","Lote":"531"},{"WKT":"POINT (-34.810088389690996 -7.154568093754111)","Nº da Casa":"4126","Quadra":"245","Lote":"546"},{"WKT":"POINT (-34.80995089838622 -7.154561378941322)","Nº da Casa":"4128","Quadra":"245","Lote":"561"},{"WKT":"POINT (-34.80981425670499 -7.1545548212005095)","Nº da Casa":"4130","Quadra":"245","Lote":"576"},{"WKT":"POINT (-34.80967702918963 -7.154551595194354)","Nº da Casa":"4132","Quadra":"245","Lote":"591"},{"WKT":"POINT (-34.80953942224534 -7.1545464866676936)","Nº da Casa":"4134","Quadra":"245","Lote":"606"},{"WKT":"POINT (-34.80938205622097 -7.154539081730692)","Nº da Casa":"4136","Quadra":"245","Lote":"624"},{"WKT":"POINT (-34.808145194945496 -7.155182134502714)","Nº da Casa":"5402","Quadra":"246","Lote":"984"},{"WKT":"POINT (-34.80828241404126 -7.155189410859058)","Nº da Casa":"5404","Quadra":"246","Lote":"999"},{"WKT":"POINT (-34.808421186528285 -7.155189925339509)","Nº da Casa":"5406","Quadra":"246","Lote":"1014"},{"WKT":"POINT (-34.80855289382902 -7.155192529705928)","Nº da Casa":"5408","Quadra":"246","Lote":"1029"},{"WKT":"POINT (-34.80801079017351 -7.155179068156859)","Nº da Casa":"5410","Quadra":"246","Lote":"1044"},{"WKT":"POINT (-34.80787338880939 -7.155172866819308)","Nº da Casa":"5412","Quadra":"246","Lote":"1059"},{"WKT":"POINT (-34.80773418175307 -7.155166802625545)","Nº da Casa":"5414","Quadra":"246","Lote":"1074"},{"WKT":"POINT (-34.80760173565447 -7.155163185470118)","Nº da Casa":"5416","Quadra":"246","Lote":"1089"},{"WKT":"POINT (-34.8074648022216 -7.155158540103522)","Nº da Casa":"5418","Quadra":"246","Lote":"1104"},{"WKT":"POINT (-34.807326331138896 -7.155152867791009)","Nº da Casa":"5420","Quadra":"246","Lote":"1119"},{"WKT":"POINT (-34.807189794413766 -7.155148578726267)","Nº da Casa":"5422","Quadra":"246","Lote":"1134"},{"WKT":"POINT (-34.80705552542284 -7.155144131399348)","Nº da Casa":"5424","Quadra":"246","Lote":"1149"},{"WKT":"POINT (-34.80692638895447 -7.155139715956369)","Nº da Casa":"5426","Quadra":"246","Lote":"1164"},{"WKT":"POINT (-34.8067903072493 -7.1551350269719)","Nº da Casa":"5428","Quadra":"246","Lote":"1179"},{"WKT":"POINT (-34.806651824040216 -7.155126855327242)","Nº da Casa":"5430","Quadra":"246","Lote":"1194"},{"WKT":"POINT (-34.806515896285404 -7.155124375398319)","Nº da Casa":"5432","Quadra":"246","Lote":"1209"},{"WKT":"POINT (-34.80637629432764 -7.155120081485137)","Nº da Casa":"5434","Quadra":"246","Lote":"1224"},{"WKT":"POINT (-34.80624031100989 -7.155117063959743)","Nº da Casa":"5436","Quadra":"246","Lote":"1239"},{"WKT":"POINT (-34.80610643295019 -7.155109629118774)","Nº da Casa":"5438","Quadra":"246","Lote":"1254"},{"WKT":"POINT (-34.80597073390474 -7.155105357178612)","Nº da Casa":"5440","Quadra":"246","Lote":"1269"},{"WKT":"POINT (-34.80583210104333 -7.155100809814072)","Nº da Casa":"5442","Quadra":"246","Lote":"1284"},{"WKT":"POINT (-34.805695016784384 -7.155095984519756)","Nº da Casa":"5444","Quadra":"246","Lote":"1299"},{"WKT":"POINT (-34.80556137625942 -7.1550915974091955)","Nº da Casa":"5446","Quadra":"246","Lote":"1314"},{"WKT":"POINT (-34.80722021957937 -7.154740839658687)","Nº da Casa":"5227","Quadra":"247","Lote":"18"},{"WKT":"POINT (-34.80737372601455 -7.154746536554852)","Nº da Casa":"5225","Quadra":"247","Lote":"33"},{"WKT":"POINT (-34.80750657815013 -7.154751538358462)","Nº da Casa":"5223","Quadra":"247","Lote":"48"},{"WKT":"POINT (-34.80763873552665 -7.154759172149961)","Nº da Casa":"5221","Quadra":"247","Lote":"63"},{"WKT":"POINT (-34.80777363250643 -7.154762883234488)","Nº da Casa":"5219","Quadra":"247","Lote":"78"},{"WKT":"POINT (-34.807910718695155 -7.154766568853118)","Nº da Casa":"5217","Quadra":"247","Lote":"93"},{"WKT":"POINT (-34.80804945935125 -7.154772241322213)","Nº da Casa":"5215","Quadra":"247","Lote":"108"},{"WKT":"POINT (-34.80818764843135 -7.15477748486843)","Nº da Casa":"5213","Quadra":"247","Lote":"123"},{"WKT":"POINT (-34.80832245042643 -7.1547806128458875)","Nº da Casa":"5211","Quadra":"247","Lote":"138"},{"WKT":"POINT (-34.8084585888133 -7.154786225434621)","Nº da Casa":"5209","Quadra":"247","Lote":"153"},{"WKT":"POINT (-34.808593112310035 -7.154792767572091)","Nº da Casa":"5207","Quadra":"247","Lote":"168"},{"WKT":"POINT (-34.808728510750214 -7.154796948189755)","Nº da Casa":"5205","Quadra":"247","Lote":"183"},{"WKT":"POINT (-34.80886316263664 -7.154802509262142)","Nº da Casa":"5203","Quadra":"247","Lote":"198"},{"WKT":"POINT (-34.809016204722276 -7.1548050158987895)","Nº da Casa":"5201","Quadra":"247","Lote":"216"},{"WKT":"POINT (-34.809022699042345 -7.15451752117403)","Nº da Casa":"4202","Quadra":"247","Lote":"294"},{"WKT":"POINT (-34.80886706540753 -7.154509377315242)","Nº da Casa":"4204","Quadra":"247","Lote":"309"},{"WKT":"POINT (-34.80873516770636 -7.154506669252814)","Nº da Casa":"4206","Quadra":"247","Lote":"324"},{"WKT":"POINT (-34.80860016696697 -7.154499332732732)","Nº da Casa":"4208","Quadra":"247","Lote":"339"},{"WKT":"POINT (-34.80846637646828 -7.154497293750371)","Nº da Casa":"4210","Quadra":"247","Lote":"354"},{"WKT":"POINT (-34.80833159954781 -7.15448878844738)","Nº da Casa":"4212","Quadra":"247","Lote":"364"},{"WKT":"POINT (-34.80819295675976 -7.154486592441294)","Nº da Casa":"4214","Quadra":"247","Lote":"384"},{"WKT":"POINT (-34.80805436141397 -7.154481295650176)","Nº da Casa":"4216","Quadra":"247","Lote":"399"},{"WKT":"POINT (-34.80791600874316 -7.154476798907103)","Nº da Casa":"4218","Quadra":"247","Lote":"414"},{"WKT":"POINT (-34.80777893772893 -7.154471124542124)","Nº da Casa":"4220","Quadra":"247","Lote":"429"},{"WKT":"POINT (-34.807648243212824 -7.154466192346756)","Nº da Casa":"4222","Quadra":"247","Lote":"444"},{"WKT":"POINT (-34.807516577480094 -7.154461821888031)","Nº da Casa":"4224","Quadra":"247","Lote":"459"},{"WKT":"POINT (-34.80738066505384 -7.154456662929018)","Nº da Casa":"4226","Quadra":"247","Lote":"474"},{"WKT":"POINT (-34.8072295688001 -7.1544540863730175)","Nº da Casa":"4228","Quadra":"247","Lote":"492"},{"WKT":"POINT (-34.80724086012932 -7.1540803806783915)","Nº da Casa":"4227","Quadra":"248","Lote":"18"},{"WKT":"POINT (-34.80739549297639 -7.154088272012174)","Nº da Casa":"4225","Quadra":"248","Lote":"33"},{"WKT":"POINT (-34.80753050712022 -7.154090673853845)","Nº da Casa":"4223","Quadra":"248","Lote":"48"},{"WKT":"POINT (-34.8076622779639 -7.154097442490229)","Nº da Casa":"4221","Quadra":"248","Lote":"63"},{"WKT":"POINT (-34.80779380360065 -7.1541025417348605)","Nº da Casa":"4219","Quadra":"248","Lote":"78"},{"WKT":"POINT (-34.80792980108321 -7.15410809551945)","Nº da Casa":"4217","Quadra":"248","Lote":"93"},{"WKT":"POINT (-34.808070040655046 -7.154114759779813)","Nº da Casa":"4215","Quadra":"248","Lote":"108"},{"WKT":"POINT (-34.80820676260842 -7.154120271716457)","Nº da Casa":"4213","Quadra":"248","Lote":"123"},{"WKT":"POINT (-34.808342728049674 -7.154125246813614)","Nº da Casa":"4211","Quadra":"248","Lote":"138"},{"WKT":"POINT (-34.80847865385387 -7.154130698839218)","Nº da Casa":"4209","Quadra":"248","Lote":"153"},{"WKT":"POINT (-34.808616665689584 -7.154137027944697)","Nº da Casa":"4207","Quadra":"248","Lote":"168"},{"WKT":"POINT (-34.80875261134279 -7.154141294690017)","Nº da Casa":"4205","Quadra":"248","Lote":"183"},{"WKT":"POINT (-34.8088823675019 -7.154149635535309)","Nº da Casa":"4203","Quadra":"248","Lote":"198"},{"WKT":"POINT (-34.809042658603914 -7.154011262170313)","Nº da Casa":"3202","Quadra":"248","Lote":"216"},{"WKT":"POINT (-34.80889140958634 -7.153856323206317)","Nº da Casa":"3204","Quadra":"248","Lote":"336"},{"WKT":"POINT (-34.80876536585978 -7.153851440469919)","Nº da Casa":"3206","Quadra":"248","Lote":"351"},{"WKT":"POINT (-34.80862662372086 -7.153845898674719)","Nº da Casa":"3208","Quadra":"248","Lote":"366"},{"WKT":"POINT (-34.80848835402746 -7.153840467798813)","Nº da Casa":"3210","Quadra":"248","Lote":"381"},{"WKT":"POINT (-34.80835279452886 -7.1538345731692825)","Nº da Casa":"3212","Quadra":"248","Lote":"396"},{"WKT":"POINT (-34.80821507560756 -7.1538285133513355)","Nº da Casa":"3214","Quadra":"248","Lote":"411"},{"WKT":"POINT (-34.80807645342156 -7.153823771370715)","Nº da Casa":"3216","Quadra":"248","Lote":"426"},{"WKT":"POINT (-34.80793391648267 -7.153818351780134)","Nº da Casa":"3218","Quadra":"248","Lote":"441"},{"WKT":"POINT (-34.80779130569197 -7.153813541127829)","Nº da Casa":"3220","Quadra":"248","Lote":"456"},{"WKT":"POINT (-34.80766103889825 -7.153806679398537)","Nº da Casa":"3222","Quadra":"248","Lote":"471"},{"WKT":"POINT (-34.807536134437775 -7.153801916259984)","Nº da Casa":"3224","Quadra":"248","Lote":"486"},{"WKT":"POINT (-34.807404839544176 -7.153795464051133)","Nº da Casa":"3226","Quadra":"248","Lote":"501"},{"WKT":"POINT (-34.80724954871779 -7.153792256130263)","Nº da Casa":"3228","Quadra":"248","Lote":"516"},{"WKT":"POINT (-34.8072630620438 -7.153370575233704)","Nº da Casa":"3227","Quadra":"249","Lote":"18"},{"WKT":"POINT (-34.80742128780828 -7.15337561299028)","Nº da Casa":"3225","Quadra":"249","Lote":"33"},{"WKT":"POINT (-34.80755631655925 -7.1533807529088245)","Nº da Casa":"3223","Quadra":"249","Lote":"48"},{"WKT":"POINT (-34.807688034154026 -7.153386350491021)","Nº da Casa":"3221","Quadra":"249","Lote":"63"},{"WKT":"POINT (-34.807820040920674 -7.153392699550264)","Nº da Casa":"3219","Quadra":"249","Lote":"78"},{"WKT":"POINT (-34.80795978552832 -7.153397884866131)","Nº da Casa":"3217","Quadra":"249","Lote":"93"},{"WKT":"POINT (-34.80809143994767 -7.153402626768047)","Nº da Casa":"3215","Quadra":"249","Lote":"108"},{"WKT":"POINT (-34.80822650379323 -7.15340757934556)","Nº da Casa":"3213","Quadra":"249","Lote":"123"},{"WKT":"POINT (-34.80836589928685 -7.153412128836312)","Nº da Casa":"3211","Quadra":"249","Lote":"138"},{"WKT":"POINT (-34.808505675083325 -7.153417184944642)","Nº da Casa":"3209","Quadra":"249","Lote":"153"},{"WKT":"POINT (-34.808641934914846 -7.153421130170317)","Nº da Casa":"3207","Quadra":"249","Lote":"168"},{"WKT":"POINT (-34.808776254765526 -7.153427474055674)","Nº da Casa":"3205","Quadra":"249","Lote":"183"},{"WKT":"POINT (-34.80891233995186 -7.153429986762936)","Nº da Casa":"3203","Quadra":"249","Lote":"198"},{"WKT":"POINT (-34.80906944826125 -7.153273431243967)","Nº da Casa":"3201","Quadra":"249","Lote":"286"},{"WKT":"POINT (-34.8089184560905 -7.153144110801076)","Nº da Casa":"2202","Quadra":"249","Lote":"301"},{"WKT":"POINT (-34.80878311730549 -7.153136406154761)","Nº da Casa":"2204","Quadra":"249","Lote":"316"},{"WKT":"POINT (-34.80864854809376 -7.153132891540461)","Nº da Casa":"2206","Quadra":"249","Lote":"331"},{"WKT":"POINT (-34.80851531537454 -7.153128569454509)","Nº da Casa":"2208","Quadra":"249","Lote":"346"},{"WKT":"POINT (-34.80837964760444 -7.153123009932808)","Nº da Casa":"2210","Quadra":"249","Lote":"361"},{"WKT":"POINT (-34.80824064979978 -7.153116536833073)","Nº da Casa":"2212","Quadra":"249","Lote":"376"},{"WKT":"POINT (-34.8081047154648 -7.153110087391786)","Nº da Casa":"2214","Quadra":"249","Lote":"391"},{"WKT":"POINT (-34.80796917155467 -7.153108650014112)","Nº da Casa":"2216","Quadra":"249","Lote":"406"},{"WKT":"POINT (-34.80783748100487 -7.153102362885219)","Nº da Casa":"2218","Quadra":"249","Lote":"421"},{"WKT":"POINT (-34.80770236008347 -7.153096948307166)","Nº da Casa":"2220","Quadra":"249","Lote":"436"},{"WKT":"POINT (-34.807566387437205 -7.153091729117176)","Nº da Casa":"2222","Quadra":"249","Lote":"451"},{"WKT":"POINT (-34.807426867313914 -7.153086436702837)","Nº da Casa":"2224","Quadra":"249","Lote":"466"},{"WKT":"POINT (-34.80726628028351 -7.153080306372406)","Nº da Casa":"2226","Quadra":"249","Lote":"484"},{"WKT":"POINT (-34.807289262501335 -7.15271947952791)","Nº da Casa":"2227","Quadra":"250","Lote":"18"},{"WKT":"POINT (-34.80743792508768 -7.152723693799221)","Nº da Casa":"2225","Quadra":"250","Lote":"33"},{"WKT":"POINT (-34.80757458267432 -7.152730512566222)","Nº da Casa":"2223","Quadra":"250","Lote":"48"},{"WKT":"POINT (-34.807710707417044 -7.152735081891765)","Nº da Casa":"2221","Quadra":"250","Lote":"63"},{"WKT":"POINT (-34.80784305812696 -7.15274091693709)","Nº da Casa":"2219","Quadra":"250","Lote":"78"},{"WKT":"POINT (-34.807979684354486 -7.152747542513286)","Nº da Casa":"2217","Quadra":"250","Lote":"93"},{"WKT":"POINT (-34.80811695134608 -7.15274898978307)","Nº da Casa":"2215","Quadra":"250","Lote":"108"},{"WKT":"POINT (-34.808255613259675 -7.152754029465931)","Nº da Casa":"2213","Quadra":"250","Lote":"123"},{"WKT":"POINT (-34.80839124231421 -7.1527581706608565)","Nº da Casa":"2211","Quadra":"250","Lote":"138"},{"WKT":"POINT (-34.80852731107405 -7.152762758059393)","Nº da Casa":"2209","Quadra":"250","Lote":"153"},{"WKT":"POINT (-34.80865833389181 -7.152767834663259)","Nº da Casa":"2207","Quadra":"250","Lote":"168"},{"WKT":"POINT (-34.808792571684684 -7.152771333510024)","Nº da Casa":"2205","Quadra":"250","Lote":"183"},{"WKT":"POINT (-34.80893081121451 -7.1527757581230675)","Nº da Casa":"2203","Quadra":"250","Lote":"198"},{"WKT":"POINT (-34.809087216459446 -7.152781862484177)","Nº da Casa":"2201","Quadra":"250","Lote":"216"},{"WKT":"POINT (-34.80909763889146 -7.152494473910488)","Nº da Casa":"1202","Quadra":"250","Lote":"294"},{"WKT":"POINT (-34.80894031440626 -7.152489210981219)","Nº da Casa":"1204","Quadra":"250","Lote":"309"},{"WKT":"POINT (-34.80880496415879 -7.152486251167632)","Nº da Casa":"1206","Quadra":"250","Lote":"324"},{"WKT":"POINT (-34.808672528918656 -7.152482765280762)","Nº da Casa":"1208","Quadra":"250","Lote":"339"},{"WKT":"POINT (-34.80853462853895 -7.152474978972928)","Nº da Casa":"1210","Quadra":"250","Lote":"354"},{"WKT":"POINT (-34.808395774016354 -7.152470444302504)","Nº da Casa":"1212","Quadra":"250","Lote":"364"},{"WKT":"POINT (-34.80826122339807 -7.152467545677266)","Nº da Casa":"1214","Quadra":"250","Lote":"384"},{"WKT":"POINT (-34.80812688624278 -7.152462722134017)","Nº da Casa":"1216","Quadra":"250","Lote":"399"},{"WKT":"POINT (-34.807991072749196 -7.152457532293817)","Nº da Casa":"1218","Quadra":"250","Lote":"414"},{"WKT":"POINT (-34.80785529702507 -7.1524535788240815)","Nº da Casa":"1220","Quadra":"250","Lote":"429"},{"WKT":"POINT (-34.80771902520534 -7.152448612353608)","Nº da Casa":"1222","Quadra":"250","Lote":"444"},{"WKT":"POINT (-34.8075832840745 -7.152443598175596)","Nº da Casa":"1224","Quadra":"250","Lote":"459"},{"WKT":"POINT (-34.80745027789079 -7.152441029804243)","Nº da Casa":"1226","Quadra":"250","Lote":"474"},{"WKT":"POINT (-34.807297805470505 -7.152435752449478)","Nº da Casa":"1228","Quadra":"250","Lote":"492"},{"WKT":"POINT (-34.805532458146864 -7.152663711752032)","Nº da Casa":"2321","Quadra":"253","Lote":"24"},{"WKT":"POINT (-34.80572361587175 -7.152668734832381)","Nº da Casa":"2319","Quadra":"253","Lote":"39"},{"WKT":"POINT (-34.80587145958106 -7.152674740994122)","Nº da Casa":"2317","Quadra":"253","Lote":"54"},{"WKT":"POINT (-34.80600287118463 -7.152676093120883)","Nº da Casa":"2315","Quadra":"253","Lote":"69"},{"WKT":"POINT (-34.8061358663746 -7.152682431853082)","Nº da Casa":"2313","Quadra":"253","Lote":"84"},{"WKT":"POINT (-34.806276348945495 -7.152685638318269)","Nº da Casa":"2311","Quadra":"253","Lote":"99"},{"WKT":"POINT (-34.80641421330981 -7.152690366346342)","Nº da Casa":"2309","Quadra":"253","Lote":"114"},{"WKT":"POINT (-34.806548192227424 -7.1526957628415015)","Nº da Casa":"2307","Quadra":"253","Lote":"129"},{"WKT":"POINT (-34.806686461285004 -7.152696939593631)","Nº da Casa":"2305","Quadra":"253","Lote":"144"},{"WKT":"POINT (-34.8068258012365 -7.152700594385612)","Nº da Casa":"2303","Quadra":"253","Lote":"159"},{"WKT":"POINT (-34.807003435895325 -7.15270707856221)","Nº da Casa":"2301","Quadra":"253","Lote":"182"},{"WKT":"POINT (-34.80701976923927 -7.152419912653143)","Nº da Casa":"1302","Quadra":"253","Lote":"265"},{"WKT":"POINT (-34.80683573462541 -7.152414756432052)","Nº da Casa":"1304","Quadra":"253","Lote":"280"},{"WKT":"POINT (-34.806691201758774 -7.152408078191835)","Nº da Casa":"1306","Quadra":"253","Lote":"295"},{"WKT":"POINT (-34.806556509009 -7.152404538538536)","Nº da Casa":"1308","Quadra":"253","Lote":"310"},{"WKT":"POINT (-34.806420137906635 -7.152404033528151)","Nº da Casa":"1310","Quadra":"253","Lote":"325"},{"WKT":"POINT (-34.806285072892685 -7.1523978954489555)","Nº da Casa":"1312","Quadra":"253","Lote":"339"},{"WKT":"POINT (-34.80614953183237 -7.152392264631811)","Nº da Casa":"1314","Quadra":"253","Lote":"355"},{"WKT":"POINT (-34.806013634850196 -7.152388921241195)","Nº da Casa":"1316","Quadra":"253","Lote":"370"},{"WKT":"POINT (-34.80588053973919 -7.152384763312369)","Nº da Casa":"1318","Quadra":"253","Lote":"385"},{"WKT":"POINT (-34.80573622136169 -7.152378752997002)","Nº da Casa":"1320","Quadra":"253","Lote":"400"},{"WKT":"POINT (-34.805546307634835 -7.152375462058354)","Nº da Casa":"1322","Quadra":"253","Lote":"423"},{"WKT":"POINT (-34.80552680404819 -7.153309237204819)","Nº da Casa":"3321","Quadra":"254","Lote":"23"},{"WKT":"POINT (-34.80570972360835 -7.153313764756229)","Nº da Casa":"3319","Quadra":"254","Lote":"38"},{"WKT":"POINT (-34.8058501379651 -7.153321054994596)","Nº da Casa":"3317","Quadra":"254","Lote":"53"},{"WKT":"POINT (-34.8059840915668 -7.153323812605415)","Nº da Casa":"3315","Quadra":"254","Lote":"68"},{"WKT":"POINT (-34.80612076637108 -7.1533284896106615)","Nº da Casa":"3313","Quadra":"254","Lote":"83"},{"WKT":"POINT (-34.806258784828565 -7.15333311009634)","Nº da Casa":"3311","Quadra":"254","Lote":"98"},{"WKT":"POINT (-34.80639177879134 -7.153338934625619)","Nº da Casa":"3309","Quadra":"254","Lote":"113"},{"WKT":"POINT (-34.80652468073009 -7.153342807229293)","Nº da Casa":"3307","Quadra":"254","Lote":"128"},{"WKT":"POINT (-34.8066601362148 -7.153348054136651)","Nº da Casa":"3305","Quadra":"254","Lote":"143"},{"WKT":"POINT (-34.80679638670541 -7.153354171145725)","Nº da Casa":"3303","Quadra":"254","Lote":"158"},{"WKT":"POINT (-34.80697462317948 -7.153358432572609)","Nº da Casa":"3301","Quadra":"254","Lote":"181"},{"WKT":"POINT (-34.806987381628986 -7.153070402646549)","Nº da Casa":"2302","Quadra":"254","Lote":"264"},{"WKT":"POINT (-34.80680575525114 -7.153063836428209)","Nº da Casa":"2304","Quadra":"254","Lote":"279"},{"WKT":"POINT (-34.80667085910085 -7.153057132545851)","Nº da Casa":"2306","Quadra":"254","Lote":"294"},{"WKT":"POINT (-34.80653680369185 -7.1530555988375895)","Nº da Casa":"2308","Quadra":"254","Lote":"309"},{"WKT":"POINT (-34.80640374183498 -7.153049684889788)","Nº da Casa":"2310","Quadra":"254","Lote":"324"},{"WKT":"POINT (-34.806266809699004 -7.153043207527756)","Nº da Casa":"2312","Quadra":"254","Lote":"338"},{"WKT":"POINT (-34.80612880102625 -7.153038709931462)","Nº da Casa":"2314","Quadra":"254","Lote":"354"},{"WKT":"POINT (-34.805993395662995 -7.153035602441047)","Nº da Casa":"2316","Quadra":"254","Lote":"369"},{"WKT":"POINT (-34.80585962434712 -7.153030258612958)","Nº da Casa":"2318","Quadra":"254","Lote":"384"},{"WKT":"POINT (-34.80571982008252 -7.153023062061665)","Nº da Casa":"2320","Quadra":"254","Lote":"399"},{"WKT":"POINT (-34.80553529167792 -7.153017516907199)","Nº da Casa":"2322","Quadra":"254","Lote":"422"},{"WKT":"POINT (-34.8054999185625 -7.154026943436252)","Nº da Casa":"4321","Quadra":"255","Lote":"23"},{"WKT":"POINT (-34.805687692343085 -7.154033775570976)","Nº da Casa":"4319","Quadra":"255","Lote":"38"},{"WKT":"POINT (-34.80582339069479 -7.154036679990949)","Nº da Casa":"4317","Quadra":"255","Lote":"53"},{"WKT":"POINT (-34.805962907499705 -7.1540413393259765)","Nº da Casa":"4315","Quadra":"255","Lote":"68"},{"WKT":"POINT (-34.80609803003083 -7.154045261963892)","Nº da Casa":"4313","Quadra":"255","Lote":"83"},{"WKT":"POINT (-34.80623249046146 -7.15404890145656)","Nº da Casa":"4311","Quadra":"255","Lote":"98"},{"WKT":"POINT (-34.806370321632826 -7.154053655691297)","Nº da Casa":"4309","Quadra":"255","Lote":"113"},{"WKT":"POINT (-34.80650957376707 -7.1540562235950365)","Nº da Casa":"4307","Quadra":"255","Lote":"128"},{"WKT":"POINT (-34.80664076357827 -7.154062819882392)","Nº da Casa":"4305","Quadra":"255","Lote":"143"},{"WKT":"POINT (-34.806775058583185 -7.154065458369085)","Nº da Casa":"4303","Quadra":"255","Lote":"158"},{"WKT":"POINT (-34.80695565427487 -7.154068439320274)","Nº da Casa":"4301","Quadra":"255","Lote":"181"},{"WKT":"POINT (-34.806968111899245 -7.153784233014862)","Nº da Casa":"3302","Quadra":"255","Lote":"264"},{"WKT":"POINT (-34.80678787084814 -7.153777669435257)","Nº da Casa":"3304","Quadra":"255","Lote":"279"},{"WKT":"POINT (-34.806649356103705 -7.153773833748033)","Nº da Casa":"3306","Quadra":"255","Lote":"294"},{"WKT":"POINT (-34.80651595357681 -7.1537672693387435)","Nº da Casa":"3308","Quadra":"255","Lote":"309"},{"WKT":"POINT (-34.80637966477809 -7.153763162417377)","Nº da Casa":"3310","Quadra":"255","Lote":"324"},{"WKT":"POINT (-34.80624137392958 -7.153758095781796)","Nº da Casa":"3312","Quadra":"255","Lote":"338"},{"WKT":"POINT (-34.80610663065706 -7.1537524139770605)","Nº da Casa":"3314","Quadra":"255","Lote":"354"},{"WKT":"POINT (-34.805972449756354 -7.153747608018898)","Nº da Casa":"3316","Quadra":"255","Lote":"369"},{"WKT":"POINT (-34.80583481925979 -7.153743191340279)","Nº da Casa":"3318","Quadra":"255","Lote":"384"},{"WKT":"POINT (-34.805697942377826 -7.1537366068563095)","Nº da Casa":"3320","Quadra":"255","Lote":"399"},{"WKT":"POINT (-34.805505812905416 -7.153729788112147)","Nº da Casa":"3322","Quadra":"255","Lote":"422"},{"WKT":"POINT (-34.805488374770285 -7.154675587595939)","Nº da Casa":"5321","Quadra":"256","Lote":"22"},{"WKT":"POINT (-34.80566856848704 -7.154680540479704)","Nº da Casa":"5319","Quadra":"256","Lote":"37"},{"WKT":"POINT (-34.80580215264453 -7.154687544584994)","Nº da Casa":"5317","Quadra":"256","Lote":"52"},{"WKT":"POINT (-34.80593625658636 -7.15469131832552)","Nº da Casa":"5315","Quadra":"256","Lote":"67"},{"WKT":"POINT (-34.80607423011145 -7.154699525478377)","Nº da Casa":"5313","Quadra":"256","Lote":"82"},{"WKT":"POINT (-34.80621266462773 -7.154701661667983)","Nº da Casa":"5311","Quadra":"256","Lote":"97"},{"WKT":"POINT (-34.806351362715304 -7.1547075689346125)","Nº da Casa":"5309","Quadra":"256","Lote":"112"},{"WKT":"POINT (-34.80648298938194 -7.154711972645004)","Nº da Casa":"5307","Quadra":"256","Lote":"127"},{"WKT":"POINT (-34.8066109668679 -7.154717251571855)","Nº da Casa":"5305","Quadra":"256","Lote":"142"},{"WKT":"POINT (-34.806747009158975 -7.154722657789032)","Nº da Casa":"5303","Quadra":"256","Lote":"157"},{"WKT":"POINT (-34.80693508615845 -7.15472810250599)","Nº da Casa":"5301","Quadra":"256","Lote":"180"},{"WKT":"POINT (-34.80694561345216 -7.154432092703378)","Nº da Casa":"4302","Quadra":"256","Lote":"263"},{"WKT":"POINT (-34.80676091370435 -7.154421375034268)","Nº da Casa":"4304","Quadra":"256","Lote":"278"},{"WKT":"POINT (-34.80662699813487 -7.154417512097093)","Nº da Casa":"4306","Quadra":"256","Lote":"293"},{"WKT":"POINT (-34.80649149082759 -7.154415947668833)","Nº da Casa":"4308","Quadra":"256","Lote":"308"},{"WKT":"POINT (-34.80635461997862 -7.154406305131834)","Nº da Casa":"4310","Quadra":"256","Lote":"323"},{"WKT":"POINT (-34.80621919175788 -7.154401776773459)","Nº da Casa":"4312","Quadra":"256","Lote":"338"},{"WKT":"POINT (-34.80608325721785 -7.154401309711287)","Nº da Casa":"4314","Quadra":"256","Lote":"353"},{"WKT":"POINT (-34.80594453922463 -7.1543925164082625)","Nº da Casa":"4316","Quadra":"256","Lote":"368"},{"WKT":"POINT (-34.80580750174117 -7.154388425998056)","Nº da Casa":"4318","Quadra":"256","Lote":"383"},{"WKT":"POINT (-34.805671631828226 -7.154382075393329)","Nº da Casa":"4320","Quadra":"256","Lote":"398"},{"WKT":"POINT (-34.80549082667986 -7.154378224018476)","Nº da Casa":"4322","Quadra":"256","Lote":"421"},{"WKT":"POINT (-34.8090214309926 -7.155076204422196)","Nº da Casa":"6001","Quadra":"246","Lote":"6960"},{"WKT":"POINT (-34.809725230038275 -7.155243311625651)","Nº da Casa":"6002","Quadra":"246","Lote":"6961"},{"WKT":"POINT (-34.80958919793372 -7.155133171948564)","Nº da Casa":"6003","Quadra":"246","Lote":"6962"},{"WKT":"POINT (-34.808823669473796 -7.155069874696612)","Nº da Casa":"6004","Quadra":"246","Lote":"6963"}];
 </script>
+<script>
+/* QRCode for JavaScript — Copyright (c) 2009 Kazuhiko Arase; MIT license. https://github.com/kazuhikoarase/qrcode-generator */
+(function(){
+const factories = {
+"./QRMode": function(module, require) {
+module.exports = {
+    MODE_NUMBER :       1 << 0,
+    MODE_ALPHA_NUM :    1 << 1,
+    MODE_8BIT_BYTE :    1 << 2,
+    MODE_KANJI :        1 << 3
+};
 
+},
+"./QRMaskPattern": function(module, require) {
+module.exports = {
+	PATTERN000 : 0,
+	PATTERN001 : 1,
+	PATTERN010 : 2,
+	PATTERN011 : 3,
+	PATTERN100 : 4,
+	PATTERN101 : 5,
+	PATTERN110 : 6,
+	PATTERN111 : 7
+};
+
+},
+"./QRErrorCorrectLevel": function(module, require) {
+module.exports = {
+	L : 1,
+	M : 0,
+	Q : 3,
+	H : 2
+};
+
+
+},
+"./QRMath": function(module, require) {
+var QRMath = {
+
+	glog : function(n) {
+	
+		if (n < 1) {
+			throw new Error("glog(" + n + ")");
+		}
+		
+		return QRMath.LOG_TABLE[n];
+	},
+	
+	gexp : function(n) {
+	
+		while (n < 0) {
+			n += 255;
+		}
+	
+		while (n >= 256) {
+			n -= 255;
+		}
+	
+		return QRMath.EXP_TABLE[n];
+	},
+	
+	EXP_TABLE : new Array(256),
+	
+	LOG_TABLE : new Array(256)
+
+};
+	
+for (var i = 0; i < 8; i++) {
+	QRMath.EXP_TABLE[i] = 1 << i;
+}
+for (var i = 8; i < 256; i++) {
+	QRMath.EXP_TABLE[i] = QRMath.EXP_TABLE[i - 4]
+		^ QRMath.EXP_TABLE[i - 5]
+		^ QRMath.EXP_TABLE[i - 6]
+		^ QRMath.EXP_TABLE[i - 8];
+}
+for (var i = 0; i < 255; i++) {
+	QRMath.LOG_TABLE[QRMath.EXP_TABLE[i] ] = i;
+}
+
+module.exports = QRMath;
+
+},
+"./QRPolynomial": function(module, require) {
+var QRMath = require('./QRMath');
+
+function QRPolynomial(num, shift) {
+	if (num.length === undefined) {
+		throw new Error(num.length + "/" + shift);
+	}
+
+	var offset = 0;
+
+	while (offset < num.length && num[offset] === 0) {
+		offset++;
+	}
+
+	this.num = new Array(num.length - offset + shift);
+	for (var i = 0; i < num.length - offset; i++) {
+		this.num[i] = num[i + offset];
+	}
+}
+
+QRPolynomial.prototype = {
+
+	get : function(index) {
+		return this.num[index];
+	},
+	
+	getLength : function() {
+		return this.num.length;
+	},
+	
+	multiply : function(e) {
+	
+		var num = new Array(this.getLength() + e.getLength() - 1);
+	
+		for (var i = 0; i < this.getLength(); i++) {
+			for (var j = 0; j < e.getLength(); j++) {
+				num[i + j] ^= QRMath.gexp(QRMath.glog(this.get(i) ) + QRMath.glog(e.get(j) ) );
+			}
+		}
+	
+		return new QRPolynomial(num, 0);
+	},
+	
+	mod : function(e) {
+	
+		if (this.getLength() - e.getLength() < 0) {
+			return this;
+		}
+	
+		var ratio = QRMath.glog(this.get(0) ) - QRMath.glog(e.get(0) );
+	
+		var num = new Array(this.getLength() );
+		
+		for (var i = 0; i < this.getLength(); i++) {
+			num[i] = this.get(i);
+		}
+		
+		for (var x = 0; x < e.getLength(); x++) {
+			num[x] ^= QRMath.gexp(QRMath.glog(e.get(x) ) + ratio);
+		}
+	
+		// recursive call
+		return new QRPolynomial(num, 0).mod(e);
+	}
+};
+
+module.exports = QRPolynomial;
+
+},
+"./QRRSBlock": function(module, require) {
+var QRErrorCorrectLevel = require('./QRErrorCorrectLevel');
+
+function QRRSBlock(totalCount, dataCount) {
+	this.totalCount = totalCount;
+	this.dataCount  = dataCount;
+}
+
+QRRSBlock.RS_BLOCK_TABLE = [
+
+	// L
+	// M
+	// Q
+	// H
+
+	// 1
+	[1, 26, 19],
+	[1, 26, 16],
+	[1, 26, 13],
+	[1, 26, 9],
+	
+	// 2
+	[1, 44, 34],
+	[1, 44, 28],
+	[1, 44, 22],
+	[1, 44, 16],
+
+	// 3
+	[1, 70, 55],
+	[1, 70, 44],
+	[2, 35, 17],
+	[2, 35, 13],
+
+	// 4		
+	[1, 100, 80],
+	[2, 50, 32],
+	[2, 50, 24],
+	[4, 25, 9],
+	
+	// 5
+	[1, 134, 108],
+	[2, 67, 43],
+	[2, 33, 15, 2, 34, 16],
+	[2, 33, 11, 2, 34, 12],
+	
+	// 6
+	[2, 86, 68],
+	[4, 43, 27],
+	[4, 43, 19],
+	[4, 43, 15],
+	
+	// 7		
+	[2, 98, 78],
+	[4, 49, 31],
+	[2, 32, 14, 4, 33, 15],
+	[4, 39, 13, 1, 40, 14],
+	
+	// 8
+	[2, 121, 97],
+	[2, 60, 38, 2, 61, 39],
+	[4, 40, 18, 2, 41, 19],
+	[4, 40, 14, 2, 41, 15],
+	
+	// 9
+	[2, 146, 116],
+	[3, 58, 36, 2, 59, 37],
+	[4, 36, 16, 4, 37, 17],
+	[4, 36, 12, 4, 37, 13],
+	
+	// 10		
+	[2, 86, 68, 2, 87, 69],
+	[4, 69, 43, 1, 70, 44],
+	[6, 43, 19, 2, 44, 20],
+	[6, 43, 15, 2, 44, 16],
+
+	// 11
+	[4, 101, 81],
+	[1, 80, 50, 4, 81, 51],
+	[4, 50, 22, 4, 51, 23],
+	[3, 36, 12, 8, 37, 13],
+
+	// 12
+	[2, 116, 92, 2, 117, 93],
+	[6, 58, 36, 2, 59, 37],
+	[4, 46, 20, 6, 47, 21],
+	[7, 42, 14, 4, 43, 15],
+
+	// 13
+	[4, 133, 107],
+	[8, 59, 37, 1, 60, 38],
+	[8, 44, 20, 4, 45, 21],
+	[12, 33, 11, 4, 34, 12],
+
+	// 14
+	[3, 145, 115, 1, 146, 116],
+	[4, 64, 40, 5, 65, 41],
+	[11, 36, 16, 5, 37, 17],
+	[11, 36, 12, 5, 37, 13],
+
+	// 15
+	[5, 109, 87, 1, 110, 88],
+	[5, 65, 41, 5, 66, 42],
+	[5, 54, 24, 7, 55, 25],
+	[11, 36, 12],
+
+	// 16
+	[5, 122, 98, 1, 123, 99],
+	[7, 73, 45, 3, 74, 46],
+	[15, 43, 19, 2, 44, 20],
+	[3, 45, 15, 13, 46, 16],
+
+	// 17
+	[1, 135, 107, 5, 136, 108],
+	[10, 74, 46, 1, 75, 47],
+	[1, 50, 22, 15, 51, 23],
+	[2, 42, 14, 17, 43, 15],
+
+	// 18
+	[5, 150, 120, 1, 151, 121],
+	[9, 69, 43, 4, 70, 44],
+	[17, 50, 22, 1, 51, 23],
+	[2, 42, 14, 19, 43, 15],
+
+	// 19
+	[3, 141, 113, 4, 142, 114],
+	[3, 70, 44, 11, 71, 45],
+	[17, 47, 21, 4, 48, 22],
+	[9, 39, 13, 16, 40, 14],
+
+	// 20
+	[3, 135, 107, 5, 136, 108],
+	[3, 67, 41, 13, 68, 42],
+	[15, 54, 24, 5, 55, 25],
+	[15, 43, 15, 10, 44, 16],
+
+	// 21
+	[4, 144, 116, 4, 145, 117],
+	[17, 68, 42],
+	[17, 50, 22, 6, 51, 23],
+	[19, 46, 16, 6, 47, 17],
+
+	// 22
+	[2, 139, 111, 7, 140, 112],
+	[17, 74, 46],
+	[7, 54, 24, 16, 55, 25],
+	[34, 37, 13],
+
+	// 23
+	[4, 151, 121, 5, 152, 122],
+	[4, 75, 47, 14, 76, 48],
+	[11, 54, 24, 14, 55, 25],
+	[16, 45, 15, 14, 46, 16],
+
+	// 24
+	[6, 147, 117, 4, 148, 118],
+	[6, 73, 45, 14, 74, 46],
+	[11, 54, 24, 16, 55, 25],
+	[30, 46, 16, 2, 47, 17],
+
+	// 25
+	[8, 132, 106, 4, 133, 107],
+	[8, 75, 47, 13, 76, 48],
+	[7, 54, 24, 22, 55, 25],
+	[22, 45, 15, 13, 46, 16],
+
+	// 26
+	[10, 142, 114, 2, 143, 115],
+	[19, 74, 46, 4, 75, 47],
+	[28, 50, 22, 6, 51, 23],
+	[33, 46, 16, 4, 47, 17],
+
+	// 27
+	[8, 152, 122, 4, 153, 123],
+	[22, 73, 45, 3, 74, 46],
+	[8, 53, 23, 26, 54, 24],
+	[12, 45, 15, 28, 46, 16],
+
+	// 28
+	[3, 147, 117, 10, 148, 118],
+	[3, 73, 45, 23, 74, 46],
+	[4, 54, 24, 31, 55, 25],
+	[11, 45, 15, 31, 46, 16],
+
+	// 29
+	[7, 146, 116, 7, 147, 117],
+	[21, 73, 45, 7, 74, 46],
+	[1, 53, 23, 37, 54, 24],
+	[19, 45, 15, 26, 46, 16],
+
+	// 30
+	[5, 145, 115, 10, 146, 116],
+	[19, 75, 47, 10, 76, 48],
+	[15, 54, 24, 25, 55, 25],
+	[23, 45, 15, 25, 46, 16],
+
+	// 31
+	[13, 145, 115, 3, 146, 116],
+	[2, 74, 46, 29, 75, 47],
+	[42, 54, 24, 1, 55, 25],
+	[23, 45, 15, 28, 46, 16],
+
+	// 32
+	[17, 145, 115],
+	[10, 74, 46, 23, 75, 47],
+	[10, 54, 24, 35, 55, 25],
+	[19, 45, 15, 35, 46, 16],
+
+	// 33
+	[17, 145, 115, 1, 146, 116],
+	[14, 74, 46, 21, 75, 47],
+	[29, 54, 24, 19, 55, 25],
+	[11, 45, 15, 46, 46, 16],
+
+	// 34
+	[13, 145, 115, 6, 146, 116],
+	[14, 74, 46, 23, 75, 47],
+	[44, 54, 24, 7, 55, 25],
+	[59, 46, 16, 1, 47, 17],
+
+	// 35
+	[12, 151, 121, 7, 152, 122],
+	[12, 75, 47, 26, 76, 48],
+	[39, 54, 24, 14, 55, 25],
+	[22, 45, 15, 41, 46, 16],
+
+	// 36
+	[6, 151, 121, 14, 152, 122],
+	[6, 75, 47, 34, 76, 48],
+	[46, 54, 24, 10, 55, 25],
+	[2, 45, 15, 64, 46, 16],
+
+	// 37
+	[17, 152, 122, 4, 153, 123],
+	[29, 74, 46, 14, 75, 47],
+	[49, 54, 24, 10, 55, 25],
+	[24, 45, 15, 46, 46, 16],
+
+	// 38
+	[4, 152, 122, 18, 153, 123],
+	[13, 74, 46, 32, 75, 47],
+	[48, 54, 24, 14, 55, 25],
+	[42, 45, 15, 32, 46, 16],
+
+	// 39
+	[20, 147, 117, 4, 148, 118],
+	[40, 75, 47, 7, 76, 48],
+	[43, 54, 24, 22, 55, 25],
+	[10, 45, 15, 67, 46, 16],
+
+	// 40
+	[19, 148, 118, 6, 149, 119],
+	[18, 75, 47, 31, 76, 48],
+	[34, 54, 24, 34, 55, 25],
+	[20, 45, 15, 61, 46, 16]
+];
+
+QRRSBlock.getRSBlocks = function(typeNumber, errorCorrectLevel) {
+	
+	var rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
+	
+	if (rsBlock === undefined) {
+		throw new Error("bad rs block @ typeNumber:" + typeNumber + "/errorCorrectLevel:" + errorCorrectLevel);
+	}
+
+	var length = rsBlock.length / 3;
+	
+	var list = [];
+	
+	for (var i = 0; i < length; i++) {
+
+		var count = rsBlock[i * 3 + 0];
+		var totalCount = rsBlock[i * 3 + 1];
+		var dataCount  = rsBlock[i * 3 + 2];
+
+		for (var j = 0; j < count; j++) {
+			list.push(new QRRSBlock(totalCount, dataCount) );	
+		}
+	}
+	
+	return list;
+};
+
+QRRSBlock.getRsBlockTable = function(typeNumber, errorCorrectLevel) {
+
+	switch(errorCorrectLevel) {
+	case QRErrorCorrectLevel.L :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+	case QRErrorCorrectLevel.M :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+	case QRErrorCorrectLevel.Q :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+	case QRErrorCorrectLevel.H :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+	default :
+		return undefined;
+	}
+};
+
+module.exports = QRRSBlock;
+
+},
+"./QRBitBuffer": function(module, require) {
+function QRBitBuffer() {
+	this.buffer = [];
+	this.length = 0;
+}
+
+QRBitBuffer.prototype = {
+
+	get : function(index) {
+		var bufIndex = Math.floor(index / 8);
+		return ( (this.buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+	},
+	
+	put : function(num, length) {
+		for (var i = 0; i < length; i++) {
+			this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+		}
+	},
+	
+	getLengthInBits : function() {
+		return this.length;
+	},
+	
+	putBit : function(bit) {
+	
+		var bufIndex = Math.floor(this.length / 8);
+		if (this.buffer.length <= bufIndex) {
+			this.buffer.push(0);
+		}
+	
+		if (bit) {
+			this.buffer[bufIndex] |= (0x80 >>> (this.length % 8) );
+		}
+	
+		this.length++;
+	}
+};
+
+module.exports = QRBitBuffer;
+
+},
+"./QR8bitByte": function(module, require) {
+var QRMode = require('./QRMode');
+
+function QR8bitByte(data) {
+	this.mode = QRMode.MODE_8BIT_BYTE;
+	this.data = data;
+}
+
+QR8bitByte.prototype = {
+
+	getLength : function() {
+		return this.data.length;
+	},
+	
+	write : function(buffer) {
+		for (var i = 0; i < this.data.length; i++) {
+			// not JIS ...
+			buffer.put(this.data.charCodeAt(i), 8);
+		}
+	}
+};
+
+module.exports = QR8bitByte;
+
+},
+"./QRUtil": function(module, require) {
+var QRMode = require('./QRMode');
+var QRPolynomial = require('./QRPolynomial');
+var QRMath = require('./QRMath');
+var QRMaskPattern = require('./QRMaskPattern');
+
+var QRUtil = {
+
+    PATTERN_POSITION_TABLE : [
+        [],
+        [6, 18],
+        [6, 22],
+        [6, 26],
+        [6, 30],
+        [6, 34],
+        [6, 22, 38],
+        [6, 24, 42],
+        [6, 26, 46],
+        [6, 28, 50],
+        [6, 30, 54],        
+        [6, 32, 58],
+        [6, 34, 62],
+        [6, 26, 46, 66],
+        [6, 26, 48, 70],
+        [6, 26, 50, 74],
+        [6, 30, 54, 78],
+        [6, 30, 56, 82],
+        [6, 30, 58, 86],
+        [6, 34, 62, 90],
+        [6, 28, 50, 72, 94],
+        [6, 26, 50, 74, 98],
+        [6, 30, 54, 78, 102],
+        [6, 28, 54, 80, 106],
+        [6, 32, 58, 84, 110],
+        [6, 30, 58, 86, 114],
+        [6, 34, 62, 90, 118],
+        [6, 26, 50, 74, 98, 122],
+        [6, 30, 54, 78, 102, 126],
+        [6, 26, 52, 78, 104, 130],
+        [6, 30, 56, 82, 108, 134],
+        [6, 34, 60, 86, 112, 138],
+        [6, 30, 58, 86, 114, 142],
+        [6, 34, 62, 90, 118, 146],
+        [6, 30, 54, 78, 102, 126, 150],
+        [6, 24, 50, 76, 102, 128, 154],
+        [6, 28, 54, 80, 106, 132, 158],
+        [6, 32, 58, 84, 110, 136, 162],
+        [6, 26, 54, 82, 110, 138, 166],
+        [6, 30, 58, 86, 114, 142, 170]
+    ],
+
+    G15 : (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0),
+    G18 : (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0),
+    G15_MASK : (1 << 14) | (1 << 12) | (1 << 10)    | (1 << 4) | (1 << 1),
+
+    getBCHTypeInfo : function(data) {
+        var d = data << 10;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) >= 0) {
+            d ^= (QRUtil.G15 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) ) );    
+        }
+        return ( (data << 10) | d) ^ QRUtil.G15_MASK;
+    },
+
+    getBCHTypeNumber : function(data) {
+        var d = data << 12;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) >= 0) {
+            d ^= (QRUtil.G18 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) ) );    
+        }
+        return (data << 12) | d;
+    },
+
+    getBCHDigit : function(data) {
+
+        var digit = 0;
+
+        while (data !== 0) {
+            digit++;
+            data >>>= 1;
+        }
+
+        return digit;
+    },
+
+    getPatternPosition : function(typeNumber) {
+        return QRUtil.PATTERN_POSITION_TABLE[typeNumber - 1];
+    },
+
+    getMask : function(maskPattern, i, j) {
+        
+        switch (maskPattern) {
+            
+        case QRMaskPattern.PATTERN000 : return (i + j) % 2 === 0;
+        case QRMaskPattern.PATTERN001 : return i % 2 === 0;
+        case QRMaskPattern.PATTERN010 : return j % 3 === 0;
+        case QRMaskPattern.PATTERN011 : return (i + j) % 3 === 0;
+        case QRMaskPattern.PATTERN100 : return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 === 0;
+        case QRMaskPattern.PATTERN101 : return (i * j) % 2 + (i * j) % 3 === 0;
+        case QRMaskPattern.PATTERN110 : return ( (i * j) % 2 + (i * j) % 3) % 2 === 0;
+        case QRMaskPattern.PATTERN111 : return ( (i * j) % 3 + (i + j) % 2) % 2 === 0;
+
+        default :
+            throw new Error("bad maskPattern:" + maskPattern);
+        }
+    },
+
+    getErrorCorrectPolynomial : function(errorCorrectLength) {
+
+        var a = new QRPolynomial([1], 0);
+
+        for (var i = 0; i < errorCorrectLength; i++) {
+            a = a.multiply(new QRPolynomial([1, QRMath.gexp(i)], 0) );
+        }
+
+        return a;
+    },
+
+    getLengthInBits : function(mode, type) {
+
+        if (1 <= type && type < 10) {
+
+            // 1 - 9
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 10;
+            case QRMode.MODE_ALPHA_NUM  : return 9;
+            case QRMode.MODE_8BIT_BYTE  : return 8;
+            case QRMode.MODE_KANJI      : return 8;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 27) {
+
+            // 10 - 26
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 12;
+            case QRMode.MODE_ALPHA_NUM  : return 11;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 10;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 41) {
+
+            // 27 - 40
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 14;
+            case QRMode.MODE_ALPHA_NUM  : return 13;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 12;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else {
+            throw new Error("type:" + type);
+        }
+    },
+
+    getLostPoint : function(qrCode) {
+        
+        var moduleCount = qrCode.getModuleCount();
+        var lostPoint = 0;
+        var row = 0; 
+        var col = 0;
+
+        
+        // LEVEL1
+        
+        for (row = 0; row < moduleCount; row++) {
+
+            for (col = 0; col < moduleCount; col++) {
+
+                var sameCount = 0;
+                var dark = qrCode.isDark(row, col);
+
+                for (var r = -1; r <= 1; r++) {
+
+                    if (row + r < 0 || moduleCount <= row + r) {
+                        continue;
+                    }
+
+                    for (var c = -1; c <= 1; c++) {
+
+                        if (col + c < 0 || moduleCount <= col + c) {
+                            continue;
+                        }
+
+                        if (r === 0 && c === 0) {
+                            continue;
+                        }
+
+                        if (dark === qrCode.isDark(row + r, col + c) ) {
+                            sameCount++;
+                        }
+                    }
+                }
+
+                if (sameCount > 5) {
+                    lostPoint += (3 + sameCount - 5);
+                }
+            }
+        }
+
+        // LEVEL2
+
+        for (row = 0; row < moduleCount - 1; row++) {
+            for (col = 0; col < moduleCount - 1; col++) {
+                var count = 0;
+                if (qrCode.isDark(row,     col    ) ) count++;
+                if (qrCode.isDark(row + 1, col    ) ) count++;
+                if (qrCode.isDark(row,     col + 1) ) count++;
+                if (qrCode.isDark(row + 1, col + 1) ) count++;
+                if (count === 0 || count === 4) {
+                    lostPoint += 3;
+                }
+            }
+        }
+
+        // LEVEL3
+
+        for (row = 0; row < moduleCount; row++) {
+            for (col = 0; col < moduleCount - 6; col++) {
+                if (qrCode.isDark(row, col) && 
+                        !qrCode.isDark(row, col + 1) && 
+                         qrCode.isDark(row, col + 2) && 
+                         qrCode.isDark(row, col + 3) && 
+                         qrCode.isDark(row, col + 4) && 
+                        !qrCode.isDark(row, col + 5) && 
+                         qrCode.isDark(row, col + 6) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount - 6; row++) {
+                if (qrCode.isDark(row, col) &&
+                        !qrCode.isDark(row + 1, col) &&
+                         qrCode.isDark(row + 2, col) &&
+                         qrCode.isDark(row + 3, col) &&
+                         qrCode.isDark(row + 4, col) &&
+                        !qrCode.isDark(row + 5, col) &&
+                         qrCode.isDark(row + 6, col) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        // LEVEL4
+        
+        var darkCount = 0;
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount; row++) {
+                if (qrCode.isDark(row, col) ) {
+                    darkCount++;
+                }
+            }
+        }
+        
+        var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+        lostPoint += ratio * 10;
+
+        return lostPoint;       
+    }
+
+};
+
+module.exports = QRUtil;
+
+},
+"./index": function(module, require) {
+//---------------------------------------------------------------------
+// QRCode for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//   http://www.opensource.org/licenses/mit-license.php
+//
+// The word "QR Code" is registered trademark of 
+// DENSO WAVE INCORPORATED
+//   http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+// Modified to work in node for this project (and some refactoring)
+//---------------------------------------------------------------------
+
+var QR8bitByte = require('./QR8bitByte');
+var QRUtil = require('./QRUtil');
+var QRPolynomial = require('./QRPolynomial');
+var QRRSBlock = require('./QRRSBlock');
+var QRBitBuffer = require('./QRBitBuffer');
+
+function QRCode(typeNumber, errorCorrectLevel) {
+	this.typeNumber = typeNumber;
+	this.errorCorrectLevel = errorCorrectLevel;
+	this.modules = null;
+	this.moduleCount = 0;
+	this.dataCache = null;
+	this.dataList = [];
+}
+
+QRCode.prototype = {
+	
+	addData : function(data) {
+		var newData = new QR8bitByte(data);
+		this.dataList.push(newData);
+		this.dataCache = null;
+	},
+	
+	isDark : function(row, col) {
+		if (row < 0 || this.moduleCount <= row || col < 0 || this.moduleCount <= col) {
+			throw new Error(row + "," + col);
+		}
+		return this.modules[row][col];
+	},
+
+	getModuleCount : function() {
+		return this.moduleCount;
+	},
+	
+	make : function() {
+		// Calculate automatically typeNumber if provided is < 1
+		if (this.typeNumber < 1 ){
+			var typeNumber = 1;
+			for (typeNumber = 1; typeNumber < 40; typeNumber++) {
+				var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, this.errorCorrectLevel);
+
+				var buffer = new QRBitBuffer();
+				var totalDataCount = 0;
+				for (var i = 0; i < rsBlocks.length; i++) {
+					totalDataCount += rsBlocks[i].dataCount;
+				}
+
+				for (var x = 0; x < this.dataList.length; x++) {
+					var data = this.dataList[x];
+					buffer.put(data.mode, 4);
+					buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+					data.write(buffer);
+				}
+				if (buffer.getLengthInBits() <= totalDataCount * 8)
+					break;
+			}
+			this.typeNumber = typeNumber;
+		}
+		this.makeImpl(false, this.getBestMaskPattern() );
+	},
+	
+	makeImpl : function(test, maskPattern) {
+		
+		this.moduleCount = this.typeNumber * 4 + 17;
+		this.modules = new Array(this.moduleCount);
+		
+		for (var row = 0; row < this.moduleCount; row++) {
+			
+			this.modules[row] = new Array(this.moduleCount);
+			
+			for (var col = 0; col < this.moduleCount; col++) {
+				this.modules[row][col] = null;//(col + row) % 3;
+			}
+		}
+	
+		this.setupPositionProbePattern(0, 0);
+		this.setupPositionProbePattern(this.moduleCount - 7, 0);
+		this.setupPositionProbePattern(0, this.moduleCount - 7);
+		this.setupPositionAdjustPattern();
+		this.setupTimingPattern();
+		this.setupTypeInfo(test, maskPattern);
+		
+		if (this.typeNumber >= 7) {
+			this.setupTypeNumber(test);
+		}
+	
+		if (this.dataCache === null) {
+			this.dataCache = QRCode.createData(this.typeNumber, this.errorCorrectLevel, this.dataList);
+		}
+	
+		this.mapData(this.dataCache, maskPattern);
+	},
+
+	setupPositionProbePattern : function(row, col)  {
+		
+		for (var r = -1; r <= 7; r++) {
+			
+			if (row + r <= -1 || this.moduleCount <= row + r) continue;
+			
+			for (var c = -1; c <= 7; c++) {
+				
+				if (col + c <= -1 || this.moduleCount <= col + c) continue;
+				
+				if ( (0 <= r && r <= 6 && (c === 0 || c === 6) ) || 
+                     (0 <= c && c <= 6 && (r === 0 || r === 6) ) || 
+                     (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+					this.modules[row + r][col + c] = true;
+				} else {
+					this.modules[row + r][col + c] = false;
+				}
+			}		
+		}		
+	},
+	
+	getBestMaskPattern : function() {
+	
+		var minLostPoint = 0;
+		var pattern = 0;
+	
+		for (var i = 0; i < 8; i++) {
+			
+			this.makeImpl(true, i);
+	
+			var lostPoint = QRUtil.getLostPoint(this);
+	
+			if (i === 0 || minLostPoint >  lostPoint) {
+				minLostPoint = lostPoint;
+				pattern = i;
+			}
+		}
+	
+		return pattern;
+	},
+	
+	createMovieClip : function(target_mc, instance_name, depth) {
+	
+		var qr_mc = target_mc.createEmptyMovieClip(instance_name, depth);
+		var cs = 1;
+	
+		this.make();
+
+		for (var row = 0; row < this.modules.length; row++) {
+			
+			var y = row * cs;
+			
+			for (var col = 0; col < this.modules[row].length; col++) {
+	
+				var x = col * cs;
+				var dark = this.modules[row][col];
+			
+				if (dark) {
+					qr_mc.beginFill(0, 100);
+					qr_mc.moveTo(x, y);
+					qr_mc.lineTo(x + cs, y);
+					qr_mc.lineTo(x + cs, y + cs);
+					qr_mc.lineTo(x, y + cs);
+					qr_mc.endFill();
+				}
+			}
+		}
+		
+		return qr_mc;
+	},
+
+	setupTimingPattern : function() {
+		
+		for (var r = 8; r < this.moduleCount - 8; r++) {
+			if (this.modules[r][6] !== null) {
+				continue;
+			}
+			this.modules[r][6] = (r % 2 === 0);
+		}
+	
+		for (var c = 8; c < this.moduleCount - 8; c++) {
+			if (this.modules[6][c] !== null) {
+				continue;
+			}
+			this.modules[6][c] = (c % 2 === 0);
+		}
+	},
+	
+	setupPositionAdjustPattern : function() {
+	
+		var pos = QRUtil.getPatternPosition(this.typeNumber);
+		
+		for (var i = 0; i < pos.length; i++) {
+		
+			for (var j = 0; j < pos.length; j++) {
+			
+				var row = pos[i];
+				var col = pos[j];
+				
+				if (this.modules[row][col] !== null) {
+					continue;
+				}
+				
+				for (var r = -2; r <= 2; r++) {
+				
+					for (var c = -2; c <= 2; c++) {
+					
+						if (Math.abs(r) === 2 || 
+                            Math.abs(c) === 2 ||
+                            (r === 0 && c === 0) ) {
+							this.modules[row + r][col + c] = true;
+						} else {
+							this.modules[row + r][col + c] = false;
+						}
+					}
+				}
+			}
+		}
+	},
+	
+	setupTypeNumber : function(test) {
+	
+		var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
+        var mod;
+	
+		for (var i = 0; i < 18; i++) {
+			mod = (!test && ( (bits >> i) & 1) === 1);
+			this.modules[Math.floor(i / 3)][i % 3 + this.moduleCount - 8 - 3] = mod;
+		}
+	
+		for (var x = 0; x < 18; x++) {
+			mod = (!test && ( (bits >> x) & 1) === 1);
+			this.modules[x % 3 + this.moduleCount - 8 - 3][Math.floor(x / 3)] = mod;
+		}
+	},
+	
+	setupTypeInfo : function(test, maskPattern) {
+	
+		var data = (this.errorCorrectLevel << 3) | maskPattern;
+		var bits = QRUtil.getBCHTypeInfo(data);
+        var mod;
+	
+		// vertical		
+		for (var v = 0; v < 15; v++) {
+	
+			mod = (!test && ( (bits >> v) & 1) === 1);
+	
+			if (v < 6) {
+				this.modules[v][8] = mod;
+			} else if (v < 8) {
+				this.modules[v + 1][8] = mod;
+			} else {
+				this.modules[this.moduleCount - 15 + v][8] = mod;
+			}
+		}
+	
+		// horizontal
+		for (var h = 0; h < 15; h++) {
+	
+			mod = (!test && ( (bits >> h) & 1) === 1);
+			
+			if (h < 8) {
+				this.modules[8][this.moduleCount - h - 1] = mod;
+			} else if (h < 9) {
+				this.modules[8][15 - h - 1 + 1] = mod;
+			} else {
+				this.modules[8][15 - h - 1] = mod;
+			}
+		}
+	
+		// fixed module
+		this.modules[this.moduleCount - 8][8] = (!test);
+	
+	},
+	
+	mapData : function(data, maskPattern) {
+		
+		var inc = -1;
+		var row = this.moduleCount - 1;
+		var bitIndex = 7;
+		var byteIndex = 0;
+		
+		for (var col = this.moduleCount - 1; col > 0; col -= 2) {
+	
+			if (col === 6) col--;
+	
+			while (true) {
+	
+				for (var c = 0; c < 2; c++) {
+					
+					if (this.modules[row][col - c] === null) {
+						
+						var dark = false;
+	
+						if (byteIndex < data.length) {
+							dark = ( ( (data[byteIndex] >>> bitIndex) & 1) === 1);
+						}
+	
+						var mask = QRUtil.getMask(maskPattern, row, col - c);
+	
+						if (mask) {
+							dark = !dark;
+						}
+						
+						this.modules[row][col - c] = dark;
+						bitIndex--;
+	
+						if (bitIndex === -1) {
+							byteIndex++;
+							bitIndex = 7;
+						}
+					}
+				}
+								
+				row += inc;
+	
+				if (row < 0 || this.moduleCount <= row) {
+					row -= inc;
+					inc = -inc;
+					break;
+				}
+			}
+		}
+		
+	}
+
+};
+
+QRCode.PAD0 = 0xEC;
+QRCode.PAD1 = 0x11;
+
+QRCode.createData = function(typeNumber, errorCorrectLevel, dataList) {
+	
+	var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
+	
+	var buffer = new QRBitBuffer();
+	
+	for (var i = 0; i < dataList.length; i++) {
+		var data = dataList[i];
+		buffer.put(data.mode, 4);
+		buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+		data.write(buffer);
+	}
+
+	// calc num max data.
+	var totalDataCount = 0;
+	for (var x = 0; x < rsBlocks.length; x++) {
+		totalDataCount += rsBlocks[x].dataCount;
+	}
+
+	if (buffer.getLengthInBits() > totalDataCount * 8) {
+		throw new Error("code length overflow. (" + 
+            buffer.getLengthInBits() + 
+            ">" +  
+            totalDataCount * 8 + 
+            ")");
+	}
+
+	// end code
+	if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+		buffer.put(0, 4);
+	}
+
+	// padding
+	while (buffer.getLengthInBits() % 8 !== 0) {
+		buffer.putBit(false);
+	}
+
+	// padding
+	while (true) {
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD0, 8);
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD1, 8);
+	}
+
+	return QRCode.createBytes(buffer, rsBlocks);
+};
+
+QRCode.createBytes = function(buffer, rsBlocks) {
+
+	var offset = 0;
+	
+	var maxDcCount = 0;
+	var maxEcCount = 0;
+	
+	var dcdata = new Array(rsBlocks.length);
+	var ecdata = new Array(rsBlocks.length);
+	
+	for (var r = 0; r < rsBlocks.length; r++) {
+
+		var dcCount = rsBlocks[r].dataCount;
+		var ecCount = rsBlocks[r].totalCount - dcCount;
+
+		maxDcCount = Math.max(maxDcCount, dcCount);
+		maxEcCount = Math.max(maxEcCount, ecCount);
+		
+		dcdata[r] = new Array(dcCount);
+		
+		for (var i = 0; i < dcdata[r].length; i++) {
+			dcdata[r][i] = 0xff & buffer.buffer[i + offset];
+		}
+		offset += dcCount;
+		
+		var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+		var rawPoly = new QRPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+		var modPoly = rawPoly.mod(rsPoly);
+		ecdata[r] = new Array(rsPoly.getLength() - 1);
+		for (var x = 0; x < ecdata[r].length; x++) {
+            var modIndex = x + modPoly.getLength() - ecdata[r].length;
+			ecdata[r][x] = (modIndex >= 0)? modPoly.get(modIndex) : 0;
+		}
+
+	}
+	
+	var totalCodeCount = 0;
+	for (var y = 0; y < rsBlocks.length; y++) {
+		totalCodeCount += rsBlocks[y].totalCount;
+	}
+
+	var data = new Array(totalCodeCount);
+	var index = 0;
+
+	for (var z = 0; z < maxDcCount; z++) {
+		for (var s = 0; s < rsBlocks.length; s++) {
+			if (z < dcdata[s].length) {
+				data[index++] = dcdata[s][z];
+			}
+		}
+	}
+
+	for (var xx = 0; xx < maxEcCount; xx++) {
+		for (var t = 0; t < rsBlocks.length; t++) {
+			if (xx < ecdata[t].length) {
+				data[index++] = ecdata[t][xx];
+			}
+		}
+	}
+
+	return data;
+
+};
+
+module.exports = QRCode;
+
+}
+};
+const cache = {};
+function load(name) {
+ if (cache[name]) return cache[name].exports;
+ if (!factories[name]) throw new Error('Módulo QR não encontrado: ' + name);
+ const module = {exports:{}}; cache[name]=module;
+ factories[name](module, load); return module.exports;
+}
+window.LocalizadorQRCode = load('./index');
+})();
+</script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const params = new URLSearchParams(location.search);
+  const totem = params.get('totem') === '1';
+  const cleanNumber = v => /^\d+$/.test(v.trim()) ? String(Number(v.trim())) : '';
+  const byCasa = new Map(DADOS.map(d => [d['Nº da Casa'], d]));
+  const byQuadraLote = new Map(DADOS.map(d => [`${d.Quadra}:${d.Lote}`, d]));
+  const baseUrl = (() => {
+    if (location.protocol !== 'http:' && location.protocol !== 'https:') return '';
+    const u = new URL(location.href);
+    if (['localhost','127.0.0.1','::1'].includes(u.hostname)) return '';
+    u.search = ''; u.hash = '';
+    return u.href;
+  })();
+  $('totemLink').href = baseUrl ? `${baseUrl}?totem=1` : '?totem=1';
+  $('visitorLink').href = baseUrl || location.pathname;
+
+  function icon(name) { return `<svg class="icon" aria-hidden="true"><use href="#icon-${name}"/></svg>`; }
+  function coords(d) {
+    const match = /^POINT\s*\((-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\)$/.exec(d.WKT);
+    return match ? {lng: Number(match[1]), lat: Number(match[2])} : null;
+  }
+  function mapsUrl(d, mode = 'driving') {
+    const c = coords(d);
+    if (!c) return '';
+    const q = new URLSearchParams({api:'1', destination:`${c.lat},${c.lng}`, travelmode:mode});
+    return `https://www.google.com/maps/dir/?${q}`;
+  }
+  function shareUrl(d) {
+    if (!baseUrl) return '';
+    const u = new URL(baseUrl); u.searchParams.set('casa', d['Nº da Casa']); return u.toString();
+  }
+  let mode = 'casa';
+  function showError(msg) {
+    const node = document.createElement('div');
+    node.className = 'error'; node.textContent = msg;
+    $('result').replaceChildren(node);
+  }
+  function selectMode(value) {
+    mode = value;
+    $('byCasa').classList.toggle('hidden', value !== 'casa');
+    $('byQuadra').classList.toggle('hidden', value === 'casa');
+    $('tabCasa').setAttribute('aria-selected', String(value === 'casa'));
+    $('tabQuadra').setAttribute('aria-selected', String(value !== 'casa'));
+    $('result').replaceChildren();
+  }
+  $('tabCasa').addEventListener('click', () => selectMode('casa'));
+  $('tabQuadra').addEventListener('click', () => selectMode('quadra'));
+  $('searchForm').addEventListener('submit', event => {
+    event.preventDefault();
+    const casa = cleanNumber($('casaInput').value);
+    const quadra = cleanNumber($('quadraInput').value);
+    const lote = cleanNumber($('loteInput').value);
+    if (mode === 'casa' && !casa) { showError('Informe um número de casa válido, usando apenas algarismos.'); return; }
+    if (mode === 'quadra' && (!quadra || !lote)) { showError('Preencha os números da quadra e do lote.'); return; }
+    const d = mode === 'casa' ? byCasa.get(casa) : byQuadraLote.get(`${quadra}:${lote}`);
+    if (!d) { showError('Endereço não encontrado. Confira o número informado ou confirme os dados na portaria.'); return; }
+    renderResult(d);
+  });
+  function renderResult(d) {
+    const card = document.createElement('section');
+    card.className='result';
+    const head = document.createElement('div'); head.className='result-header'; head.innerHTML=`${icon('check')} Endereço encontrado`;
+    const content = document.createElement('div'); content.className='result-content';
+    const title = document.createElement('h2'); title.className='house-big';
+    const label = document.createElement('small'); label.textContent='Número da casa';
+    title.append(label, document.createTextNode(d['Nº da Casa']));
+    const info = document.createElement('div'); info.className='result-info';
+    for (const [key, value] of [['Quadra',d.Quadra],['Lote',d.Lote]]) {
+      const item=document.createElement('div');item.className='item-info';
+      const small=document.createElement('small');small.textContent=key;
+      const strong=document.createElement('strong');strong.textContent=value;
+      item.append(small,strong);info.append(item);
+    }
+    const actions = document.createElement('div'); actions.className='nav-actions';
+    const route = document.createElement('a'); route.className='button-main map-link';
+    route.href=mapsUrl(d);route.target='_blank';route.rel='noopener noreferrer';
+    route.innerHTML=`${icon('pin')} Abrir rota no Google Maps`;
+    const walk = document.createElement('a');walk.className='secondary';
+    walk.href=mapsUrl(d,'walking');walk.target='_blank';walk.rel='noopener noreferrer';
+    walk.textContent='Rota a pé';
+    const share=document.createElement('button'); share.type='button';share.className='secondary';
+    share.innerHTML=`${icon('copy')} Compartilhar endereço`;
+    share.addEventListener('click', async () => {
+      const target = shareUrl(d);
+      if (!target) {showError('Para compartilhar um link, publique primeiro o localizador em um endereço HTTP ou HTTPS.');return;}
+      try {
+        if (navigator.share) await navigator.share({title:`Casa ${d['Nº da Casa']} · Bougainville`,url:target});
+        else if (navigator.clipboard && window.isSecureContext) {await navigator.clipboard.writeText(target);share.textContent='Link copiado!';}
+        else {window.prompt('Copie o endereço:',target);}
+      } catch(e) { if (e.name !== 'AbortError') window.prompt('Copie o endereço:',target); }
+    });
+    actions.append(route,walk,share);content.append(title,info,actions);
+    card.append(head,content);$('result').replaceChildren(card);
+    card.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  if (!totem) {
+    const chosen = cleanNumber(params.get('casa') || '');
+    if (chosen && byCasa.has(chosen)) { $('casaInput').value=chosen; renderResult(byCasa.get(chosen)); }
+    return;
+  }
+
+  document.body.classList.add('kiosk-mode');
+  const STORAGE_KEY = 'bougainville_localizador_url';
+  const getSaved = () => {try {return localStorage.getItem(STORAGE_KEY) || '';}catch(e){return '';}};
+  const setSaved = value => {try {localStorage.setItem(STORAGE_KEY,value);}catch(e){/* bloqueado pelo navegador */}};
+  function canonicalUrl(value) {
+    let url;
+    try { url = new URL(value.trim()); } catch(e) { return ''; }
+    if (!['https:','http:'].includes(url.protocol) || !url.hostname || url.username || url.password) return '';
+    url.search='';url.hash='';
+    return url.href;
+  }
+  const showQR = urlString => {
+    const url = canonicalUrl(urlString);
+    if (!url) return false;
+    try {
+      // Correção de erros M. Margem branca de 4 módulos em cada lado.
+      const qr = new window.LocalizadorQRCode(0, 0);
+      qr.addData(url);qr.make();
+      const n=qr.getModuleCount();const margin=4;
+      let squares='';
+      for(let y=0;y<n;y++) for(let x=0;x<n;x++) if(qr.isDark(y,x)) squares+=`M${x+margin} ${y+margin}h1v1h-1z`;
+      const svgNS='http://www.w3.org/2000/svg';
+      const svg=document.createElementNS(svgNS,'svg');
+      svg.setAttribute('viewBox',`0 0 ${n+margin*2} ${n+margin*2}`);
+      svg.setAttribute('role','img');svg.setAttribute('aria-label',`QR Code para ${url}`);
+      svg.setAttribute('shape-rendering','crispEdges');
+      const background=document.createElementNS(svgNS,'rect');
+      background.setAttribute('width',n+margin*2);background.setAttribute('height',n+margin*2);background.setAttribute('fill','#fff');
+      const path=document.createElementNS(svgNS,'path');path.setAttribute('d',squares);path.setAttribute('fill','#101920');
+      svg.append(background,path);
+      $('qrCode').replaceChildren(svg);
+      $('qrFrame').classList.remove('hidden');$('kioskSetup').classList.add('hidden');
+      $('kioskDetails').classList.remove('hidden');
+      $('kioskUrl').href=url;$('kioskUrl').textContent=url.replace(/^https?:\/\//,'');
+      $('kioskError').textContent='';
+      $('settingsUrl').value=url;
+      return true;
+    } catch(e) {
+      $('kioskError').textContent='Não foi possível gerar o QR Code. Verifique o endereço configurado.';
+      console.error(e);return false;
+    }
+  };
+  const initial = getSaved() || baseUrl;
+  if(!showQR(initial)) {
+    $('qrFrame').classList.add('hidden');$('kioskDetails').classList.add('hidden');
+    $('kioskSetup').classList.remove('hidden');$('setupUrl').value=getSaved() || '';
+  }
+  function saveUrl(raw, where) {
+    const url=canonicalUrl(raw);
+    if(!url) {$(where).textContent='Informe um endereço HTTP ou HTTPS válido.';return false;}
+    if(!showQR(url)) return false;
+    setSaved(url);$(where).textContent='';return true;
+  }
+  $('setupForm').addEventListener('submit', e => {
+    e.preventDefault();saveUrl($('setupUrl').value,'setupStatus');
+  });
+  $('settingsForm').addEventListener('submit', e => {
+    e.preventDefault();if(saveUrl($('settingsUrl').value,'kioskError')) $('settingsDialog').close();
+  });
+  $('autoUrlBtn').addEventListener('click', () => {
+    if(!baseUrl) { $('kioskError').textContent='Abra o arquivo em um site antes de usar o endereço atual.';return; }
+    if(saveUrl(baseUrl,'kioskError')) $('settingsDialog').close();
+  });
+  $('settingsBtn').addEventListener('click', () => {
+    $('settingsUrl').value=getSaved() || baseUrl;
+    $('settingsDialog').showModal();
+  });
+  $('closeSettings').addEventListener('click', () => $('settingsDialog').close());
+  $('fullScreenBtn').addEventListener('click', async () => {
+    try { if(!document.fullscreenElement) await document.documentElement.requestFullscreen(); else await document.exitFullscreen(); }
+    catch(e) { $('kioskError').textContent='O navegador não permitiu ativar a tela cheia.'; }
+  });
+})();
+</script>
 </body>
 </html>
