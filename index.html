@@ -124,6 +124,54 @@
       .kiosk .subtitle {font-size:.97rem}
     }
     @media(prefers-reduced-motion:reduce) {*{scroll-behavior:auto;transition:none !important}}
+
+    /* Versão 2: QR dinâmico com destino individual no Google Maps */
+    .kiosk {gap:16px; padding:26px 18px 20px; justify-content:flex-start}
+    .kiosk-top {max-width:850px; justify-content:center; flex-shrink:0}
+    .kiosk h1 {font-size:clamp(1.9rem,4.5vw,3.3rem); margin-top:9px}
+    .kiosk .subtitle {font-size:clamp(.9rem,1.8vw,1.15rem)}
+    .kiosk-search {width:min(100%,570px); background:#fff; color:var(--ink); border-radius:19px; padding:22px 24px 24px; text-align:left; box-shadow:0 15px 65px #0005}
+    .kiosk-search .switch {margin:0 0 16px}
+    .kiosk-search .field input {height:58px; font-size:1.3rem}
+    .kiosk-search .button-main {width:100%; margin-top:17px; min-height:58px; font-size:1rem}
+    .kiosk-search .help {margin:0 0 17px; text-align:center}
+    .kiosk-result {display:flex; align-items:center; flex-direction:column; gap:12px; width:100%; max-width:690px}
+    .kiosk-result h2 {font-size:clamp(1.9rem,5vw,3rem); margin:0; color:#fff; letter-spacing:-.04em}
+    .kiosk-lot {color:#c4d7e1; font-size:1rem; font-weight:650; margin:0}
+    .kiosk-result .qr-frame {width:min(52vmin,370px); min-width:230px; padding:15px; margin:0}
+    .kiosk-result .button-main {background:#fff; color:var(--navy); width:min(100%,370px); min-height:48px}
+    .kiosk-result .button-main:hover {background:#eaf4f8}
+    .kiosk-result .secondary {color:#fff; border-color:#9db4c755; background:#ffffff14; width:min(100%,370px); min-height:48px}
+    .kiosk-result .secondary:hover {background:#ffffff28}
+    .kiosk-bottom {margin-top:auto; padding-top:3px; font-size:.88rem; line-height:1.35}
+    .qr-result-block {margin-top:18px; border:1px solid #dce7ec; border-radius:13px; padding:16px; background:#f4f8fa; text-align:center}
+    .qr-result-block .qr-badge {font-size:.82rem; font-weight:800; color:#26435a; margin:0 0 11px}
+    .qr-result-block svg {width:min(100%,200px); aspect-ratio:1; display:block; margin:auto; background:#fff; image-rendering:pixelated}
+    .qr-result-block p:last-child {font-size:.75rem; line-height:1.45; color:var(--muted); margin:10px 0 0}
+    .kiosk-errors {color:#ffd7c2; font-size:.88rem; min-height:0; margin:0}
+    @media(max-width:520px) {
+      .kiosk {padding:17px 14px; gap:12px}
+      .kiosk-top {justify-content:flex-start; padding-right:70px}
+      .kiosk h1 {font-size:1.75rem; margin-top:2px}
+      .kiosk .subtitle {font-size:.91rem}
+      .kiosk-search {padding:19px 16px}
+      .kiosk-result .qr-frame {width:min(64vw,34vh,330px); min-width:190px}
+      .kiosk-result h2 {font-size:1.9rem}
+      .kiosk-result {gap:10px}
+    }
+    @media(max-height:750px) and (min-width:650px) {
+      .kiosk {gap:8px; padding:10px 25px}
+      .kiosk h1 {font-size:1.95rem; margin:0}
+      .kiosk .subtitle {font-size:.87rem}
+      .kiosk-search {padding:15px 20px}
+      .kiosk-search .field input {height:48px}
+      .kiosk-search .button-main {min-height:46px; margin-top:12px}
+      .kiosk-result .qr-frame {width:min(36vh,290px); min-width:150px; padding:10px}
+      .kiosk-result h2 {font-size:1.85rem}
+      .kiosk-result .button-main,.kiosk-result .secondary {min-height:40px}
+      .kiosk-result {gap:6px}
+      .kiosk-bottom {font-size:.74rem}
+    }
   </style>
 </head>
 <body>
@@ -170,39 +218,36 @@
     </section>
     <div id="result" aria-live="polite" aria-atomic="true"></div>
   </main>
-  <footer class="site-footer">Bougainville Residence Privê<br><a id="totemLink" href="?totem=1">Exibir QR Code no tablet</a></footer>
+  <footer class="site-footer">Bougainville Residence Privê<br><a id="totemLink" href="?totem=1">Abrir modo tablet / QR Code</a></footer>
 </div>
-<section class="kiosk" id="kioskView" aria-label="QR Code de acesso ao localizador">
+<section class="kiosk" id="kioskView" aria-label="Localizador no tablet">
   <div class="kiosk-top">
     <div class="brand"><span class="brand-mark"><svg class="icon" style="width:26px;height:26px"><use href="#icon-pin"/></svg></span><span class="brand-name">BOUGAINVILLE <small>RESIDENCE PRIVÊ</small></span></div>
-    <div class="kiosk-tools">
-      <button id="fullScreenBtn" class="tool-btn" type="button" aria-label="Tela cheia" title="Tela cheia"><svg class="icon"><use href="#icon-expand"/></svg></button>
-      <button id="settingsBtn" class="tool-btn" type="button" aria-label="Configurar QR Code" title="Configurar endereço"><svg class="icon"><use href="#icon-settings"/></svg></button>
+    <div class="kiosk-tools"><button id="fullScreenBtn" class="tool-btn" type="button" aria-label="Tela cheia" title="Tela cheia"><svg class="icon"><use href="#icon-expand"/></svg></button></div>
+  </div>
+  <h1>Encontre a casa que vai visitar.</h1>
+  <p class="subtitle" id="kioskSubtitle">Digite o endereço no tablet para gerar um QR Code que abrirá o Google Maps no seu celular.</p>
+  <form id="kioskSearchForm" class="kiosk-search" autocomplete="off">
+    <p class="help">Escolha como localizar seu destino.</p>
+    <div class="switch" role="tablist" aria-label="Tipo de pesquisa no tablet">
+      <button id="kioskTabCasa" role="tab" type="button" aria-selected="true" aria-controls="kioskByCasa">Número da casa</button>
+      <button id="kioskTabQuadra" role="tab" type="button" aria-selected="false" aria-controls="kioskByQuadra">Quadra e lote</button>
     </div>
+    <div id="kioskByCasa" role="tabpanel" aria-labelledby="kioskTabCasa"><div class="field"><label for="kioskCasaInput">Número da casa</label><input id="kioskCasaInput" inputmode="numeric" pattern="[0-9]*" placeholder="Ex.: 2135" maxlength="8" autocomplete="off"></div></div>
+    <div id="kioskByQuadra" class="hidden" role="tabpanel" aria-labelledby="kioskTabQuadra"><div class="fields-grid"><div class="field"><label for="kioskQuadraInput">Quadra</label><input id="kioskQuadraInput" inputmode="numeric" pattern="[0-9]*" placeholder="Ex.: 242" maxlength="8" autocomplete="off"></div><div class="field"><label for="kioskLoteInput">Lote</label><input id="kioskLoteInput" inputmode="numeric" pattern="[0-9]*" placeholder="Ex.: 18" maxlength="8" autocomplete="off"></div></div></div>
+    <button class="button-main" type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-search"/></svg> Gerar QR Code da casa</button>
+  </form>
+  <div id="kioskResult" class="kiosk-result hidden" aria-live="polite">
+    <h2 id="kioskHouse"></h2>
+    <p class="kiosk-lot" id="kioskLot"></p>
+    <div class="qr-frame" id="qrFrame"><div id="qrCode" aria-label="QR Code da rota para esta casa"></div><div class="qr-description">ESCANEIE COM SEU CELULAR</div></div>
+    <a id="kioskMapsLink" class="button-main" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#icon-pin"/></svg> Abrir no Google Maps</a>
+    <button id="kioskReset" class="secondary" type="button">Consultar outra casa</button>
   </div>
-  <h1>Seu destino está<br>na palma da mão.</h1>
-  <p class="subtitle">Aponte a câmera do celular para o QR Code e encontre a casa que deseja visitar.</p>
-  <div class="qr-frame hidden" id="qrFrame"><div id="qrCode" aria-label="QR Code do localizador"></div><div class="qr-description">ESCANEIE COM SEU CELULAR</div></div>
-  <div class="setup hidden" id="kioskSetup">
-    <h2>Configurar o endereço do localizador</h2>
-    <p>Primeiro, publique o arquivo HTML em um site. Depois, informe o link público onde o visitante abrirá o localizador.</p>
-    <form id="setupForm"><div class="field"><label for="setupUrl">Endereço público (HTTPS recomendado)</label><input type="url" id="setupUrl" placeholder="https://exemplo.com.br/localizador/" required></div><button class="button-main" type="submit">Gerar QR Code</button></form>
-    <p id="setupStatus" role="status"></p>
-  </div>
-  <div id="kioskDetails" class="kiosk-bottom hidden"><p><strong>1.</strong> Escaneie o QR Code &nbsp; <strong>2.</strong> Digite o número da casa &nbsp; <strong>3.</strong> Inicie a navegação</p><a id="kioskUrl" class="kiosk-site" href="#" target="_blank" rel="noopener noreferrer"></a></div>
   <p class="kiosk-errors" id="kioskError" role="alert"></p>
+  <div class="kiosk-bottom"><p>O QR Code abre <strong>diretamente o Google Maps</strong> com o destino selecionado.</p><p>A rota depende das vias disponíveis no mapa e do GPS do celular.</p></div>
 </section>
-<dialog id="settingsDialog" aria-labelledby="settingsTitle">
-  <div class="dialog-card">
-    <div class="dialog-top"><h2 id="settingsTitle">Configurações do totem</h2><button type="button" id="closeSettings" class="close-dialog" aria-label="Fechar">×</button></div>
-    <p>Configure a URL pública do arquivo HTML. O QR Code sempre abrirá a versão do visitante, sem o modo totem.</p>
-    <form id="settingsForm">
-      <div class="field"><label for="settingsUrl">Link público do localizador</label><input id="settingsUrl" type="url" placeholder="https://exemplo.com.br/localizador/" required></div>
-      <div class="dialog-actions"><button class="button-main" type="submit">Salvar e atualizar</button><button class="secondary" id="autoUrlBtn" type="button">Usar endereço atual</button></div>
-    </form>
-    <div class="dialog-note">A URL é guardada somente neste tablet. Para sair do modo totem, remova <code>?totem=1</code> do endereço ou <a id="visitorLink" href="./">abra a consulta</a>.</div>
-  </div>
-</dialog>
+
 <script>
 'use strict';
 // Dados originais preservados: 367 registros (número da casa, quadra, lote e coordenadas WKT).
@@ -1484,175 +1529,156 @@ window.LocalizadorQRCode = load('./index');
   const $ = id => document.getElementById(id);
   const params = new URLSearchParams(location.search);
   const totem = params.get('totem') === '1';
-  const cleanNumber = v => /^\d+$/.test(v.trim()) ? String(Number(v.trim())) : '';
+  const cleanNumber = value => /^\d+$/.test(String(value).trim()) ? String(Number(String(value).trim())) : '';
   const byCasa = new Map(DADOS.map(d => [d['Nº da Casa'], d]));
   const byQuadraLote = new Map(DADOS.map(d => [`${d.Quadra}:${d.Lote}`, d]));
-  const baseUrl = (() => {
-    if (location.protocol !== 'http:' && location.protocol !== 'https:') return '';
-    const u = new URL(location.href);
-    if (['localhost','127.0.0.1','::1'].includes(u.hostname)) return '';
-    u.search = ''; u.hash = '';
-    return u.href;
-  })();
-  $('totemLink').href = baseUrl ? `${baseUrl}?totem=1` : '?totem=1';
-  $('visitorLink').href = baseUrl || location.pathname;
 
   function icon(name) { return `<svg class="icon" aria-hidden="true"><use href="#icon-${name}"/></svg>`; }
   function coords(d) {
     const match = /^POINT\s*\((-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\)$/.exec(d.WKT);
-    return match ? {lng: Number(match[1]), lat: Number(match[2])} : null;
+    return match ? {lng:Number(match[1]),lat:Number(match[2])} : null;
   }
+  // O QR Code SEMPRE conterá esta URL Google Maps, NUNCA a página do localizador.
   function mapsUrl(d, mode = 'driving') {
     const c = coords(d);
     if (!c) return '';
-    const q = new URLSearchParams({api:'1', destination:`${c.lat},${c.lng}`, travelmode:mode});
-    return `https://www.google.com/maps/dir/?${q}`;
+    const params = new URLSearchParams({api:'1', destination:`${c.lat},${c.lng}`, travelmode:mode});
+    return `https://www.google.com/maps/dir/?${params.toString()}`;
   }
-  function shareUrl(d) {
-    if (!baseUrl) return '';
-    const u = new URL(baseUrl); u.searchParams.set('casa', d['Nº da Casa']); return u.toString();
+  // Gerador de QR Code embutido, funciona mesmo sem publicar este HTML na internet.
+  function makeQr(target, mount) {
+    const qr = new window.LocalizadorQRCode(0, 0); // nível de correção M
+    qr.addData(target); qr.make();
+    const n=qr.getModuleCount(), margin=4;
+    let squares='';
+    for(let y=0;y<n;y++) for(let x=0;x<n;x++) if(qr.isDark(y,x)) squares+=`M${x+margin} ${y+margin}h1v1h-1z`;
+    const ns='http://www.w3.org/2000/svg';
+    const svg=document.createElementNS(ns,'svg');
+    svg.setAttribute('viewBox',`0 0 ${n+margin*2} ${n+margin*2}`);
+    svg.setAttribute('role','img');
+    svg.setAttribute('aria-label','QR Code para abrir a rota no Google Maps');
+    svg.setAttribute('shape-rendering','crispEdges');
+    const background=document.createElementNS(ns,'rect');
+    background.setAttribute('width',n+margin*2);
+    background.setAttribute('height',n+margin*2);
+    background.setAttribute('fill','#ffffff');
+    const path=document.createElementNS(ns,'path');
+    path.setAttribute('d',squares);
+    path.setAttribute('fill','#111827');
+    svg.append(background,path); mount.replaceChildren(svg);
   }
-  let mode = 'casa';
-  function showError(msg) {
-    const node = document.createElement('div');
-    node.className = 'error'; node.textContent = msg;
-    $('result').replaceChildren(node);
+  function findResult(mode, casaId, quadraId, loteId) {
+    const casa=cleanNumber($(casaId).value), quadra=cleanNumber($(quadraId).value), lote=cleanNumber($(loteId).value);
+    if(mode==='casa' && !casa) return {error:'Informe um número de casa válido.'};
+    if(mode==='quadra' && (!quadra || !lote)) return {error:'Informe a quadra e o lote.'};
+    const d=mode==='casa' ? byCasa.get(casa) : byQuadraLote.get(`${quadra}:${lote}`);
+    return d ? {d} : {error:'Endereço não encontrado. Confira a informação ou consulte a portaria.'};
   }
-  function selectMode(value) {
-    mode = value;
-    $('byCasa').classList.toggle('hidden', value !== 'casa');
-    $('byQuadra').classList.toggle('hidden', value === 'casa');
-    $('tabCasa').setAttribute('aria-selected', String(value === 'casa'));
-    $('tabQuadra').setAttribute('aria-selected', String(value !== 'casa'));
-    $('result').replaceChildren();
+  function setMode(value, prefix) {
+    const isCasa=value==='casa';
+    $(prefix ? prefix+'ByCasa' : 'byCasa').classList.toggle('hidden',!isCasa);
+    $(prefix ? prefix+'ByQuadra' : 'byQuadra').classList.toggle('hidden',isCasa);
+    $(prefix ? prefix+'TabCasa' : 'tabCasa').setAttribute('aria-selected',String(isCasa));
+    $(prefix ? prefix+'TabQuadra' : 'tabQuadra').setAttribute('aria-selected',String(!isCasa));
   }
-  $('tabCasa').addEventListener('click', () => selectMode('casa'));
-  $('tabQuadra').addEventListener('click', () => selectMode('quadra'));
-  $('searchForm').addEventListener('submit', event => {
-    event.preventDefault();
-    const casa = cleanNumber($('casaInput').value);
-    const quadra = cleanNumber($('quadraInput').value);
-    const lote = cleanNumber($('loteInput').value);
-    if (mode === 'casa' && !casa) { showError('Informe um número de casa válido, usando apenas algarismos.'); return; }
-    if (mode === 'quadra' && (!quadra || !lote)) { showError('Preencha os números da quadra e do lote.'); return; }
-    const d = mode === 'casa' ? byCasa.get(casa) : byQuadraLote.get(`${quadra}:${lote}`);
-    if (!d) { showError('Endereço não encontrado. Confira o número informado ou confirme os dados na portaria.'); return; }
-    renderResult(d);
-  });
+  $('totemLink').href = '?totem=1';
+
+  // Fluxo comum: pesquisa e resultado, incluindo QR específico do endereço.
+  let visitorMode='casa';
+  $('tabCasa').addEventListener('click',()=>{visitorMode='casa';$('result').replaceChildren();setMode(visitorMode,'');});
+  $('tabQuadra').addEventListener('click',()=>{visitorMode='quadra';$('result').replaceChildren();setMode(visitorMode,'');});
+  function visitorError(msg) {
+    const el=document.createElement('div');el.className='error';el.textContent=msg;
+    $('result').replaceChildren(el);
+  }
   function renderResult(d) {
-    const card = document.createElement('section');
-    card.className='result';
-    const head = document.createElement('div'); head.className='result-header'; head.innerHTML=`${icon('check')} Endereço encontrado`;
-    const content = document.createElement('div'); content.className='result-content';
-    const title = document.createElement('h2'); title.className='house-big';
-    const label = document.createElement('small'); label.textContent='Número da casa';
-    title.append(label, document.createTextNode(d['Nº da Casa']));
-    const info = document.createElement('div'); info.className='result-info';
-    for (const [key, value] of [['Quadra',d.Quadra],['Lote',d.Lote]]) {
-      const item=document.createElement('div');item.className='item-info';
+    const route=mapsUrl(d);
+    if (!route) {visitorError('Coordenadas não disponíveis para esta casa.');return;}
+    const card=document.createElement('section');card.className='result';
+    const head=document.createElement('div');head.className='result-header';head.innerHTML=`${icon('check')} Endereço encontrado`;
+    const content=document.createElement('div');content.className='result-content';
+    const title=document.createElement('h2');title.className='house-big';
+    const label=document.createElement('small');label.textContent='Número da casa';
+    title.append(label,document.createTextNode(d['Nº da Casa']));
+    const info=document.createElement('div');info.className='result-info';
+    for (const [key,value] of [['Quadra',d.Quadra],['Lote',d.Lote]]) {
+      const el=document.createElement('div');el.className='item-info';
       const small=document.createElement('small');small.textContent=key;
       const strong=document.createElement('strong');strong.textContent=value;
-      item.append(small,strong);info.append(item);
+      el.append(small,strong);info.append(el);
     }
-    const actions = document.createElement('div'); actions.className='nav-actions';
-    const route = document.createElement('a'); route.className='button-main map-link';
-    route.href=mapsUrl(d);route.target='_blank';route.rel='noopener noreferrer';
-    route.innerHTML=`${icon('pin')} Abrir rota no Google Maps`;
-    const walk = document.createElement('a');walk.className='secondary';
-    walk.href=mapsUrl(d,'walking');walk.target='_blank';walk.rel='noopener noreferrer';
-    walk.textContent='Rota a pé';
-    const share=document.createElement('button'); share.type='button';share.className='secondary';
-    share.innerHTML=`${icon('copy')} Compartilhar endereço`;
-    share.addEventListener('click', async () => {
-      const target = shareUrl(d);
-      if (!target) {showError('Para compartilhar um link, publique primeiro o localizador em um endereço HTTP ou HTTPS.');return;}
+    const actions=document.createElement('div'); actions.className='nav-actions';
+    const map=document.createElement('a');map.className='button-main map-link';
+    map.href=route;map.target='_blank';map.rel='noopener noreferrer';
+    map.innerHTML=`${icon('pin')} Abrir rota no Google Maps`;
+    const walk=document.createElement('a');walk.className='secondary';walk.href=mapsUrl(d,'walking');
+    walk.target='_blank';walk.rel='noopener noreferrer';walk.textContent='Rota a pé';
+    const share=document.createElement('button');share.type='button';share.className='secondary';
+    share.innerHTML=`${icon('copy')} Compartilhar rota`;
+    share.addEventListener('click',async()=>{
       try {
-        if (navigator.share) await navigator.share({title:`Casa ${d['Nº da Casa']} · Bougainville`,url:target});
-        else if (navigator.clipboard && window.isSecureContext) {await navigator.clipboard.writeText(target);share.textContent='Link copiado!';}
-        else {window.prompt('Copie o endereço:',target);}
-      } catch(e) { if (e.name !== 'AbortError') window.prompt('Copie o endereço:',target); }
+        if(navigator.share) await navigator.share({title:`Rota para casa ${d['Nº da Casa']}`,url:route});
+        else if(navigator.clipboard && window.isSecureContext) {await navigator.clipboard.writeText(route);share.textContent='Rota copiada!';}
+        else window.prompt('Copie o link do Google Maps:',route);
+      } catch(e) {if(e.name!=='AbortError') window.prompt('Copie o link do Google Maps:',route);}
     });
-    actions.append(route,walk,share);content.append(title,info,actions);
-    card.append(head,content);$('result').replaceChildren(card);
-    card.scrollIntoView({behavior:'smooth',block:'nearest'});
+    actions.append(map,walk,share);
+    const qrBlock=document.createElement('div');qrBlock.className='qr-result-block';
+    const qrTitle=document.createElement('p');qrTitle.className='qr-badge';qrTitle.textContent='ESCANEIE PARA ABRIR ESTA CASA NO GOOGLE MAPS';
+    const mount=document.createElement('div');makeQr(route,mount);
+    const infoText=document.createElement('p');infoText.textContent='Este QR Code abre diretamente a rota até a casa '+d['Nº da Casa']+'.';
+    qrBlock.append(qrTitle,mount,infoText);
+    content.append(title,info,actions,qrBlock);card.append(head,content);
+    $('result').replaceChildren(card);card.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
-  if (!totem) {
-    const chosen = cleanNumber(params.get('casa') || '');
-    if (chosen && byCasa.has(chosen)) { $('casaInput').value=chosen; renderResult(byCasa.get(chosen)); }
+  $('searchForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    const result=findResult(visitorMode,'casaInput','quadraInput','loteInput');
+    result.error ? visitorError(result.error) : renderResult(result.d);
+  });
+  if(!totem) {
+    const selected=cleanNumber(params.get('casa')||'');
+    if(selected && byCasa.has(selected)) {$('casaInput').value=selected;renderResult(byCasa.get(selected));}
     return;
   }
 
+  // Fluxo tablet: pesquisar primeiro, gerar QR apenas após validar o imóvel.
   document.body.classList.add('kiosk-mode');
-  const STORAGE_KEY = 'bougainville_localizador_url';
-  const getSaved = () => {try {return localStorage.getItem(STORAGE_KEY) || '';}catch(e){return '';}};
-  const setSaved = value => {try {localStorage.setItem(STORAGE_KEY,value);}catch(e){/* bloqueado pelo navegador */}};
-  function canonicalUrl(value) {
-    let url;
-    try { url = new URL(value.trim()); } catch(e) { return ''; }
-    if (!['https:','http:'].includes(url.protocol) || !url.hostname || url.username || url.password) return '';
-    url.search='';url.hash='';
-    return url.href;
+  let kioskMode='casa';
+  $('kioskTabCasa').addEventListener('click',()=>{kioskMode='casa';setMode(kioskMode,'kiosk');$('kioskError').textContent='';});
+  $('kioskTabQuadra').addEventListener('click',()=>{kioskMode='quadra';setMode(kioskMode,'kiosk');$('kioskError').textContent='';});
+  let autoReset=null;
+  function resetKiosk() {
+    if(autoReset) {clearTimeout(autoReset);autoReset=null;}
+    $('kioskResult').classList.add('hidden');
+    $('kioskSearchForm').classList.remove('hidden');
+    $('kioskSubtitle').textContent='Digite o endereço no tablet para gerar um QR Code que abrirá o Google Maps no seu celular.';
+    $('kioskError').textContent='';
+    $('kioskCasaInput').value='';$('kioskQuadraInput').value='';$('kioskLoteInput').value='';
+    kioskMode='casa';setMode(kioskMode,'kiosk');
   }
-  const showQR = urlString => {
-    const url = canonicalUrl(urlString);
-    if (!url) return false;
-    try {
-      // Correção de erros M. Margem branca de 4 módulos em cada lado.
-      const qr = new window.LocalizadorQRCode(0, 0);
-      qr.addData(url);qr.make();
-      const n=qr.getModuleCount();const margin=4;
-      let squares='';
-      for(let y=0;y<n;y++) for(let x=0;x<n;x++) if(qr.isDark(y,x)) squares+=`M${x+margin} ${y+margin}h1v1h-1z`;
-      const svgNS='http://www.w3.org/2000/svg';
-      const svg=document.createElementNS(svgNS,'svg');
-      svg.setAttribute('viewBox',`0 0 ${n+margin*2} ${n+margin*2}`);
-      svg.setAttribute('role','img');svg.setAttribute('aria-label',`QR Code para ${url}`);
-      svg.setAttribute('shape-rendering','crispEdges');
-      const background=document.createElementNS(svgNS,'rect');
-      background.setAttribute('width',n+margin*2);background.setAttribute('height',n+margin*2);background.setAttribute('fill','#fff');
-      const path=document.createElementNS(svgNS,'path');path.setAttribute('d',squares);path.setAttribute('fill','#101920');
-      svg.append(background,path);
-      $('qrCode').replaceChildren(svg);
-      $('qrFrame').classList.remove('hidden');$('kioskSetup').classList.add('hidden');
-      $('kioskDetails').classList.remove('hidden');
-      $('kioskUrl').href=url;$('kioskUrl').textContent=url.replace(/^https?:\/\//,'');
-      $('kioskError').textContent='';
-      $('settingsUrl').value=url;
-      return true;
-    } catch(e) {
-      $('kioskError').textContent='Não foi possível gerar o QR Code. Verifique o endereço configurado.';
-      console.error(e);return false;
-    }
-  };
-  const initial = getSaved() || baseUrl;
-  if(!showQR(initial)) {
-    $('qrFrame').classList.add('hidden');$('kioskDetails').classList.add('hidden');
-    $('kioskSetup').classList.remove('hidden');$('setupUrl').value=getSaved() || '';
-  }
-  function saveUrl(raw, where) {
-    const url=canonicalUrl(raw);
-    if(!url) {$(where).textContent='Informe um endereço HTTP ou HTTPS válido.';return false;}
-    if(!showQR(url)) return false;
-    setSaved(url);$(where).textContent='';return true;
-  }
-  $('setupForm').addEventListener('submit', e => {
-    e.preventDefault();saveUrl($('setupUrl').value,'setupStatus');
+  $('kioskSearchForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    const result=findResult(kioskMode,'kioskCasaInput','kioskQuadraInput','kioskLoteInput');
+    if (result.error) {$('kioskError').textContent=result.error;return;}
+    const d=result.d, url=mapsUrl(d);
+    if(!url) {$('kioskError').textContent='Não há coordenadas cadastradas para este endereço.';return;}
+    try {makeQr(url,$('qrCode'));}
+    catch(err) {console.error(err);$('kioskError').textContent='Erro ao gerar o QR Code.';return;}
+    $('kioskHouse').textContent=`Casa ${d['Nº da Casa']}`;
+    $('kioskLot').textContent=`Quadra ${d.Quadra} · Lote ${d.Lote}`;
+    $('kioskMapsLink').href=url;
+    $('kioskSearchForm').classList.add('hidden');
+    $('kioskResult').classList.remove('hidden');
+    $('kioskSubtitle').textContent='Escaneie o QR Code para abrir a rota diretamente no Google Maps.';
+    $('kioskError').textContent='';
+    if(autoReset) clearTimeout(autoReset);
+    autoReset=setTimeout(resetKiosk, 120000); // evita que o próximo visitante escaneie a casa anterior.
   });
-  $('settingsForm').addEventListener('submit', e => {
-    e.preventDefault();if(saveUrl($('settingsUrl').value,'kioskError')) $('settingsDialog').close();
-  });
-  $('autoUrlBtn').addEventListener('click', () => {
-    if(!baseUrl) { $('kioskError').textContent='Abra o arquivo em um site antes de usar o endereço atual.';return; }
-    if(saveUrl(baseUrl,'kioskError')) $('settingsDialog').close();
-  });
-  $('settingsBtn').addEventListener('click', () => {
-    $('settingsUrl').value=getSaved() || baseUrl;
-    $('settingsDialog').showModal();
-  });
-  $('closeSettings').addEventListener('click', () => $('settingsDialog').close());
-  $('fullScreenBtn').addEventListener('click', async () => {
-    try { if(!document.fullscreenElement) await document.documentElement.requestFullscreen(); else await document.exitFullscreen(); }
-    catch(e) { $('kioskError').textContent='O navegador não permitiu ativar a tela cheia.'; }
+  $('kioskReset').addEventListener('click',resetKiosk);
+  $('fullScreenBtn').addEventListener('click',async()=>{
+    try {if(!document.fullscreenElement) await document.documentElement.requestFullscreen();else await document.exitFullscreen();}
+    catch(e) {$('kioskError').textContent='O navegador não permitiu a tela cheia.';}
   });
 })();
 </script>
